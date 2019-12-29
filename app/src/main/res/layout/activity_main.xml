@@ -57,6 +57,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loadFromButton" />
 
+    <Button
+        android:id="@+id/deleteDescriptionButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="deleteDescription"
+        android:text="Delete description"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/updateButton" />
+    <Button
+        android:id="@+id/deleteNoteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="deleteNote"
+        android:text="Delete Note"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/deleteDescriptionButton" />
+
     <TextView
         android:id="@+id/text_view_data"
         android:layout_width="wrap_content"
@@ -65,6 +84,6 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updateButton" />
+        app:layout_constraintTop_toBottomOf="@+id/deleteNoteButton" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

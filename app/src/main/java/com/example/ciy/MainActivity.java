@@ -16,6 +16,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FieldValue;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.SetOptions;
@@ -60,10 +61,15 @@ public class MainActivity extends AppCompatActivity {
 
                 assert documentSnapshot != null;
                 if (documentSnapshot.exists()) {
-                    String title = documentSnapshot.getString(KEY_TITLE);
-                    String description = documentSnapshot.getString(KEY_DESCRIPTION);
-                    String setTextView = "Title: " + title + "\n Description: " + description;
+                    Note note = documentSnapshot.toObject(Note.class);
+
+                    assert note != null;
+                    String setTextView = "Title: " + note.getTitle() + "\n Description: " + note.getDescription();
                     textViewData.setText(setTextView);
+                }
+                // if document does not exists
+                else {
+                    textViewData.setText("");
                 }
             }
         });
@@ -73,9 +79,7 @@ public class MainActivity extends AppCompatActivity {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
 
-        Map<String, Object> note = new HashMap<>();
-        note.put(KEY_TITLE, title);
-        note.put(KEY_DESCRIPTION, description);
+        Note note = new Note(title, description);
 
         noteRef.set(note)
                 .addOnSuccessListener(new OnSuccessListener<Void>() {
@@ -102,7 +106,13 @@ public class MainActivity extends AppCompatActivity {
 //        note.put(KEY_DESCRIPTION,description);
 //
 //        noteRef.set(note, SetOptions.merge());
-        noteRef.update(KEY_DESCRIPTION,description);
+        noteRef.update(KEY_DESCRIPTION, description).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Error updating description!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, e.toString());
+            }
+        });
 
     }
 
@@ -112,9 +122,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onSuccess(DocumentSnapshot documentSnapshot) {
                         if (documentSnapshot.exists()) {
-                            String title = documentSnapshot.getString(KEY_TITLE);
-                            String description = documentSnapshot.getString(KEY_DESCRIPTION);
-                            String setTextView = "Title: " + title + "\n Description: " + description;
+                            Note note = documentSnapshot.toObject(Note.class);
+
+                            assert note != null;
+                            String setTextView = "Title: " + note.getTitle() + "\n Description: " + note.getDescription();
                             textViewData.setText(setTextView);
                         } else {
                             Toast.makeText(MainActivity.this, "doc do not exist", Toast.LENGTH_SHORT).show();
@@ -133,4 +144,22 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+    public void deleteDescription(View v) {
+//        Map<String,Object> note = new HashMap<>();
+//        note.put(KEY_DESCRIPTION, FieldValue.delete());
+//        noteRef.update(note);
+
+        noteRef.update(KEY_DESCRIPTION, FieldValue.delete()).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(MainActivity.this, "Error deleting description!", Toast.LENGTH_SHORT).show();
+                Log.d(TAG, e.toString());
+            }
+        });
+
+    }
+
+    public void deleteNote(View view) {
+        noteRef.delete();
+    }
 }
