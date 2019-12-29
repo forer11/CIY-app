@@ -1,6 +1,7 @@
 package com.example.ciy;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -14,7 +15,10 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -39,6 +43,30 @@ public class MainActivity extends AppCompatActivity {
         editTextTitle = findViewById(R.id.edit_text_title);
         editTextDescription = findViewById(R.id.edit_text_description);
         textViewData = findViewById(R.id.text_view_data);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        noteRef.addSnapshotListener(this, new EventListener<DocumentSnapshot>() {
+            @Override
+            public void onEvent(@Nullable DocumentSnapshot documentSnapshot, @Nullable FirebaseFirestoreException e) {
+                if (e != null) {
+                    Toast.makeText(MainActivity.this, "Error while loading!", Toast.LENGTH_SHORT).show();
+                    Log.d(TAG, e.toString());
+                    return;
+                }
+
+
+                assert documentSnapshot != null;
+                if (documentSnapshot.exists()) {
+                    String title = documentSnapshot.getString(KEY_TITLE);
+                    String description = documentSnapshot.getString(KEY_DESCRIPTION);
+                    String setTextView = "Title: " + title + "\n Description: " + description;
+                    textViewData.setText(setTextView);
+                }
+            }
+        });
     }
 
     public void saveNote(View v) {
@@ -67,6 +95,17 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    public void updateDescription(View v) {
+        String description = editTextDescription.getText().toString();
+
+//        Map<String,Object> note = new HashMap<>();
+//        note.put(KEY_DESCRIPTION,description);
+//
+//        noteRef.set(note, SetOptions.merge());
+        noteRef.update(KEY_DESCRIPTION,description);
+
+    }
+
     public void loadNote(View v) {
         noteRef.get()
                 .addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
@@ -92,4 +131,6 @@ public class MainActivity extends AppCompatActivity {
                 });
 
     }
+
+
 }
