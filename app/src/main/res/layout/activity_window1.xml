@@ -6,4 +6,23 @@
     android:layout_height="match_parent"
     tools:context=".Window1">
 
+    <AutoCompleteTextView
+        android:id="@+id/autoCompleteTextView"
+        android:layout_width="297dp"
+        android:layout_height="56dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="50dp"
+        android:background="@drawable/layout_bg"
+        android:ems="10"
+        android:fontFamily="casual"
+        android:completionThreshold="1"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:inputType="textAutoCorrect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:imeOptions="actionNext"
+        app:layout_constraintTop_toTopOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
