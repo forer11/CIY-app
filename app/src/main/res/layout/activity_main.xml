@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_kitchen"
     tools:context=".MainActivity">
 
     <EditText
@@ -27,63 +26,71 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_text_title" />
-
-    <Button
-        android:id="@+id/saveToButton"
-        android:layout_width="match_parent"
+    <EditText
+        android:id="@+id/editTextPriority"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="saveNote"
-        android:text="Save"
+        android:hint="Priority"
+        android:inputType="number"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/edit_text_description" />
+        app:layout_constraintTop_toBottomOf="@+id/edit_text_description"/>
+
+
+    <Button
+        android:id="@+id/addNoteButton"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="addNote"
+        android:text="Add"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/editTextPriority" />
 
     <Button
         android:id="@+id/loadFromButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="loadNote"
+        android:onClick="loadNotes"
         android:text="Load"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/saveToButton" />
+        app:layout_constraintTop_toBottomOf="@+id/addNoteButton" />
 
     <Button
-        android:id="@+id/updateButton"
+        android:id="@+id/deleteButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="updateDescription"
-        android:text="Update description"
+        android:text="Delete"
+        android:onClick="deleteNote"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loadFromButton" />
 
-    <Button
-        android:id="@+id/deleteDescriptionButton"
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/nested"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="deleteDescription"
-        android:text="Delete description"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/updateButton" />
-    <Button
-        android:id="@+id/deleteNoteButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:onClick="deleteNote"
-        android:text="Delete Note"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deleteDescriptionButton" />
-
-    <TextView
-        android:id="@+id/text_view_data"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="20sp"
+        android:layout_centerVertical="true"
+        app:layout_constrainedHeight="true"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/deleteNoteButton" />
+        app:layout_constraintTop_toBottomOf="@+id/deleteButton">
+
+
+        <TextView
+            android:id="@+id/text_view_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:shadowColor="@color/blue_violet"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="5"
+            android:textColor="@color/black"
+            android:textSize="20sp" />
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
