@@ -8,7 +8,7 @@ import android.text.InputType;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 
-public class Window1 extends AppCompatActivity {
+public class Searcher extends AppCompatActivity {
 
     AutoCompleteTextView text;
     String[] languages = {"Shani ", "Carmel", "Lior", "Aviram", "Hagai", "Richi is the king"};
@@ -16,7 +16,7 @@ public class Window1 extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_window1);
+        setContentView(R.layout.activity_searcher);
 
         text = (AutoCompleteTextView) findViewById(R.id.autoCompleteTextView);
         ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, languages);
