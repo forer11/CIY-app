@@ -40,13 +40,4 @@
         app:lottie_loop="false"
         app:lottie_speed="1.5" />
 
-    <ImageButton
-        android:id="@+id/imageButton2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="#00FFFFFF"
-        app:srcCompat="@drawable/home_button"
-        tools:layout_editor_absoluteX="46dp"
-        tools:layout_editor_absoluteY="628dp" />
-
 </androidx.constraintlayout.widget.ConstraintLayout>
