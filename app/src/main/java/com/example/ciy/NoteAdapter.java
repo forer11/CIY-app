@@ -1,6 +1,8 @@
 package com.example.ciy;
 
 
+import android.text.Layout;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
@@ -21,12 +23,17 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note, NoteAdapter.Note
     @Override
     protected void onBindViewHolder(NoteHolder noteHolder, int i, Note note) {
         noteHolder.textViewTitle.setText(note.getTitle());
+        noteHolder.textViewDescription.setText(note.getDescription());
+        noteHolder.textViewPriority.setText(note.getPriority());
     }
+
 
     @NonNull
     @Override
     public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.note_item,
+                parent,false);
+        return new NoteHolder(v);
     }
 
     class  NoteHolder extends RecyclerView.ViewHolder{
