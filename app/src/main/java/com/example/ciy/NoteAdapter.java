@@ -24,7 +24,7 @@ public class NoteAdapter extends FirestoreRecyclerAdapter<Note, NoteAdapter.Note
     protected void onBindViewHolder(NoteHolder noteHolder, int i, Note note) {
         noteHolder.textViewTitle.setText(note.getTitle());
         noteHolder.textViewDescription.setText(note.getDescription());
-        noteHolder.textViewPriority.setText(note.getPriority());
+        noteHolder.textViewPriority.setText(String.valueOf(note.getPriority()));
     }
 
 

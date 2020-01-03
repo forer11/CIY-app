@@ -16,6 +16,12 @@ public class Note {
         // public no-arg constructor necessary for Firestore
     }
 
+    public Note(String title, String description, int priority) {
+        this.title = title;
+        this.description = description;
+        this.priority = priority;
+    }
+
     public Note(String title, String description, int priority, Map<String, Boolean> tags) {
         this.title = title;
         this.description = description;
