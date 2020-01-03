@@ -6,4 +6,10 @@
         <item name="android:windowTranslucentStatus">true</item>
     </style>
 
+    <style name="BaseAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/blue_violet</item>
+        <item name="colorPrimaryDark">@color/blue</item>
+        <item name="colorAccent">@color/light_blue</item>
+    </style>
+
 </resources>
