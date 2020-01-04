@@ -25,10 +25,10 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Priority"
+        android:text="Views"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
     <NumberPicker
-        android:id="@+id/numberPickerPriority"
+        android:id="@+id/numberPickerViews"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

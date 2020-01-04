@@ -17,7 +17,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 public class NewNoteActivity extends AppCompatActivity {
     private EditText editTextTitle;
     private EditText editTextDescription;
-    private NumberPicker numberPickerPriority;
+    private NumberPicker numberPickerViews;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,10 +29,10 @@ public class NewNoteActivity extends AppCompatActivity {
 
         editTextTitle = findViewById(R.id.editTextTitle);
         editTextDescription = findViewById(R.id.editTextDescription);
-        numberPickerPriority = findViewById(R.id.numberPickerPriority);
+        numberPickerViews = findViewById(R.id.numberPickerViews);
 
-        numberPickerPriority.setMinValue(1);
-        numberPickerPriority.setMaxValue(10);
+        numberPickerViews.setMinValue(1);
+        numberPickerViews.setMaxValue(10);
     }
 
     @Override
@@ -58,7 +58,8 @@ public class NewNoteActivity extends AppCompatActivity {
     private void saveNote() {
         String title = editTextTitle.getText().toString();
         String description = editTextDescription.getText().toString();
-        int priority = numberPickerPriority.getValue();
+        String imageUrl = "https://i.ytimg.com/vi/MPV2METPeJU/maxresdefault.jpg";
+        int views = numberPickerViews.getValue();
 
         if (title.trim().isEmpty() || description.trim().isEmpty()) {
             Toast.makeText(this, "please enter t and d", Toast.LENGTH_SHORT).show();
@@ -67,7 +68,7 @@ public class NewNoteActivity extends AppCompatActivity {
 
         CollectionReference notebookRef = FirebaseFirestore.getInstance()
                 .collection("Notebook");
-        notebookRef.add(new Note(title, description, priority));
+        notebookRef.add(new Note(title, description, views,imageUrl));
         Toast.makeText(this, "Note added", Toast.LENGTH_SHORT).show();
         finish();
     }
