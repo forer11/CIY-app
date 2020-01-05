@@ -11,18 +11,15 @@
         android:supportsRtl="true"
         android:theme="@style/BaseAppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".Blurred">
-
-        </activity>
+        <activity android:name=".forgotPasswordActivity"></activity>
+        <activity android:name=".signInActivity" />
+        <activity android:name=".loginActivity" />
+        <activity android:name=".Blurred" />
         <activity
             android:name=".NewNoteActivity"
             android:parentActivityName=".MainActivity" />
-        <activity android:name=".Searcher">
-
-        </activity>
-        <activity android:name=".Window2">
-
-        </activity>
+        <activity android:name=".Searcher" />
+        <activity android:name=".Window2" />
         <activity
             android:name=".MainActivity"
             android:launchMode="singleTop"
@@ -33,9 +30,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".BottomNavigationBar">
-
-        </activity>
+        <activity android:name=".BottomNavigationBar" />
     </application>
 
 </manifest>
