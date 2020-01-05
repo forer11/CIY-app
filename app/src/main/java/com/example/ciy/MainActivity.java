@@ -2,7 +2,6 @@ package com.example.ciy;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -10,38 +9,37 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
 
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-
-
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private static final String KEY_TITLE = "title";
-    private static final String KEY_DESCRIPTION = "description";
-
-    private EditText editTextTitle, editTextDescription, editTextPriority, editTextTags;
-    private TextView textViewData;
+    private static final String NOTEBOOK_COLLECTION = "Notebook";
+    private static final String USERS = "Users";
 
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference notebookRef = db.collection("Notebook");
+    private CollectionReference notebookRef = db.collection(NOTEBOOK_COLLECTION);
+    private CollectionReference usersRef = db.collection(USERS);
 
     private NoteAdapter adapter;
 
@@ -49,6 +47,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        usersRef.document("Lior").collection("dishes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    usersRef.document("Lior").collection("dishes").document(documentSnapshot.getId()).delete();
+                }
+                notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            Note note = documentSnapshot.toObject(Note.class);
+                            usersRef.document("Lior").collection("dishes").add(note);
+                        }
+                    }
+                });
+            }
+        });
 
         FloatingActionButton addNoteButton = findViewById(R.id.addButton);
         addNoteButton.setOnClickListener(new View.OnClickListener() {
@@ -59,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setUpRecyclerView();
-
     }
 
     private void setUpRecyclerView() {
-        Query query = notebookRef.orderBy("priority", Query.Direction.DESCENDING);
+
+        Query query = usersRef.document("Lior").collection("dishes").orderBy("views", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Note> options = new FirestoreRecyclerOptions.Builder<Note>()
                 .setQuery(query, Note.class)
@@ -75,6 +91,38 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(adapter);
+
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                adapter.deleteItem(viewHolder.getAdapterPosition());
+            }
+        }).attachToRecyclerView(recyclerView);
+
+        final String urls[] = new String[]{"https://boygeniusreport.files.wordpress.com/2016/11/puppy-dog.jpg?quality=98&strip=all&w=782",
+                "https://images2.minutemediacdn.com/image/upload/c_crop,h_1350,w_2400,x_0,y_136/f_auto,q_auto,w_1100/v1576859350/shape/mentalfloss/610651-gettyimages-901452436.jpg",
+                "https://cdn.psychologytoday.com/sites/default/files/styles/article-inline-half/public/field_blog_entry_images/2018-02/vicious_dog_0.png?itok=nsghKOHs",
+                "https://scx2.b-cdn.net/gfx/news/hires/2019/wolfdog.jpg",
+                "https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1687,w_3000,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1575669519/191206-weill-dogs-in-politics-tease_ko5qke",
+                "https://d.newsweek.com/en/full/1517827/coconut-rice-bear.jpg?w=1600&h=1600&q=88&f=8b37e38c82ec050dda787e009f0ef2ef",
+                "https://compote.slate.com/images/8aedcaf8-0474-4644-b1b9-6a00220dc2dd.jpeg?width=780&height=520&rect=1560x1040&offset=0x0"};
+        adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
+                Note note = documentSnapshot.toObject(Note.class);
+                Random random = new Random();
+                final int index = random.nextInt(urls.length);
+                usersRef.document("Lior").collection("dishes")
+                        .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
+//                executeTransaction(documentSnapshot.getId());
+            }
+        });
     }
 
     @Override
@@ -89,65 +137,26 @@ public class MainActivity extends AppCompatActivity {
         adapter.stopListening();
     }
 
-    public void addNote(View v) {
-        String title = editTextTitle.getText().toString();
-        String description = editTextDescription.getText().toString();
-
-        if (editTextPriority.length() == 0) {
-            editTextPriority.setText("0");
-        }
-
-        int priority = Integer.parseInt(editTextPriority.getText().toString());
-
-        String tagInput = editTextTags.getText().toString();
-        String[] tagArray = tagInput.split("\\s*,\\s*");
-        Map<String, Boolean> tags = new HashMap<>();
-
-        for (String tag : tagArray) {
-            tags.put(tag, true);
-        }
-
-        Note note = new Note(title, description, priority, tags);
-
-        notebookRef.add(note).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+    /**
+     * incrementing a parameter in fireStore with synchronization
+     *
+     * @param id
+     */
+    private void executeTransaction(final String id) {
+        db.runTransaction(new Transaction.Function<Long>() {
             @Override
-            public void onSuccess(DocumentReference documentReference) {
-                Toast.makeText(MainActivity.this, "Note saved", Toast.LENGTH_SHORT).show();
+            public Long apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
+                DocumentReference noteRef = notebookRef.document(id);
+                DocumentSnapshot noteSnapShot = transaction.get(noteRef);
+                long newViews = noteSnapShot.getLong("views") + 1;
+                transaction.update(noteRef, "views", newViews);
+                return newViews;
+
             }
-        }).addOnFailureListener(new OnFailureListener() {
+        }).addOnSuccessListener(new OnSuccessListener<Long>() {
             @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(MainActivity.this, "Error!", Toast.LENGTH_SHORT).show();
-                Log.d(TAG, e.toString());
-            }
-        });
-    }
-
-    public void loadNotes(View v) {
-        notebookRef.whereEqualTo("tags.yay", true).get()
-                .addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-
-                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            Note note = documentSnapshot.toObject(Note.class);
-                            note.setId(documentSnapshot.getId());
-
-                            String documentId = note.getId();
-                        }
-                    }
-                });
-    }
-
-    public void deleteNote(View v) {
-        notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    String path = "Notebook/" + documentSnapshot.getId();
-                    notebookRef.document(documentSnapshot.getId()).delete();
-                }
-                textViewData.setText("");
+            public void onSuccess(Long result) {
+                Toast.makeText(MainActivity.this, "Views updated to: " + result, Toast.LENGTH_SHORT).show();
             }
         });
     }

@@ -9,24 +9,33 @@ public class Note {
     private String id;
     private String title;
     private String description;
-    private int priority;
-    private Map<String, Boolean> tags;
+    private String imageUrl;
+    private int views;
+    private List<String> ingredients;
 
     public Note() {
         // public no-arg constructor necessary for Firestore
     }
 
-    public Note(String title, String description, int priority) {
+    public Note(String title, String description, int views) {
         this.title = title;
         this.description = description;
-        this.priority = priority;
+        this.views = views;
     }
 
-    public Note(String title, String description, int priority, Map<String, Boolean> tags) {
+    public Note(String title, String description, int views, String imageUrl) {
         this.title = title;
         this.description = description;
-        this.priority = priority;
-        this.tags = tags;
+        this.views = views;
+        this.imageUrl = imageUrl;
+    }
+
+    public Note(String title, String description, int views, List<String> ingredients, String imageUrl) {
+        this.title = title;
+        this.description = description;
+        this.views = views;
+        this.ingredients = ingredients;
+        this.imageUrl = imageUrl;
     }
 
     public String getTitle() {
@@ -47,19 +56,23 @@ public class Note {
         this.id = id;
     }
 
-    public int getPriority() {
-        return priority;
+    public int getViews() {
+        return views;
     }
 
-    public void setPriority(int priority) {
-        this.priority = priority;
+    public void setViews(int views) {
+        this.views = views;
     }
 
-    public Map<String, Boolean> getTags() {
-        return tags;
+    public List<String> getIngredients() {
+        return ingredients;
     }
 
-    public void setTags(Map<String, Boolean> tags) {
-        this.tags = tags;
+    public String getImageUrl() {
+        return imageUrl;
+    }
+
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 }
