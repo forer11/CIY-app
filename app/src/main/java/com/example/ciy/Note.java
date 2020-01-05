@@ -2,6 +2,7 @@ package com.example.ciy;
 
 import com.google.firebase.firestore.Exclude;
 
+import java.util.List;
 import java.util.Map;
 
 public class Note {
@@ -10,7 +11,7 @@ public class Note {
     private String description;
     private String imageUrl;
     private int views;
-    private Map<String, Boolean> ingredients;
+    private List<String> ingredients;
 
     public Note() {
         // public no-arg constructor necessary for Firestore
@@ -21,18 +22,20 @@ public class Note {
         this.description = description;
         this.views = views;
     }
-    public Note(String title, String description, int views,String imageUrl) {
+
+    public Note(String title, String description, int views, String imageUrl) {
         this.title = title;
         this.description = description;
         this.views = views;
         this.imageUrl = imageUrl;
     }
 
-    public Note(String title, String description, int views, Map<String, Boolean> ingredients) {
+    public Note(String title, String description, int views, List<String> ingredients, String imageUrl) {
         this.title = title;
         this.description = description;
         this.views = views;
         this.ingredients = ingredients;
+        this.imageUrl = imageUrl;
     }
 
     public String getTitle() {
@@ -61,12 +64,8 @@ public class Note {
         this.views = views;
     }
 
-    public Map<String, Boolean> getIngredients() {
+    public List<String> getIngredients() {
         return ingredients;
-    }
-
-    public void setIngredients(Map<String, Boolean> ingredients) {
-        this.ingredients = ingredients;
     }
 
     public String getImageUrl() {
