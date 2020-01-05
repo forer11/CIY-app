@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -22,19 +23,23 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private static final String NOTEBOOK_COLLECTION = "Notebook";
-
+    private static final String USERS = "Users";
 
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference notebookRef = db.collection(NOTEBOOK_COLLECTION);
+    private CollectionReference usersRef = db.collection(USERS);
 
     private NoteAdapter adapter;
 
@@ -42,6 +47,24 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        usersRef.document("Lior").collection("dishes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    usersRef.document("Lior").collection("dishes").document(documentSnapshot.getId()).delete();
+                }
+                notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            Note note = documentSnapshot.toObject(Note.class);
+                            usersRef.document("Lior").collection("dishes").add(note);
+                        }
+                    }
+                });
+            }
+        });
 
         FloatingActionButton addNoteButton = findViewById(R.id.addButton);
         addNoteButton.setOnClickListener(new View.OnClickListener() {
@@ -52,11 +75,11 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setUpRecyclerView();
-
     }
 
     private void setUpRecyclerView() {
-        Query query = notebookRef.orderBy("views", Query.Direction.DESCENDING);
+
+        Query query = usersRef.document("Lior").collection("dishes").orderBy("views", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Note> options = new FirestoreRecyclerOptions.Builder<Note>()
                 .setQuery(query, Note.class)
@@ -95,8 +118,9 @@ public class MainActivity extends AppCompatActivity {
                 Note note = documentSnapshot.toObject(Note.class);
                 Random random = new Random();
                 final int index = random.nextInt(urls.length);
-                db.collection("Notebook").document(documentSnapshot.getId()).update("imageUrl", urls[index]);
-                executeTransaction(documentSnapshot.getId());
+                usersRef.document("Lior").collection("dishes")
+                        .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
+//                executeTransaction(documentSnapshot.getId());
             }
         });
     }
@@ -115,6 +139,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * incrementing a parameter in fireStore with synchronization
+     *
      * @param id
      */
     private void executeTransaction(final String id) {
