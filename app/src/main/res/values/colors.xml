@@ -144,5 +144,6 @@
     <color name="navy">#000080</color>
     <color name="black">#000000</color>
     <color name ="dollar_green">#82B340</color>
+    <color name="colorOverlay">#78ffffff</color>
     <color name="transperent">#00000000</color>
 </resources>
