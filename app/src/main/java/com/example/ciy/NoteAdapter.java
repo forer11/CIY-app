@@ -16,20 +16,20 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 
-public class NoteAdapter extends FirestoreRecyclerAdapter<Note, NoteAdapter.NoteHolder> {
+public class NoteAdapter extends FirestoreRecyclerAdapter<Recipe, NoteAdapter.NoteHolder> {
     private OnItemClickListener listener;
-    public NoteAdapter(FirestoreRecyclerOptions<Note> options) {
+    public NoteAdapter(FirestoreRecyclerOptions<Recipe> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(NoteHolder noteHolder, int i, Note note) {
-        noteHolder.textViewTitle.setText(note.getTitle());
-        noteHolder.textViewDescription.setText(note.getDescription());
-        noteHolder.textViewViews.setText(String.valueOf(note.getViews())+" Views");
+    protected void onBindViewHolder(NoteHolder noteHolder, int i, Recipe recipe) {
+        noteHolder.textViewTitle.setText(recipe.getTitle());
+        noteHolder.textViewDescription.setText(recipe.getDescription());
+        noteHolder.textViewViews.setText(String.valueOf(recipe.getViews())+" Views");
         try {
             Picasso.get()
-                    .load(note.getImageUrl())
+                    .load(recipe.getImageUrl())
                     .fit()
                     .centerCrop()
                     .into(noteHolder.imageViewDish);

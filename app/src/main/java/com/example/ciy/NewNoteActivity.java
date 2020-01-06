@@ -38,7 +38,7 @@ public class NewNoteActivity extends AppCompatActivity {
         setContentView(R.layout.activity_new_note);
 
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Add Note");
+        setTitle("Add Recipe");
 
         editTextTitle = findViewById(R.id.editTextTitle);
         editTextDescription = findViewById(R.id.editTextDescription);
@@ -79,21 +79,21 @@ public class NewNoteActivity extends AppCompatActivity {
             return;
         }
 
-        notebookRef.add(new Note(title, description, views, Arrays.asList("yay","carrot"), imageUrl));
-        Toast.makeText(this, "Note added", Toast.LENGTH_SHORT).show();
+        notebookRef.add(new Recipe(title, description, views, Arrays.asList("yay","carrot"), imageUrl));
+        Toast.makeText(this, "Recipe added", Toast.LENGTH_SHORT).show();
 
-        usersRef.document("Carmel").collection("dishes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        usersRef.document("Carmel").collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    usersRef.document("Carmel").collection("dishes").document(documentSnapshot.getId()).delete();
+                    usersRef.document("Carmel").collection("Recipes").document(documentSnapshot.getId()).delete();
                 }
                 notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            Note note = documentSnapshot.toObject(Note.class);
-                            usersRef.document("Carmel").collection("dishes").add(note);
+                            Recipe recipe = documentSnapshot.toObject(Recipe.class);
+                            usersRef.document("Carmel").collection("Recipes").add(recipe);
                         }
                     }
                 });

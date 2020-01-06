@@ -4,7 +4,7 @@ import com.google.firebase.firestore.Exclude;
 
 import java.util.List;
 
-public class Note {
+public class Recipe {
     private String id;
     private String title;
     private String description;
@@ -12,24 +12,24 @@ public class Note {
     private int views;
     private List<String> ingredients;
 
-    public Note() {
+    public Recipe() {
         // public no-arg constructor necessary for Firestore
     }
 
-    public Note(String title, String description, int views) {
+    public Recipe(String title, String description, int views) {
         this.title = title;
         this.description = description;
         this.views = views;
     }
 
-    public Note(String title, String description, int views, String imageUrl) {
+    public Recipe(String title, String description, int views, String imageUrl) {
         this.title = title;
         this.description = description;
         this.views = views;
         this.imageUrl = imageUrl;
     }
 
-    public Note(String title, String description, int views, List<String> ingredients, String imageUrl) {
+    public Recipe(String title, String description, int views, List<String> ingredients, String imageUrl) {
         this.title = title;
         this.description = description;
         this.views = views;
