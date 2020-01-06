@@ -3,8 +3,6 @@ package com.example.ciy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,7 +10,6 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.firestore.CollectionReference;
@@ -25,7 +22,6 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -46,21 +42,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        usersRef.document("Carmel").collection("dishes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        usersRef.document("Carmel").collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    usersRef.document("Carmel").collection("dishes").document(documentSnapshot.getId()).delete();
+                    usersRef.document("Carmel").collection("Recipes").document(documentSnapshot.getId()).delete();
                 }
-                final ArrayList<Note> dishes = new ArrayList<>();
+                final ArrayList<Recipe> recipes = new ArrayList<>();
                 notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            Note note = documentSnapshot.toObject(Note.class);
-                            note.setId(documentSnapshot.getId());
-                            dishes.add(note);
-                            usersRef.document("Carmel").collection("dishes").add(note);
+                            Recipe recipe = documentSnapshot.toObject(Recipe.class);
+                            recipe.setId(documentSnapshot.getId());
+                            recipes.add(recipe);
+                            usersRef.document("Carmel").collection("Recipes").add(recipe);
                         }
                     }
                 });
@@ -80,10 +76,10 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpRecyclerView() {
 
-        Query query = usersRef.document("Carmel").collection("dishes").orderBy("views", Query.Direction.DESCENDING);
+        Query query = usersRef.document("Carmel").collection("Recipes").orderBy("views", Query.Direction.DESCENDING);
 
-        FirestoreRecyclerOptions<Note> options = new FirestoreRecyclerOptions.Builder<Note>()
-                .setQuery(query, Note.class)
+        FirestoreRecyclerOptions<Recipe> options = new FirestoreRecyclerOptions.Builder<Recipe>()
+                .setQuery(query, Recipe.class)
                 .build();
 
         adapter = new NoteAdapter(options);
@@ -116,13 +112,13 @@ public class MainActivity extends AppCompatActivity {
         adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
-                Note note = documentSnapshot.toObject(Note.class);
+                Recipe recipe = documentSnapshot.toObject(Recipe.class);
                 Random random = new Random();
                 final int index = random.nextInt(urls.length);
-                usersRef.document("Carmel").collection("dishes")
+                usersRef.document("Carmel").collection("Recipes")
                         .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
-                executeTransaction(note.getId(), notebookRef);
-                executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("dishes"));
+                executeTransaction(recipe.getId(), notebookRef);
+                executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("Recipes"));
             }
         });
     }
