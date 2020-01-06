@@ -27,6 +27,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.Transaction;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Random;
 
@@ -48,18 +49,21 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        usersRef.document("Lior").collection("dishes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        usersRef.document("Carmel").collection("dishes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    usersRef.document("Lior").collection("dishes").document(documentSnapshot.getId()).delete();
+                    usersRef.document("Carmel").collection("dishes").document(documentSnapshot.getId()).delete();
                 }
+                final ArrayList<Note> dishes = new ArrayList<>();
                 notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             Note note = documentSnapshot.toObject(Note.class);
-                            usersRef.document("Lior").collection("dishes").add(note);
+                            note.setId(documentSnapshot.getId());
+                            dishes.add(note);
+                            usersRef.document("Carmel").collection("dishes").add(note);
                         }
                     }
                 });
@@ -79,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void setUpRecyclerView() {
 
-        Query query = usersRef.document("Lior").collection("dishes").orderBy("views", Query.Direction.DESCENDING);
+        Query query = usersRef.document("Carmel").collection("dishes").orderBy("views", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Note> options = new FirestoreRecyclerOptions.Builder<Note>()
                 .setQuery(query, Note.class)
@@ -118,9 +122,10 @@ public class MainActivity extends AppCompatActivity {
                 Note note = documentSnapshot.toObject(Note.class);
                 Random random = new Random();
                 final int index = random.nextInt(urls.length);
-                usersRef.document("Lior").collection("dishes")
+                usersRef.document("Carmel").collection("dishes")
                         .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
-//                executeTransaction(documentSnapshot.getId());
+                executeTransaction(note.getId(), notebookRef);
+                executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("dishes"));
             }
         });
     }
@@ -142,11 +147,11 @@ public class MainActivity extends AppCompatActivity {
      *
      * @param id
      */
-    private void executeTransaction(final String id) {
+    private void executeTransaction(final String id, final CollectionReference dataCollection) {
         db.runTransaction(new Transaction.Function<Long>() {
             @Override
             public Long apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-                DocumentReference noteRef = notebookRef.document(id);
+                DocumentReference noteRef = dataCollection.document(id);
                 DocumentSnapshot noteSnapShot = transaction.get(noteRef);
                 long newViews = noteSnapShot.getLong("views") + 1;
                 transaction.update(noteRef, "views", newViews);
