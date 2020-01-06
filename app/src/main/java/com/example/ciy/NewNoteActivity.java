@@ -82,18 +82,18 @@ public class NewNoteActivity extends AppCompatActivity {
         notebookRef.add(new Note(title, description, views, Arrays.asList("yay","carrot"), imageUrl));
         Toast.makeText(this, "Note added", Toast.LENGTH_SHORT).show();
 
-        usersRef.document("Lior").collection("dishes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        usersRef.document("Carmel").collection("dishes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    usersRef.document("Lior").collection("dishes").document(documentSnapshot.getId()).delete();
+                    usersRef.document("Carmel").collection("dishes").document(documentSnapshot.getId()).delete();
                 }
                 notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             Note note = documentSnapshot.toObject(Note.class);
-                            usersRef.document("Lior").collection("dishes").add(note);
+                            usersRef.document("Carmel").collection("dishes").add(note);
                         }
                     }
                 });
