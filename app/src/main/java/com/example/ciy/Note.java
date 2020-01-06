@@ -3,7 +3,6 @@ package com.example.ciy;
 import com.google.firebase.firestore.Exclude;
 
 import java.util.List;
-import java.util.Map;
 
 public class Note {
     private String id;
@@ -47,7 +46,6 @@ public class Note {
     }
 
     // meaning  that id won't be in the document.
-    @Exclude
     public String getId() {
         return id;
     }
