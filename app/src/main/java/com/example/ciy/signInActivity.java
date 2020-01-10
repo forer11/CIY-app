@@ -2,6 +2,7 @@ package com.example.ciy;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.Toast;
+
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -33,14 +35,14 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
         findViewById(R.id.signIn).setOnClickListener(this);
     }
 
-    public void signIn(View view){
-        String mail,password;
+    public void signIn(View view) {
+        String mail, password;
         mailInput = (EditText) findViewById(R.id.mailSignIn);
         passwordInput = (EditText) findViewById(R.id.passwordSignIn);
         mail = mailInput.getText().toString();
         password = passwordInput.getText().toString();
 
-        if (!isEmailValid(mailInput)){
+        if (!isEmailValid(mailInput)) {
             mailInput.setError("Field can't be empty");
 //            Toast.makeText(signInActivity.this, "not valid mail format", Toast.LENGTH_SHORT).show();
 //            signIn(view);
@@ -73,7 +75,7 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 //                            updateUI(user);
-                            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                            Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -126,7 +128,7 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
     @Override
     public void onClick(View v) {
         int i = v.getId();
-        if (i == R.id.signIn){
+        if (i == R.id.signIn) {
             createAccount();
         }
     }

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.auth.api.signin.GoogleSignIn;
@@ -40,6 +41,11 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser user = mAuth.getCurrentUser();
+        if (user != null) {
+            startActivity(new Intent(loginActivity.this, BottomNavigationBar.class));
+        }
         setContentView(R.layout.activity_login);
         setProgressBar(R.id.progressBar);
         findViewById(R.id.signInGoogleButton).setOnClickListener(this);
@@ -75,8 +81,8 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
                             Log.d(TAG_1, "signInWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 //                            updateUI(user);       // TODO
-                            Toast.makeText(loginActivity.this, "login succeeded",Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                            Toast.makeText(loginActivity.this, "login succeeded", Toast.LENGTH_SHORT).show();
+                            Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
@@ -108,7 +114,7 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(loginActivity.this, "Signed Out",
-                        Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
@@ -123,13 +129,13 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
                         Toast.makeText(loginActivity.this, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show();
+                                Toast.LENGTH_SHORT).show();
                     }
                 });
     }
 
-    public void login(View view){
-        String mail,password;
+    public void login(View view) {
+        String mail, password;
 
         mailInput = (EditText) findViewById(R.id.mailInput);
         passwordInput = (EditText) findViewById(R.id.passwordInput);
@@ -143,11 +149,11 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
 
     }
 
-    public void goToSignIn(View view){
+    public void goToSignIn(View view) {
         startActivity(new Intent(this, signInActivity.class));
     }
 
-    public void goToForgetPassword(View view){
+    public void goToForgetPassword(View view) {
         startActivity(new Intent(this, forgotPasswordActivity.class));
 
     }
@@ -209,7 +215,7 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
         showProgressBar();
         // [END_EXCLUDE]
 
-            AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
+        AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
@@ -218,8 +224,8 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-    //                            Intent intent = new Intent(getBaseContext(), MainActivity.class);
-    //                            startActivity(intent);
+                            //                            Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                            //                            startActivity(intent);
 //                            updateUI(user);   // TODO
                         } else {
                             // If sign in fails, display a message to the user.
