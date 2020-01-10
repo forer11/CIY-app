@@ -2,13 +2,16 @@ package com.example.ciy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -20,8 +23,18 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
@@ -29,11 +42,13 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String NOTEBOOK_COLLECTION = "Notebook";
     private static final String USERS = "Users";
+    private static final String Ingredients = "Ingredients";
 
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference notebookRef = db.collection(NOTEBOOK_COLLECTION);
     private CollectionReference usersRef = db.collection(USERS);
+    private CollectionReference ingredientsRef = db.collection(Ingredients);
 
     private NoteAdapter adapter;
 
@@ -41,6 +56,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+//        updateIngredientsVector();
 
         usersRef.document("Carmel").collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
@@ -72,6 +89,28 @@ public class MainActivity extends AppCompatActivity {
         });
 
         setUpRecyclerView();
+    }
+
+    public void updateIngredientsVector(){
+
+        try {
+            InputStream is = getAssets().open("ingredients.txt");
+            StringBuilder text = new StringBuilder();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("ingredient", line);
+                ingredientsRef.document(line).set(data, SetOptions.merge());
+            }
+            br.close();
+        } catch (IOException e) {
+            Log.e(TAG, "updateIngredientsVector: ",e );
+            //You'll need to add proper error handling here
+        }
+
     }
 
     private void setUpRecyclerView() {
@@ -158,7 +197,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
 
 
 }
