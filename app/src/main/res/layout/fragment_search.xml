@@ -1,13 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent"
-    android:background="@color/mediumPurple">
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/background_kitchen"
+    tools:context=".Searcher">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Search Fragment"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"/>
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/blurView"
+        android:layout_width="279dp"
+        android:layout_height="456dp"
+        android:layout_centerInParent="true"
+        android:scaleType="centerInside"
+        app:blurOverlayColor="#78FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/enterIngredients">
 
-</RelativeLayout>
+        <!--Any child View here, TabLayout for example-->
+
+
+        <TextView
+            android:id="@+id/headline"
+            android:layout_width="match_parent"
+            android:layout_height="104dp"
+            android:fontFamily="casual"
+            android:textAlignment="center"
+            android:text="Your Ingredients:"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/output"
+            android:layout_width="match_parent"
+            android:layout_height="103dp"
+            android:layout_marginTop="110dp"
+            android:fontFamily="casual"
+            android:textAlignment="center"
+            android:textColor="#000000"
+            android:textSize="18sp"
+            />
+
+    </eightbitlab.com.blurview.BlurView>
+
+    <AutoCompleteTextView
+        android:id="@+id/enterIngredients"
+        android:layout_width="297dp"
+        android:layout_height="56dp"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="48dp"
+        android:background="@drawable/layout_bg"
+        android:completionThreshold="1"
+        android:ems="10"
+        android:fontFamily="casual"
+        android:imeOptions="actionNext"
+        android:inputType="textAutoCorrect"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:hint="Select Ingredients"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/search_animation"
+        android:layout_width="44dp"
+        android:layout_height="39dp"
+        android:layout_gravity="center"
+        android:layout_marginRight="20dp"
+        app:layout_constraintBottom_toBottomOf="@+id/enterIngredients"
+        app:layout_constraintEnd_toEndOf="@+id/enterIngredients"
+        app:layout_constraintTop_toTopOf="@+id/enterIngredients"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="search_animation.json"
+        app:lottie_loop="false"
+        app:lottie_speed="1.5" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

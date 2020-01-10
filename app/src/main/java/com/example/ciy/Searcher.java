@@ -1,36 +1,30 @@
 package com.example.ciy;
 
 import androidx.appcompat.app.AppCompatActivity;
-
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.text.Editable;
 import android.text.InputType;
-import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.ImageView;
-import android.widget.MultiAutoCompleteTextView;
 import android.widget.TextView;
-
 import com.jackandphantom.blurimage.BlurImage;
-
 import java.util.ArrayList;
-import java.util.HashMap;
-
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
 public class Searcher extends AppCompatActivity {
 
-    private MultiAutoCompleteTextView userInput;
+    private AutoCompleteTextView userInput;
     String[] languages = {"Shani ", "Carmel", "Lior", "Aviram", "Hagai", "Richi is the king"};
     ArrayList<String> ingredients = new ArrayList<>();
     TextView headline, output;
     ImageView background;
+    boolean firstIngredient = true;
 
 
     @Override
@@ -40,7 +34,6 @@ public class Searcher extends AppCompatActivity {
         userInput = findViewById(R.id.enterIngredients);
         ArrayAdapter adapter = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, languages);
         userInput.setAdapter(adapter);
-        userInput.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
         userInput.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
         userInput.setTextColor(Color.DKGRAY);
         output = findViewById(R.id.output);
@@ -53,8 +46,18 @@ public class Searcher extends AppCompatActivity {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //get the input like for a normal EditText
                 input = userInput.getText().toString();
+                //clears search tab for next search
+                userInput.setText("");
+                //update user entered ingredient in data and output his choice on screen
                 ingredients.add(input);
-                output.setText(input);
+                //we want tu add a comma to output only after an ingredient != first
+                if (firstIngredient) {
+                    output.append(input);
+                    firstIngredient = false;
+                } else {
+                    output.append(", " + input);
+
+                }
                 output.setVisibility(View.VISIBLE);
             }
         });
@@ -78,8 +81,6 @@ public class Searcher extends AppCompatActivity {
         background = findViewById(R.id.background);
         BlurImage.with(getApplicationContext()).load(R.drawable.background_kitchen).intensity(5).Async(true).into(background);
     }
-
-
 
 
 }
