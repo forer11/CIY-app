@@ -11,32 +11,34 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".forgotPasswordActivity"></activity>
-        <activity android:name=".signInActivity"/>
+        <activity android:name=".forgotPasswordActivity">
+
+        </activity>
+        <activity android:name=".signInActivity" />
         <activity
             android:name=".loginActivity"
             android:launchMode="singleTop">
-        <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            <category android:name="android.intent.category.LAUNCHER" />
-        </intent-filter>
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
         </activity>
         <activity android:name=".Blurred" />
         <activity
             android:name=".NewNoteActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/BaseAppTheme"/>
         <activity android:name=".Searcher" />
         <activity android:name=".Window2" />
         <activity
             android:name=".MainActivity"
-            android:launchMode="singleTop"
-            android:theme="@style/AppTheme">
-<!--            <intent-filter>-->
-<!--                <action android:name="android.intent.action.MAIN" />-->
-<!--                <category android:name="android.intent.category.LAUNCHER" />-->
-<!--            </intent-filter>-->
+            android:launchMode="singleTop">
         </activity>
-        <activity android:name=".BottomNavigationBar" />
+        <activity
+            android:name=".BottomNavigationBar"
+            android:theme="@style/BaseAppTheme">
+        </activity>
     </application>
 
 </manifest>
