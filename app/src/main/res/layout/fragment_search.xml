@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/background_kitchen"
-    tools:context=".Searcher">
+    tools:context=".BottomNavigationBar">
 
     <eightbitlab.com.blurview.BlurView
         android:id="@+id/blurView"
