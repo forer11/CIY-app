@@ -30,6 +30,7 @@ public class BottomNavigationBar extends AppCompatActivity {
             favoritesFragment = new FavoritesFragment();
             searchFragment = new SearchFragment();
         }
+        //setting home fragment as default
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 homeFragment).commit();
     }

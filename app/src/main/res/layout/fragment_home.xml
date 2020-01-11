@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".BottomNavigationBar">
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_marginTop="20dp"
@@ -18,7 +18,8 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="16dp"
-        android:src="@drawable/ic_add" />
+        android:src="@drawable/ic_add"
+        android:backgroundTint="@color/mediumPurple"/>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
