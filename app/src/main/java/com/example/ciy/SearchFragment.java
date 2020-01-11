@@ -20,9 +20,15 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.jackandphantom.blurimage.BlurImage;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 import eightbitlab.com.blurview.BlurView;
@@ -35,6 +41,12 @@ public class SearchFragment extends Fragment {
     private ArrayList<String> ingredients = new ArrayList<>();
     private TextView output;
     private boolean firstIngredient = true;
+    private static final String Ingredients = "Ingredients";
+
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference ingredientsRef = db.collection(Ingredients);
+    private ArrayAdapter<String> adapter;
+
 
     @Nullable
     @Override
@@ -44,8 +56,23 @@ public class SearchFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
+        final List<String> options = new ArrayList<>();
+        ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots)
+                {
+                    String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
+                    options.add(option);
+                }
+                adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, options);
+                setUserInput();
+            }
+        });
+    }
+
+    private void setUserInput() {
         userInput = Objects.requireNonNull(getView()).findViewById(R.id.enterIngredients);
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, languages);
         userInput.setAdapter(adapter);
         userInput.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
         userInput.setTextColor(Color.DKGRAY);

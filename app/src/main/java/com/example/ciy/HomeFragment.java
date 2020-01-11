@@ -2,6 +2,7 @@ package com.example.ciy;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -38,10 +40,14 @@ public class HomeFragment extends Fragment {
 
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
     private CollectionReference notebookRef = db.collection(NOTEBOOK_COLLECTION);
+
     private CollectionReference usersRef = db.collection(USERS);
 
     private NoteAdapter adapter;
+
+    private boolean canIclick = true;
 
     @Nullable
     @Override
@@ -52,6 +58,11 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        canIclick = false;
+        setUpData();
+    }
+
+    private void setUpData() {
         usersRef.document("Carmel").collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
@@ -68,6 +79,9 @@ public class HomeFragment extends Fragment {
                             recipes.add(recipe);
                             usersRef.document("Carmel").collection("Recipes").add(recipe);
                         }
+                        View b = getView().findViewById(R.id.test);
+                        b.setVisibility(View.GONE);
+                        canIclick = true;
                     }
                 });
             }
@@ -120,16 +134,20 @@ public class HomeFragment extends Fragment {
                 "https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1687,w_3000,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1575669519/191206-weill-dogs-in-politics-tease_ko5qke",
                 "https://d.newsweek.com/en/full/1517827/coconut-rice-bear.jpg?w=1600&h=1600&q=88&f=8b37e38c82ec050dda787e009f0ef2ef",
                 "https://compote.slate.com/images/8aedcaf8-0474-4644-b1b9-6a00220dc2dd.jpeg?width=780&height=520&rect=1560x1040&offset=0x0"};
+
+
         adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
-                Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                Random random = new Random();
-                final int index = random.nextInt(urls.length);
-                usersRef.document("Carmel").collection("Recipes")
-                        .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
-                executeTransaction(Objects.requireNonNull(recipe).getId(), notebookRef);
-                executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("Recipes"));
+                if (canIclick) {
+                    Recipe recipe = documentSnapshot.toObject(Recipe.class);
+                    Random random = new Random();
+                    final int index = random.nextInt(urls.length);
+                    usersRef.document("Carmel").collection("Recipes")
+                            .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
+                    executeTransaction(Objects.requireNonNull(recipe).getId(), notebookRef);
+                    executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("Recipes"));
+                }
             }
         });
     }
