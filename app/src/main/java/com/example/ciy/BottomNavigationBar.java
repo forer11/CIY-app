@@ -2,7 +2,6 @@ package com.example.ciy;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.os.Bundle;
@@ -12,6 +11,11 @@ import android.view.MenuItem;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+/**
+ * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
+ * HomeFragment, FavoritesFragment, and SearchFragment, and activate the corresponding fragment the
+ * user requested- by typing at the corresponding icon in the bottom navigation bar.
+ */
 public class BottomNavigationBar extends AppCompatActivity {
 
     private HomeFragment homeFragment;
@@ -22,7 +26,6 @@ public class BottomNavigationBar extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation_bar);
-
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
         if (savedInstanceState == null) {
@@ -50,15 +53,12 @@ public class BottomNavigationBar extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
-
         }
     }
 
     private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            Fragment selectedFragment = null;
             switch (menuItem.getItemId()) {
                 case R.id.nav_home:
                     displayHomeFragment();
@@ -79,7 +79,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         if (homeFragment.isAdded()) { // if the fragment is already in container
             fragmentTransaction.show(homeFragment);
         } else { // fragment needs to be added to frame container
-            fragmentTransaction.add(R.id.fragment_container, homeFragment, "Home Fragment");
+            fragmentTransaction.add(R.id.fragment_container, homeFragment);
         }
         // Hide Favorites fragment
         if (favoritesFragment.isAdded()) {
@@ -98,7 +98,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         if (favoritesFragment.isAdded()) { // if the fragment is already in container
             fragmentTransaction.show(favoritesFragment);
         } else { // fragment needs to be added to frame container
-            fragmentTransaction.add(R.id.fragment_container, favoritesFragment, "Favorites Fragment");
+            fragmentTransaction.add(R.id.fragment_container, favoritesFragment);
         }
         // Hide Favorites fragment
         if (homeFragment.isAdded()) {
@@ -117,7 +117,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         if (searchFragment.isAdded()) { // if the fragment is already in container
             fragmentTransaction.show(searchFragment);
         } else { // fragment needs to be added to frame container
-            fragmentTransaction.add(R.id.fragment_container, searchFragment, "Search Fragment");
+            fragmentTransaction.add(R.id.fragment_container, searchFragment);
         }
         // Hide Favorites fragment
         if (homeFragment.isAdded()) {
