@@ -1,7 +1,5 @@
 package com.example.ciy;
 
-import com.google.firebase.firestore.Exclude;
-
 import java.util.List;
 
 public class Recipe {

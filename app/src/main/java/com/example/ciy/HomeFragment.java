@@ -17,8 +17,11 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -27,9 +30,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.Random;
 
@@ -47,6 +52,10 @@ public class HomeFragment extends Fragment {
 
     private NoteAdapter adapter;
 
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+    private FirebaseUser user = firebaseAuth.getCurrentUser();
+
     private boolean canIclick = true;
 
     @Nullable
@@ -59,29 +68,48 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         canIclick = false;
-        setUpData();
+        //TODO fo this in login/signin
+        final DocumentReference userRef = usersRef.document(user.getUid());
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot == null || !documentSnapshot.exists()) {
+                    userRef.set(new HashMap<String, Object>(), SetOptions.merge());
+                }
+                setUpData();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                setUpData();
+            }
+        });
+
+        setUpRecyclerView();
+        adapter.startListening();
     }
 
     private void setUpData() {
-        usersRef.document("Carmel").collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        usersRef.document(user.getUid()).collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    usersRef.document("Carmel").collection("Recipes").document(documentSnapshot.getId()).delete();
+                    usersRef.document(user.getUid()).collection("Recipes").document(documentSnapshot.getId()).delete();
                 }
                 final ArrayList<Recipe> recipes = new ArrayList<>();
-                notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                notebookRef.orderBy("views", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             Recipe recipe = documentSnapshot.toObject(Recipe.class);
                             recipe.setId(documentSnapshot.getId());
                             recipes.add(recipe);
-                            usersRef.document("Carmel").collection("Recipes").add(recipe);
+                            usersRef.document(user.getUid()).collection("Recipes").add(recipe);
                         }
                         View b = getView().findViewById(R.id.test);
                         b.setVisibility(View.GONE);
                         canIclick = true;
+                        adapter.notifyDataSetChanged();
                     }
                 });
             }
@@ -94,25 +122,23 @@ public class HomeFragment extends Fragment {
                 startActivity(new Intent(getActivity(), NewNoteActivity.class));
             }
         });
-
-        setUpRecyclerView();
     }
 
 
     private void setUpRecyclerView() {
 
-        Query query = usersRef.document("Carmel").collection("Recipes").orderBy("views", Query.Direction.DESCENDING);
+        Query query = usersRef.document(user.getUid()).collection("Recipes").orderBy("views", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Recipe> options = new FirestoreRecyclerOptions.Builder<Recipe>()
                 .setQuery(query, Recipe.class)
                 .build();
 
         adapter = new NoteAdapter(options);
-
         RecyclerView recyclerView = Objects.requireNonNull(getView()).findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -143,10 +169,10 @@ public class HomeFragment extends Fragment {
                     Recipe recipe = documentSnapshot.toObject(Recipe.class);
                     Random random = new Random();
                     final int index = random.nextInt(urls.length);
-                    usersRef.document("Carmel").collection("Recipes")
+                    usersRef.document(user.getUid()).collection("Recipes")
                             .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
                     executeTransaction(Objects.requireNonNull(recipe).getId(), notebookRef);
-                    executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("Recipes"));
+                    executeTransaction(documentSnapshot.getId(), usersRef.document(user.getUid()).collection("Recipes"));
                 }
             }
         });
@@ -155,12 +181,17 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        adapter.startListening();
     }
+
 
     @Override
     public void onStop() {
         super.onStop();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
         adapter.stopListening();
     }
 
