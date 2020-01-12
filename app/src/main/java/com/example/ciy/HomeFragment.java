@@ -30,8 +30,6 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
 
@@ -43,27 +41,24 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
-import androidx.fragment.app.FragmentTransaction;
-
-
-import static com.firebase.ui.auth.AuthUI.TAG;
-
 
 public class HomeFragment extends Fragment {
-    private static final String NOTEBOOK_COLLECTION = "Notebook";
+    private static final String RECIPES = "Recipes";
     private static final String USERS = "Users";
     private static final String Ingredients = "Ingredients";
 
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-    private CollectionReference notebookRef = db.collection(NOTEBOOK_COLLECTION);
+    private CollectionReference recipesRef = db.collection(RECIPES);
 
     private CollectionReference usersRef = db.collection(USERS);
 
@@ -75,10 +70,9 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
 
-    private boolean canIclick = true;
+    private boolean canIClick = true;
     private String userId;
     private FloatingActionButton addNoteButton;
-    private RecipeFragment recipeFragment;
 
     @Nullable
     @Override
@@ -89,11 +83,12 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        canIclick = false;
+        canIClick = false;
         FirebaseUser user = firebaseAuth.getCurrentUser();
         if (user != null) {
             userId = user.getUid();
         } else {
+            System.out.println("yay");
             //TODO CHECK IF POSSIBLE
         }
         //TODO fo this in login/signin
@@ -116,42 +111,51 @@ public class HomeFragment extends Fragment {
         setUpRecyclerView();
         adapter.startListening();
         //updateIngredientsVector();
+        //updateIngredientsVector();
     }
 
-    public void updateAllRecepies() {
+    public void updateAllRecipes() {
         try {
-            JSONObject obj = new JSONObject(loadJSONFromAsset());
-            JSONArray m_jArry = obj.getJSONArray("formules");
-            ArrayList<HashMap<String, String>> formList = new ArrayList<HashMap<String, String>>();
-            HashMap<String, String> m_li;
+            JSONArray jsonRecipes = new JSONArray(loadJSONFromAsset());
 
-            for (int i = 0; i < m_jArry.length(); i++) {
-                JSONObject jo_inside = m_jArry.getJSONObject(i);
-                Log.d("Details-->", jo_inside.getString("formule"));
-                String formula_value = jo_inside.getString("formule");
-                String url_value = jo_inside.getString("url");
+            for (int i = 0; i < jsonRecipes.length(); i++) {
+                JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
+                String title = jsonRecipe.getString("name");
+                String description = jsonRecipe.getString("description");
+                String imageUrl = "https:"+jsonRecipe.getString("img_url");
+                Random random = new Random();
+                int views = random.nextInt(4000);
+                JSONArray jsonIngredients = jsonRecipe.getJSONArray("new ingredients");
+                List<String> ingredients = new ArrayList<>();
+                for (int j = 0; j < jsonIngredients.length(); j++) {
+                    ingredients.add(jsonIngredients.getString(j));
+                }
+                Recipe recipe = new Recipe(title, description, views, ingredients, imageUrl);
+                recipesRef.document(title).set((recipe), SetOptions.merge()).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Toast.makeText(getContext(), "failed", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
                 //Add your values in your `ArrayList` as below:
-                m_li = new HashMap<String, String>();
-                m_li.put("formule", formula_value);
-                m_li.put("url", url_value);
 
-                formList.add(m_li);
             }
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public String loadJSONFromAsset() {
+    private String loadJSONFromAsset() {
         String json = null;
         try {
-            InputStream is = getActivity().getAssets().open("DB.json");
+            InputStream is = Objects.requireNonNull(getActivity()).getAssets().open("DB.json");
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
             is.close();
-            json = new String(buffer, "UTF-8");
+            json = new String(buffer, StandardCharsets.UTF_8);
         } catch (IOException ex) {
             ex.printStackTrace();
             return null;
@@ -159,10 +163,10 @@ public class HomeFragment extends Fragment {
         return json;
     }
 
-    public void updateIngredientsVector() {
+    private void updateIngredientsVector() {
 
         try {
-            InputStream is = getContext().getAssets().open("ingredients.txt");
+            InputStream is = Objects.requireNonNull(getContext()).getAssets().open("ingredients.txt");
             StringBuilder text = new StringBuilder();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(is));
@@ -182,29 +186,26 @@ public class HomeFragment extends Fragment {
 
 
     private void setUpData() {
-        usersRef.document(userId).collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    usersRef.document(userId).collection("Recipes").document(documentSnapshot.getId()).delete();
-                }
-                final ArrayList<Recipe> recipes = new ArrayList<>();
-                notebookRef.orderBy("views", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                            recipe.setId(documentSnapshot.getId());
-                            recipes.add(recipe);
-                            usersRef.document(userId).collection("Recipes").add(recipe);
-                        }
-                        View b = Objects.requireNonNull(getView()).findViewById(R.id.test);
-                        b.setVisibility(View.GONE);
-                        canIclick = true;
-                    }
-                });
-            }
-        });
+//        usersRef.document(userId).collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+//                    usersRef.document(userId).collection("Recipes").document(documentSnapshot.getId()).delete();
+//                }
+//                final ArrayList<Recipe> recipes = new ArrayList<>();
+//                recipesRef.orderBy("views", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//                    @Override
+//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+//                            Recipe recipe = documentSnapshot.toObject(Recipe.class);
+//                            recipe.setId(documentSnapshot.getId());
+//                            recipes.add(recipe);
+//                            usersRef.document(userId).collection("Recipes").add(recipe);
+//                        }
+//                    }
+//                });
+//            }
+//        });
 
         addNoteButton = Objects.requireNonNull(getView()).findViewById(R.id.addButton);
         addNoteButton.setOnClickListener(new View.OnClickListener() {
@@ -218,7 +219,7 @@ public class HomeFragment extends Fragment {
 
     private void setUpRecyclerView() {
 
-        Query query = usersRef.document(userId).collection("Recipes").orderBy("views", Query.Direction.DESCENDING);
+        Query query = recipesRef.orderBy("views", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Recipe> options = new FirestoreRecyclerOptions.Builder<Recipe>()
                 .setQuery(query, Recipe.class)
@@ -229,6 +230,9 @@ public class HomeFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        View b = Objects.requireNonNull(getView()).findViewById(R.id.test);
+        b.setVisibility(View.GONE);
+        canIClick = true;
 
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
@@ -256,17 +260,14 @@ public class HomeFragment extends Fragment {
         adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
-                if (canIclick) {
+                if (canIClick) {
                     Recipe recipe = documentSnapshot.toObject(Recipe.class);
                     Random random = new Random();
                     final int index = random.nextInt(urls.length);
-                    usersRef.document(userId).collection("Recipes")
-                            .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
+                   recipesRef.document(documentSnapshot.getId()).update("imageUrl", urls[index]);
                     //update or create recipe fragment
-                    executeTransaction(recipe.getId(), notebookRef);
-                    executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("Recipes"));
-                    executeTransaction(Objects.requireNonNull(recipe).getId(), notebookRef);
-                    executeTransaction(documentSnapshot.getId(), usersRef.document(userId).collection("Recipes"));
+                    String id = documentSnapshot.getId();
+                    executeTransaction(documentSnapshot.getId(), recipesRef);
                     updatesRecipeFragment(recipe);
 
                 }
@@ -277,8 +278,8 @@ public class HomeFragment extends Fragment {
     @SuppressLint("RestrictedApi")
     private void updatesRecipeFragment(Recipe recipe) {
         addNoteButton.setVisibility(View.INVISIBLE);
-        recipeFragment = RecipeFragment.newInstance(recipe);
-        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe);
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.recipePlaceholder, recipeFragment);
         fragmentTransaction.addToBackStack(null);
@@ -301,8 +302,8 @@ public class HomeFragment extends Fragment {
     /**
      * * incrementing a parameter in fireStore with synchronization
      *
-     * @param id
-     * @param dataCollection
+     * @param id the recipe id
+     * @param dataCollection the data Collection in firestore
      */
     private void executeTransaction(final String id, final CollectionReference dataCollection) {
         db.runTransaction(new Transaction.Function<Long>() {
