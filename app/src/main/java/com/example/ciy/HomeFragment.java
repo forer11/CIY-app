@@ -1,5 +1,6 @@
 package com.example.ciy;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +12,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -46,6 +49,9 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
+import androidx.fragment.app.FragmentTransaction;
+
+
 import static com.firebase.ui.auth.AuthUI.TAG;
 
 
@@ -53,8 +59,6 @@ public class HomeFragment extends Fragment {
     private static final String NOTEBOOK_COLLECTION = "Notebook";
     private static final String USERS = "Users";
     private static final String Ingredients = "Ingredients";
-
-
 
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -73,6 +77,8 @@ public class HomeFragment extends Fragment {
 
     private boolean canIclick = true;
     private String userId;
+    private FloatingActionButton addNoteButton;
+    private RecipeFragment recipeFragment;
 
     @Nullable
     @Override
@@ -112,8 +118,7 @@ public class HomeFragment extends Fragment {
         //updateIngredientsVector();
     }
 
-    public void updateAllRecepies()
-    {
+    public void updateAllRecepies() {
         try {
             JSONObject obj = new JSONObject(loadJSONFromAsset());
             JSONArray m_jArry = obj.getJSONArray("formules");
@@ -154,7 +159,7 @@ public class HomeFragment extends Fragment {
         return json;
     }
 
-    public void updateIngredientsVector(){
+    public void updateIngredientsVector() {
 
         try {
             InputStream is = getContext().getAssets().open("ingredients.txt");
@@ -201,7 +206,7 @@ public class HomeFragment extends Fragment {
             }
         });
 
-        FloatingActionButton addNoteButton = Objects.requireNonNull(getView()).findViewById(R.id.addButton);
+        addNoteButton = Objects.requireNonNull(getView()).findViewById(R.id.addButton);
         addNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -257,12 +262,30 @@ public class HomeFragment extends Fragment {
                     final int index = random.nextInt(urls.length);
                     usersRef.document(userId).collection("Recipes")
                             .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
+                    //update or create recipe fragment
+                    executeTransaction(recipe.getId(), notebookRef);
+                    executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("Recipes"));
                     executeTransaction(Objects.requireNonNull(recipe).getId(), notebookRef);
                     executeTransaction(documentSnapshot.getId(), usersRef.document(userId).collection("Recipes"));
+                    updatesRecipeFragment(recipe);
+
                 }
             }
         });
     }
+
+    @SuppressLint("RestrictedApi")
+    private void updatesRecipeFragment(Recipe recipe) {
+        addNoteButton.setVisibility(View.INVISIBLE);
+        recipeFragment = RecipeFragment.newInstance(recipe);
+        FragmentManager fragmentManager = getActivity().getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.recipePlaceholder, recipeFragment);
+        fragmentTransaction.addToBackStack(null);
+        // Complete the changes added above
+        fragmentTransaction.commit();
+    }
+
 
     @Override
     public void onStart() {
