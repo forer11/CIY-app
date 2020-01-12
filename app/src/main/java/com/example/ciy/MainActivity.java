@@ -1,5 +1,6 @@
 package com.example.ciy;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -27,8 +29,7 @@ import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -51,6 +52,8 @@ public class MainActivity extends AppCompatActivity {
     private CollectionReference ingredientsRef = db.collection(Ingredients);
 
     private NoteAdapter adapter;
+    private RecipeFragment recipeFragment;
+    private FloatingActionButton addNoteButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        FloatingActionButton addNoteButton = findViewById(R.id.addButton);
+        addNoteButton = findViewById(R.id.addButton);
         addNoteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -154,12 +157,26 @@ public class MainActivity extends AppCompatActivity {
                 Recipe recipe = documentSnapshot.toObject(Recipe.class);
                 Random random = new Random();
                 final int index = random.nextInt(urls.length);
-                usersRef.document("Carmel").collection("Recipes")
-                        .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
+
+//                usersRef.document("Carmel").collection("Recipes")
+//                        .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
+                updatesRecipeFragment(recipe);
                 executeTransaction(recipe.getId(), notebookRef);
                 executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("Recipes"));
             }
         });
+    }
+
+    @SuppressLint("RestrictedApi")
+    private void updatesRecipeFragment(Recipe recipe) {
+        addNoteButton.setVisibility(View.INVISIBLE);
+        // Begin the transaction
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        // Replace the contents of the container with the new fragment
+        recipeFragment = RecipeFragment.newInstance(recipe);
+        ft.replace(R.id.recipePlaceholder, recipeFragment).addToBackStack(null);
+        // Complete the changes added above
+        ft.commit();
     }
 
     @Override
@@ -198,5 +215,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-
+    @SuppressLint("RestrictedApi")
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        if(getSupportFragmentManager().getBackStackEntryCount() == 0){
+            addNoteButton.setVisibility(View.VISIBLE);
+        }
+    }
 }

@@ -1,9 +1,7 @@
 package com.example.ciy;
 
-
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -17,7 +15,6 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -34,15 +31,18 @@ import java.util.Objects;
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
-
+/**
+ * This class represents the Search fragment, which allows the user to type ingredients he has at
+ * home, and get ingredient suggestions from our data base while doing so. The user can add as
+ * many ingredients as he wishes, and can edit them afterwards (i.e- delete them).
+ */
 public class SearchFragment extends Fragment {
-    private AutoCompleteTextView userInput;
-    private String[] languages = {"Shani ", "Carmel", "Lior", "Aviram", "Hagai", "Richi is the king"};
-    private ArrayList<String> ingredients = new ArrayList<>();
-    private TextView output;
-    private boolean firstIngredient = true;
     private static final String Ingredients = "Ingredients";
 
+    private AutoCompleteTextView userInput;
+    private ArrayList<String> ingredients = new ArrayList<>();
+    private TextView ingredientName;
+    private boolean firstIngredient = true;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference ingredientsRef = db.collection(Ingredients);
     private ArrayAdapter<String> adapter;
@@ -50,22 +50,24 @@ public class SearchFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_search, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        final List<String> options = new ArrayList<>();
+        final List<String> ingredientOptions = new ArrayList<>();
         ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots)
-                {
+                //we add all ingredients from our data base to 'ingredientOptions' list
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
-                    options.add(option);
+                    ingredientOptions.add(option);
                 }
-                adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()), android.R.layout.simple_list_item_1, options);
+                adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+                        android.R.layout.simple_list_item_1, ingredientOptions);
                 setUserInput();
             }
         });
@@ -76,59 +78,44 @@ public class SearchFragment extends Fragment {
         userInput.setAdapter(adapter);
         userInput.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
         userInput.setTextColor(Color.DKGRAY);
-        output = getView().findViewById(R.id.output);
-        TextView headline = getView().findViewById(R.id.header);
+        ingredientName = getView().findViewById(R.id.output);
         userInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             private String input;
-
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //get the input like for a normal EditText
                 input = userInput.getText().toString();
-                //update user entered ingredient in data and output his choice on screen
+                //update user entered ingredient in data and ingredientName his choice on screen
                 ingredients.add(input);
                 //clears search tab for next search
                 userInput.setText("");
-                //we want tu add a comma to output only after an ingredient != first
-                if (firstIngredient) {
-                    output.append(input);
-                    firstIngredient = false;
-                } else {
-                    output.append(", " + input);
 
-                }
-                output.setVisibility(View.VISIBLE);
+                //TODO - create a recycler view for new ingredient
+//                if (firstIngredient) {
+//                    ingredientName.append(input);
+//                    firstIngredient = false;
+//                } else {
+//                    ingredientName.append(", " + input);
+//                }
+//                ingredientName.setVisibility(View.VISIBLE);
             }
         });
+        blurIngredientsView();
+    }
 
-
+    private void blurIngredientsView() {
         float radius = 20f;
-
         View decorView = Objects.requireNonNull(getActivity()).getWindow().getDecorView();
-        //ViewGroup you want to start blur from. Choose root as close to BlurView in hierarchy as possible.
+        //ViewGroup we want to start blur from.
         ViewGroup rootView = (ViewGroup) decorView.findViewById(android.R.id.content);
-        //Set drawable to draw in the beginning of each blurred frame (Optional).
-        //Can be used in case your layout has a lot of transparent space and your content
-        //gets kinda lost after after blur is applied.
+        //Set drawable to draw in the beginning of each blurred frame.
         Drawable windowBackground = decorView.getBackground();
         BlurView blurView = decorView.findViewById(R.id.blurView);
-        blurView.setupWith(rootView)
-                .setFrameClearDrawable(windowBackground)
-                .setBlurAlgorithm(new RenderScriptBlur(getActivity()))
-                .setBlurRadius(radius)
+        blurView.setupWith(rootView).setFrameClearDrawable(windowBackground)
+                .setBlurAlgorithm(new RenderScriptBlur(getActivity())).setBlurRadius(radius)
                 .setHasFixedTransformationMatrix(false);
         ImageView background = getView().findViewById(R.id.background);
-        BlurImage.with(getActivity()).load(R.drawable.background_kitchen).intensity(5).Async(true).into(background);
+        BlurImage.with(getActivity()).load(R.drawable.background_kitchen).intensity(5).
+                Async(true).into(background);
     }
-
-
-    @RequiresApi(api = Build.VERSION_CODES.M) //TODO ???
-    @Override
-    public void onActivityCreated(Bundle savedInstanceState) {
-        super.onActivityCreated(savedInstanceState);
-    }
-
-
-
 }

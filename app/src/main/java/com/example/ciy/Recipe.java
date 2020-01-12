@@ -1,8 +1,12 @@
 package com.example.ciy;
 
+
+import com.google.firebase.firestore.Exclude;
+
+import java.io.Serializable;
 import java.util.List;
 
-public class Recipe {
+public class Recipe implements Serializable {
     private String id;
     private String title;
     private String description;
