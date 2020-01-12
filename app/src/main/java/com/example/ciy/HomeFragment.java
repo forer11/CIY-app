@@ -1,9 +1,7 @@
 package com.example.ciy;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -49,34 +47,42 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
 
-
+/**
+ * fragment representing our user home screen where he can see the top viewed recipes
+ */
 public class HomeFragment extends Fragment {
-    private static final String RECIPES = "Recipes";
-    private static final String USERS = "Users";
-    private static final String Ingredients = "Ingredients";
-
-
+    /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    /* reference to the firestore recipes collection */
+    private CollectionReference recipesRef = db.collection(SharedData.RECIPES);
+    /* reference to the firestore users collection */
+    private CollectionReference usersRef = db.collection(SharedData.USERS);
+    /* reference to the firestore global ingredients collection */
+    private CollectionReference ingredientsRef = db.collection(SharedData.Ingredients);
 
-    private CollectionReference recipesRef = db.collection(RECIPES);
-
-    private CollectionReference usersRef = db.collection(USERS);
-
-    private CollectionReference ingredientsRef = db.collection(Ingredients);
-
-
-    private NoteAdapter adapter;
-
+    /* adapter to the Firestore recipes recyclerView */
+    private RecipeAdapter recipeAdapter;
+    /* Firestore authentication reference */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-
+    /* boolean for when we can click on the recyclerView items (when we load the data) */
     private boolean canIClick = true;
-    private String userId;
+    // TODO DECIDE IF NEEDED
     private FloatingActionButton addNoteButton;
+
+    //TODO DELETE
+    final String[] urls = new String[]{"https://boygeniusreport.files.wordpress.com/2016/11/puppy-dog.jpg?quality=98&strip=all&w=782",
+            "https://images2.minutemediacdn.com/image/upload/c_crop,h_1350,w_2400,x_0,y_136/f_auto,q_auto,w_1100/v1576859350/shape/mentalfloss/610651-gettyimages-901452436.jpg",
+            "https://cdn.psychologytoday.com/sites/default/files/styles/article-inline-half/public/field_blog_entry_images/2018-02/vicious_dog_0.png?itok=nsghKOHs",
+            "https://scx2.b-cdn.net/gfx/news/hires/2019/wolfdog.jpg",
+            "https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1687,w_3000,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1575669519/191206-weill-dogs-in-politics-tease_ko5qke",
+            "https://d.newsweek.com/en/full/1517827/coconut-rice-bear.jpg?w=1600&h=1600&q=88&f=8b37e38c82ec050dda787e009f0ef2ef",
+            "https://compote.slate.com/images/8aedcaf8-0474-4644-b1b9-6a00220dc2dd.jpeg?width=780&height=520&rect=1560x1040&offset=0x0"};
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_home, container, false);
     }
 
@@ -84,36 +90,26 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         canIClick = false;
+
         FirebaseUser user = firebaseAuth.getCurrentUser();
+
+        String userId;
         if (user != null) {
             userId = user.getUid();
         } else {
-            System.out.println("yay");
-            //TODO CHECK IF POSSIBLE
+            userId = "guest";
         }
-        //TODO fo this in login/signin
-        final DocumentReference userRef = usersRef.document(userId);
-        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot == null || !documentSnapshot.exists()) {
-                    userRef.set(new HashMap<String, Object>(), SetOptions.merge());
-                }
-                setUpData();
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                setUpData();
-            }
-        });
-
         setUpRecyclerView();
-        adapter.startListening();
+        View b = Objects.requireNonNull(getView()).findViewById(R.id.test);
+        b.setVisibility(View.GONE);
+        canIClick = true;
+        setClickListeners();
+        recipeAdapter.startListening();
         //updateIngredientsVector();
         //updateIngredientsVector();
     }
 
+    // updates the recipes with the json file TODO delete before submission
     public void updateAllRecipes() {
         try {
             JSONArray jsonRecipes = new JSONArray(loadJSONFromAsset());
@@ -122,7 +118,7 @@ public class HomeFragment extends Fragment {
                 JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
                 String title = jsonRecipe.getString("name");
                 String description = jsonRecipe.getString("description");
-                String imageUrl = "https:"+jsonRecipe.getString("img_url");
+                String imageUrl = "https:" + jsonRecipe.getString("img_url");
                 Random random = new Random();
                 int views = random.nextInt(4000);
                 JSONArray jsonIngredients = jsonRecipe.getJSONArray("new ingredients");
@@ -146,6 +142,7 @@ public class HomeFragment extends Fragment {
             e.printStackTrace();
         }
     }
+    // load the json file TODO delete before submission
 
     private String loadJSONFromAsset() {
         String json = null;
@@ -163,6 +160,7 @@ public class HomeFragment extends Fragment {
         return json;
     }
 
+    // updates the ingredients vector by text file in assets TODO delete before submission
     private void updateIngredientsVector() {
 
         try {
@@ -184,7 +182,7 @@ public class HomeFragment extends Fragment {
 
     }
 
-
+    // important for the filtering process, TODO delete after filtering
     private void setUpData() {
 //        usersRef.document(userId).collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
 //            @Override
@@ -207,66 +205,60 @@ public class HomeFragment extends Fragment {
 //            }
 //        });
 
-        addNoteButton = Objects.requireNonNull(getView()).findViewById(R.id.addButton);
-        addNoteButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(getActivity(), NewNoteActivity.class));
-            }
-        });
+//        addNoteButton = Objects.requireNonNull(getView()).findViewById(R.id.addButton);
+//        addNoteButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                startActivity(new Intent(getActivity(), NewNoteActivity.class));
+//            }
+//        });
     }
 
-
+    /**
+     * set up the recyclerView configurations including the adapter and query.
+     */
     private void setUpRecyclerView() {
 
+        // sets the query we order the data in the recyclerView by
         Query query = recipesRef.orderBy("views", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Recipe> options = new FirestoreRecyclerOptions.Builder<Recipe>()
                 .setQuery(query, Recipe.class)
                 .build();
 
-        adapter = new NoteAdapter(options);
-        RecyclerView recyclerView = Objects.requireNonNull(getView()).findViewById(R.id.recyclerView);
+        recipeAdapter = new RecipeAdapter(options);
+        RecyclerView recyclerView = Objects.requireNonNull(getView())
+                .findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(adapter);
-        View b = Objects.requireNonNull(getView()).findViewById(R.id.test);
-        b.setVisibility(View.GONE);
-        canIClick = true;
-
+        recyclerView.setAdapter(recipeAdapter);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView
+                    .ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
                 return false;
             }
 
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                adapter.deleteItem(viewHolder.getAdapterPosition());
+                recipeAdapter.deleteItem(viewHolder.getAdapterPosition());
             }
         }).attachToRecyclerView(recyclerView);
-
-        final String[] urls = new String[]{"https://boygeniusreport.files.wordpress.com/2016/11/puppy-dog.jpg?quality=98&strip=all&w=782",
-                "https://images2.minutemediacdn.com/image/upload/c_crop,h_1350,w_2400,x_0,y_136/f_auto,q_auto,w_1100/v1576859350/shape/mentalfloss/610651-gettyimages-901452436.jpg",
-                "https://cdn.psychologytoday.com/sites/default/files/styles/article-inline-half/public/field_blog_entry_images/2018-02/vicious_dog_0.png?itok=nsghKOHs",
-                "https://scx2.b-cdn.net/gfx/news/hires/2019/wolfdog.jpg",
-                "https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1687,w_3000,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1575669519/191206-weill-dogs-in-politics-tease_ko5qke",
-                "https://d.newsweek.com/en/full/1517827/coconut-rice-bear.jpg?w=1600&h=1600&q=88&f=8b37e38c82ec050dda787e009f0ef2ef",
-                "https://compote.slate.com/images/8aedcaf8-0474-4644-b1b9-6a00220dc2dd.jpeg?width=780&height=520&rect=1560x1040&offset=0x0"};
+    }
 
 
-        adapter.setOnItemClickListener(new NoteAdapter.OnItemClickListener() {
+    private void setClickListeners() {
+        recipeAdapter.setOnItemClickListener(new RecipeAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
                 if (canIClick) {
                     Recipe recipe = documentSnapshot.toObject(Recipe.class);
                     Random random = new Random();
                     final int index = random.nextInt(urls.length);
-                   recipesRef.document(documentSnapshot.getId()).update("imageUrl", urls[index]);
+                    recipesRef.document(documentSnapshot.getId()).update("imageUrl", urls[index]);
                     //update or create recipe fragment
-                    String id = documentSnapshot.getId();
                     executeTransaction(documentSnapshot.getId(), recipesRef);
                     updatesRecipeFragment(recipe);
 
@@ -275,9 +267,9 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    @SuppressLint("RestrictedApi")
+    @SuppressLint("RestrictedApi") //TODO CARMEL
     private void updatesRecipeFragment(Recipe recipe) {
-        addNoteButton.setVisibility(View.INVISIBLE);
+//        addNoteButton.setVisibility(View.INVISIBLE);
         RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe);
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
@@ -287,22 +279,16 @@ public class HomeFragment extends Fragment {
         fragmentTransaction.commit();
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
     @Override
     public void onDestroy() {
         super.onDestroy();
-        adapter.stopListening();
+        recipeAdapter.stopListening();
     }
 
     /**
      * * incrementing a parameter in fireStore with synchronization
      *
-     * @param id the recipe id
+     * @param id             the recipe id
      * @param dataCollection the data Collection in firestore
      */
     private void executeTransaction(final String id, final CollectionReference dataCollection) {

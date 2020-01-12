@@ -16,9 +16,9 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 
-public class NoteAdapter extends FirestoreRecyclerAdapter<Recipe, NoteAdapter.NoteHolder> {
+public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapter.NoteHolder> {
     private OnItemClickListener listener;
-    public NoteAdapter(FirestoreRecyclerOptions<Recipe> options) {
+    public RecipeAdapter(FirestoreRecyclerOptions<Recipe> options) {
         super(options);
     }
 

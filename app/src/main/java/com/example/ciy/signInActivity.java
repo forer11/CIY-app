@@ -13,10 +13,19 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
+
+import java.util.HashMap;
 
 public class signInActivity extends BaseSignIn implements View.OnClickListener {
 
@@ -41,7 +50,7 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
         super.onStart();
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null){
+        if (currentUser != null) {
             Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
             startActivity(intent);
         }
@@ -87,7 +96,7 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "createUserWithEmail:success");
                             FirebaseUser user = mAuth.getCurrentUser();
-//                            updateUI(user);
+                            updateUI(user);
                             Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
                             startActivity(intent);
                         } else {
@@ -113,5 +122,26 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
         if (i == R.id.signIn) {
             createAccount();
         }
+    }
+
+    private void updateUI(FirebaseUser user) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference usersRef = db.collection(SharedData.USERS);
+
+        String userId = user.getUid();
+
+        final DocumentReference userRef = usersRef.document(userId);
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot == null || !documentSnapshot.exists()) {
+                    userRef.set(new HashMap<String, Object>(), SetOptions.merge());
+                }
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+            }
+        });
     }
 }
