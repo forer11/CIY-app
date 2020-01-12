@@ -2,7 +2,7 @@ package com.example.ciy;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Layout;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,15 +10,17 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -27,16 +29,32 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Random;
+
+import static com.firebase.ui.auth.AuthUI.TAG;
 
 
 public class HomeFragment extends Fragment {
     private static final String NOTEBOOK_COLLECTION = "Notebook";
     private static final String USERS = "Users";
+    private static final String Ingredients = "Ingredients";
+
+
 
 
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -45,9 +63,16 @@ public class HomeFragment extends Fragment {
 
     private CollectionReference usersRef = db.collection(USERS);
 
+    private CollectionReference ingredientsRef = db.collection(Ingredients);
+
+
     private NoteAdapter adapter;
 
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+
     private boolean canIclick = true;
+    private String userId;
 
     @Nullable
     @Override
@@ -59,27 +84,116 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         canIclick = false;
-        setUpData();
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        if (user != null) {
+            userId = user.getUid();
+        } else {
+            //TODO CHECK IF POSSIBLE
+        }
+        //TODO fo this in login/signin
+        final DocumentReference userRef = usersRef.document(userId);
+        userRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot == null || !documentSnapshot.exists()) {
+                    userRef.set(new HashMap<String, Object>(), SetOptions.merge());
+                }
+                setUpData();
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                setUpData();
+            }
+        });
+
+        setUpRecyclerView();
+        adapter.startListening();
+        //updateIngredientsVector();
     }
 
+    public void updateAllRecepies()
+    {
+        try {
+            JSONObject obj = new JSONObject(loadJSONFromAsset());
+            JSONArray m_jArry = obj.getJSONArray("formules");
+            ArrayList<HashMap<String, String>> formList = new ArrayList<HashMap<String, String>>();
+            HashMap<String, String> m_li;
+
+            for (int i = 0; i < m_jArry.length(); i++) {
+                JSONObject jo_inside = m_jArry.getJSONObject(i);
+                Log.d("Details-->", jo_inside.getString("formule"));
+                String formula_value = jo_inside.getString("formule");
+                String url_value = jo_inside.getString("url");
+
+                //Add your values in your `ArrayList` as below:
+                m_li = new HashMap<String, String>();
+                m_li.put("formule", formula_value);
+                m_li.put("url", url_value);
+
+                formList.add(m_li);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = getActivity().getAssets().open("DB.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
+    }
+
+    public void updateIngredientsVector(){
+
+        try {
+            InputStream is = getContext().getAssets().open("ingredients.txt");
+            StringBuilder text = new StringBuilder();
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(is));
+            String line;
+
+            while ((line = br.readLine()) != null) {
+                Map<String, Object> data = new HashMap<>();
+                data.put("ingredient", line);
+                ingredientsRef.document(line).set(data, SetOptions.merge());
+            }
+            br.close();
+        } catch (IOException e) {
+            //You'll need to add proper error handling here
+        }
+
+    }
+
+
     private void setUpData() {
-        usersRef.document("Carmel").collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        usersRef.document(userId).collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    usersRef.document("Carmel").collection("Recipes").document(documentSnapshot.getId()).delete();
+                    usersRef.document(userId).collection("Recipes").document(documentSnapshot.getId()).delete();
                 }
                 final ArrayList<Recipe> recipes = new ArrayList<>();
-                notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                notebookRef.orderBy("views", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             Recipe recipe = documentSnapshot.toObject(Recipe.class);
                             recipe.setId(documentSnapshot.getId());
                             recipes.add(recipe);
-                            usersRef.document("Carmel").collection("Recipes").add(recipe);
+                            usersRef.document(userId).collection("Recipes").add(recipe);
                         }
-                        View b = getView().findViewById(R.id.test);
+                        View b = Objects.requireNonNull(getView()).findViewById(R.id.test);
                         b.setVisibility(View.GONE);
                         canIclick = true;
                     }
@@ -94,25 +208,23 @@ public class HomeFragment extends Fragment {
                 startActivity(new Intent(getActivity(), NewNoteActivity.class));
             }
         });
-
-        setUpRecyclerView();
     }
 
 
     private void setUpRecyclerView() {
 
-        Query query = usersRef.document("Carmel").collection("Recipes").orderBy("views", Query.Direction.DESCENDING);
+        Query query = usersRef.document(userId).collection("Recipes").orderBy("views", Query.Direction.DESCENDING);
 
         FirestoreRecyclerOptions<Recipe> options = new FirestoreRecyclerOptions.Builder<Recipe>()
                 .setQuery(query, Recipe.class)
                 .build();
 
         adapter = new NoteAdapter(options);
-
         RecyclerView recyclerView = Objects.requireNonNull(getView()).findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -143,10 +255,10 @@ public class HomeFragment extends Fragment {
                     Recipe recipe = documentSnapshot.toObject(Recipe.class);
                     Random random = new Random();
                     final int index = random.nextInt(urls.length);
-                    usersRef.document("Carmel").collection("Recipes")
+                    usersRef.document(userId).collection("Recipes")
                             .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
                     executeTransaction(Objects.requireNonNull(recipe).getId(), notebookRef);
-                    executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("Recipes"));
+                    executeTransaction(documentSnapshot.getId(), usersRef.document(userId).collection("Recipes"));
                 }
             }
         });
@@ -155,19 +267,19 @@ public class HomeFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        adapter.startListening();
     }
 
     @Override
-    public void onStop() {
-        super.onStop();
+    public void onDestroy() {
+        super.onDestroy();
         adapter.stopListening();
     }
 
     /**
-     * incrementing a parameter in fireStore with synchronization
+     * * incrementing a parameter in fireStore with synchronization
      *
      * @param id
+     * @param dataCollection
      */
     private void executeTransaction(final String id, final CollectionReference dataCollection) {
         db.runTransaction(new Transaction.Function<Long>() {
