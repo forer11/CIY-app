@@ -1,6 +1,7 @@
 package com.example.ciy;
 
 
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +13,13 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 
+import com.jackandphantom.blurimage.BlurImage;
 import com.squareup.picasso.Picasso;
+
+import java.util.Objects;
+
+import eightbitlab.com.blurview.BlurView;
+import eightbitlab.com.blurview.RenderScriptBlur;
 
 
 public class RecipeFragment extends Fragment  {
@@ -72,4 +79,5 @@ public class RecipeFragment extends Fragment  {
         rec.setArguments(args);
         return rec;
     }
+
 }

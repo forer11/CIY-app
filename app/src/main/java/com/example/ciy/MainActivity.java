@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
     private CollectionReference ingredientsRef = db.collection(Ingredients);
 
     private NoteAdapter adapter;
-    private RecipeFragment recipeFragment;
     private FloatingActionButton addNoteButton;
 
     @Override
@@ -157,27 +156,12 @@ public class MainActivity extends AppCompatActivity {
                 Recipe recipe = documentSnapshot.toObject(Recipe.class);
                 Random random = new Random();
                 final int index = random.nextInt(urls.length);
-
-//                usersRef.document("Carmel").collection("Recipes")
-//                        .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
-                updatesRecipeFragment(recipe);
-                executeTransaction(recipe.getId(), notebookRef);
-                executeTransaction(documentSnapshot.getId(), usersRef.document("Carmel").collection("Recipes"));
+                usersRef.document("Carmel").collection("Recipes")
+                        .document(documentSnapshot.getId()).update("imageUrl", urls[index]);
             }
         });
     }
 
-    @SuppressLint("RestrictedApi")
-    private void updatesRecipeFragment(Recipe recipe) {
-        addNoteButton.setVisibility(View.INVISIBLE);
-        // Begin the transaction
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        // Replace the contents of the container with the new fragment
-        recipeFragment = RecipeFragment.newInstance(recipe);
-        ft.replace(R.id.recipePlaceholder, recipeFragment).addToBackStack(null);
-        // Complete the changes added above
-        ft.commit();
-    }
 
     @Override
     protected void onStart() {
