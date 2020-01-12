@@ -12,8 +12,11 @@ import android.widget.NumberPicker;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -23,6 +26,10 @@ public class NewNoteActivity extends AppCompatActivity {
     private EditText editTextTitle;
     private EditText editTextDescription;
     private NumberPicker numberPickerViews;
+
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+    private FirebaseUser user = firebaseAuth.getCurrentUser();
 
     private static final String NOTEBOOK_COLLECTION = "Notebook";
     private static final String USERS = "Users";
@@ -78,21 +85,21 @@ public class NewNoteActivity extends AppCompatActivity {
             return;
         }
 
-        notebookRef.add(new Recipe(title, description, views, Arrays.asList("yay","carrot"), imageUrl));
+        notebookRef.add(new Recipe(title, description, views, Arrays.asList("yay", "carrot"), imageUrl));
         Toast.makeText(this, "Recipe added", Toast.LENGTH_SHORT).show();
 
-        usersRef.document("Carmel").collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+        usersRef.document(user.getUid()).collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    usersRef.document("Carmel").collection("Recipes").document(documentSnapshot.getId()).delete();
+                    usersRef.document(user.getUid()).collection("Recipes").document(documentSnapshot.getId()).delete();
                 }
-                notebookRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                notebookRef.orderBy("views", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                     @Override
                     public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
                         for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                             Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                            usersRef.document("Carmel").collection("Recipes").add(recipe);
+                            usersRef.document(user.getUid()).collection("Recipes").add(recipe);
                         }
                     }
                 });
