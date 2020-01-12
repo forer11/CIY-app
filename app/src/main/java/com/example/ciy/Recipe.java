@@ -1,37 +1,41 @@
 package com.example.ciy;
 
 
-import com.google.firebase.firestore.Exclude;
-
 import java.io.Serializable;
 import java.util.List;
 
+/**
+ * class representing a recipe
+ */
 public class Recipe implements Serializable {
+    /* the id (sometimes we will need the global collection id)*/
     private String id;
+    /* the recipe title */
     private String title;
+    /* the recipe description */
     private String description;
+    /* the recipe image url (if image missing default image will show)*/
     private String imageUrl;
+    /* the recipe view counter */
     private int views;
+    /* list of all the ingredients needed to make that recipe */
     private List<String> ingredients;
 
     public Recipe() {
         // public no-arg constructor necessary for Firestore
     }
 
-    public Recipe(String title, String description, int views) {
-        this.title = title;
-        this.description = description;
-        this.views = views;
-    }
 
-    public Recipe(String title, String description, int views, String imageUrl) {
-        this.title = title;
-        this.description = description;
-        this.views = views;
-        this.imageUrl = imageUrl;
-    }
-
-    public Recipe(String title, String description, int views, List<String> ingredients, String imageUrl) {
+    /**
+     * constructor for or recipe
+     *
+     * @param title       the title
+     * @param description the description
+     * @param views       the ciew count
+     * @param ingredients ingredients needed
+     * @param imageUrl    the image url
+     */
+    Recipe(String title, String description, int views, List<String> ingredients, String imageUrl) {
         this.title = title;
         this.description = description;
         this.views = views;
@@ -39,15 +43,14 @@ public class Recipe implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    public String getTitle() {
+    String getTitle() {
         return title;
     }
 
-    public String getDescription() {
+    String getDescription() {
         return description;
     }
 
-    // meaning  that id won't be in the document.
     public String getId() {
         return id;
     }
@@ -56,23 +59,16 @@ public class Recipe implements Serializable {
         this.id = id;
     }
 
-    public int getViews() {
+    int getViews() {
         return views;
     }
 
-    public void setViews(int views) {
-        this.views = views;
-    }
 
-    public List<String> getIngredients() {
+    List<String> getIngredients() {
         return ingredients;
     }
 
-    public String getImageUrl() {
+    String getImageUrl() {
         return imageUrl;
-    }
-
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
     }
 }

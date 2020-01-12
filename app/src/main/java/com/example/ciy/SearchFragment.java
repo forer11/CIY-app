@@ -37,14 +37,13 @@ import eightbitlab.com.blurview.RenderScriptBlur;
  * many ingredients as he wishes, and can edit them afterwards (i.e- delete them).
  */
 public class SearchFragment extends Fragment {
-    private static final String Ingredients = "Ingredients";
 
     private AutoCompleteTextView userInput;
     private ArrayList<String> ingredients = new ArrayList<>();
     private TextView ingredientName;
     private boolean firstIngredient = true;
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference ingredientsRef = db.collection(Ingredients);
+    private CollectionReference ingredientsRef = db.collection(SharedData.Ingredients);
     private ArrayAdapter<String> adapter;
 
 

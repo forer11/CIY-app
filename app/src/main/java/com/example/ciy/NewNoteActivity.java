@@ -31,13 +31,9 @@ public class NewNoteActivity extends AppCompatActivity {
 
     private FirebaseUser user = firebaseAuth.getCurrentUser();
 
-    private static final String NOTEBOOK_COLLECTION = "Notebook";
-    private static final String USERS = "Users";
-
-
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference notebookRef = db.collection(NOTEBOOK_COLLECTION);
-    private CollectionReference usersRef = db.collection(USERS);
+    private CollectionReference notebookRef = db.collection(SharedData.RECIPES);
+    private CollectionReference usersRef = db.collection(SharedData.USERS);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
