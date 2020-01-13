@@ -72,6 +72,7 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
         // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if (currentUser != null) {
+            Toast.makeText(loginActivity.this, "User = " + currentUser.getEmail(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
             startActivity(intent);
         }
@@ -82,6 +83,7 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
         if (!validateForm(mailInput, passwordInput)) {
             return;
         }
+
         showProgressBar();
 
         mAuth.signInWithEmailAndPassword(email, password)
@@ -177,7 +179,9 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
 
     private void firebaseAuthWithGoogle(GoogleSignInAccount acct) {
         Log.d(TAG, "firebaseAuthWithGoogle:" + acct.getId());
+
         showProgressBar();
+
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
         mAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
