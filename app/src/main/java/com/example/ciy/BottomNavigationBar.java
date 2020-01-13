@@ -2,14 +2,19 @@ package com.example.ciy;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentTransaction;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 
 /**
  * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
@@ -41,15 +46,20 @@ public class BottomNavigationBar extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        menuInflater.inflate(R.menu.new_note_menu, menu);
+        menuInflater.inflate(R.menu.tool_bar_buttons, menu);
+        menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.shani));
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.save_note:
-                //saveNote();
+            case R.id.icon_status: //TODO SHANI DIALOG
+                Toast.makeText(this, "logOut", Toast.LENGTH_SHORT).show();
+                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                firebaseAuth.signOut();
+                Intent intent = new Intent(getBaseContext(), loginActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
