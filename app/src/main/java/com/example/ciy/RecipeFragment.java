@@ -101,7 +101,7 @@ public class RecipeFragment extends Fragment  {
 
 
     // Creates a new fragment given an int and title
-    public static RecipeFragment newInstance(Recipe recipe) {
+    static RecipeFragment newInstance(Recipe recipe) {
         RecipeFragment rec = new RecipeFragment();
         Bundle args = new Bundle();
         args.putSerializable("recipe", recipe);
