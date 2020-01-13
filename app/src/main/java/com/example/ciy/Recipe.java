@@ -43,11 +43,11 @@ public class Recipe implements Serializable {
         this.imageUrl = imageUrl;
     }
 
-    String getTitle() {
+    public String getTitle() {
         return title;
     }
 
-    String getDescription() {
+    public String getDescription() {
         return description;
     }
 
@@ -59,16 +59,16 @@ public class Recipe implements Serializable {
         this.id = id;
     }
 
-    int getViews() {
+    public int getViews() {
         return views;
     }
 
 
-    List<String> getIngredients() {
+    public List<String> getIngredients() {
         return ingredients;
     }
 
-    String getImageUrl() {
+    public String getImageUrl() {
         return imageUrl;
     }
 }
