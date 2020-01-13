@@ -41,7 +41,9 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         mAuth = FirebaseAuth.getInstance();
+        setProgressBar(R.id.progressBar);
         findViewById(R.id.signIn).setOnClickListener(this);
+        showProgressBar();
     }
 
 
@@ -81,12 +83,12 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
         String email = mailInput.getText().toString();
         String password = passwordInput.getText().toString();
 
+        showProgressBar();
+
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm(mailInput, passwordInput)) {
             return;
         }
-
-        showProgressBar();
 
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
