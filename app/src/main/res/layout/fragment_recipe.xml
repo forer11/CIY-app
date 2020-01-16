@@ -13,32 +13,24 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+
         <ImageView
             android:id="@+id/recipeImage"
             android:layout_width="match_parent"
             android:layout_height="300dp"
-            android:scaleType="centerCrop"
-            android:layout_alignParentTop="true" />
-
-        <TextView
-            android:id="@+id/recipeViews"
-            android:layout_marginEnd="10dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/alegreya_sc"
-            android:text="recipeViews"
-            android:textAllCaps="false"
-            android:textColorHighlight="@color/mediumPurple"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            android:layout_below="@id/recipeImage"
-            android:layout_alignParentEnd="true"/>
+            android:layout_alignParentTop="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginTop="0dp"
+            android:layout_marginEnd="0dp"
+            android:scaleType="centerCrop" />
 
         <TextView
             android:id="@+id/recipeTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="@font/abril_fatface"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
             android:text="recipeTitle"
             android:textAllCaps="true"
             android:shadowColor="@color/black"
@@ -48,7 +40,7 @@
             android:textColor="#FFFFFF"
             android:textSize="30sp"
             android:textStyle="bold"
-           android:layout_below="@id/recipeViews" />
+           android:layout_below="@id/recipeImage" />
 
 
 
@@ -85,6 +77,12 @@
             android:text="titleRecipeDescription"
             android:textAlignment="textStart"
             android:textAllCaps="false"
+            android:shadowColor="@color/black"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
             android:layout_below="@id/recipeIngredients"
             android:textColor="#FFFFFF"
             android:textSize="35sp"
@@ -97,10 +95,40 @@
             android:fontFamily="@font/alegreya_sc"
             android:textAlignment="textStart"
             android:textColor="#FFFFFF"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="10dp"
             android:text="recipeDescription"
             android:textSize="25sp"
            android:layout_below="@id/titleRecipeDescription" />
 
+        <TextView
+            android:id="@+id/prepareTime"
+            android:layout_width="260dp"
+            android:layout_height="35dp"
+            android:layout_below="@id/recipeImage"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="145dp"
+            android:layout_marginTop="-25dp"
+            android:layout_marginEnd="6dp"
+            android:background="@drawable/ingredients_shape"
+            android:fontFamily="@font/alegreya_sc"
+            android:textAlignment="center"
+            android:textAllCaps="false"
+            android:textColor="#615E5E"
+            android:textSize="18sp" />
+
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/button_like"
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:layout_alignBottom="@+id/recipeImage"
+            android:layout_alignParentStart="true"
+            android:layout_marginTop="20dp"
+            android:clickable="true"
+            app:lottie_fileName="like_heart_animation.json"
+            app:lottie_scale="0.15" />
 
     </RelativeLayout>
 

@@ -1,9 +1,8 @@
 package com.example.ciy;
 
 
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
+import com.airbnb.lottie.LottieAnimationView;
+
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.style.RelativeSizeSpan;
@@ -23,8 +22,8 @@ import com.squareup.picasso.Picasso;
 
 public class RecipeFragment extends Fragment {
 
-
     private Recipe recipe;
+    private LottieAnimationView button_like;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -45,16 +44,22 @@ public class RecipeFragment extends Fragment {
         super.onActivityCreated(savedInstanceState);
         // Setup any handles to view objects here
 //        blurBackBackground();
+        button_like = getView().findViewById(R.id.button_like);
+        button_like.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                button_like.setProgress(0);
+                button_like.playAnimation();
+            } // TODO- update to favorites
+        });
         TextView recipeTitle = getView().findViewById(R.id.recipeTitle);
         ImageView recipeImage = getView().findViewById(R.id.recipeImage);
-
         TextView ingredients = getView().findViewById(R.id.recipeIngredients);
-
+        TextView prepareTime = getView().findViewById(R.id.prepareTime);
         TextView titleRecipeDescription = getView().findViewById(R.id.titleRecipeDescription);
         TextView recipeDescription = getView().findViewById(R.id.recipeDescription);
-        TextView recipeViews = getView().findViewById(R.id.recipeViews);
-        initializeUi(recipeTitle, recipeImage, ingredients,
-                titleRecipeDescription, recipeDescription, recipeViews);
+        initializeUi(recipeTitle, recipeImage, prepareTime, ingredients,
+                titleRecipeDescription, recipeDescription, button_like);
 //        BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
 //        navBar.setVisibility(View.INVISIBLE);
 
@@ -84,9 +89,9 @@ public class RecipeFragment extends Fragment {
 //    }
 
     private void initializeUi(TextView recipeTitle, ImageView recipeImage,
-                              TextView titleRecipeIngredients,
+                              TextView prepareTime, TextView titleRecipeIngredients,
                               TextView titleRecipeDescription, TextView recipeDescription,
-                              TextView recipeViews) {
+                              LottieAnimationView button_like) {
         recipeTitle.setText(recipe.getTitle());
         try {
             Picasso.get()
@@ -94,16 +99,18 @@ public class RecipeFragment extends Fragment {
         } catch (Exception e) {
             recipeImage.setImageResource(R.drawable.icon_dog_chef);
         }
+        //TODO - update to real time from db
+        prepareTime.setText("\uD83D\uDD52 30 " + "min  " + "\uD83D\uDC69\u200D\uD83C\uDF73 "
+                + recipe.getViews() + " views");
         String ingredients = "Ingredients\n";
         for (String ingredient : recipe.getIngredients()) {
-            ingredients+="\u2022 " + ingredient + "\n";
+            ingredients += "\u2022 " + ingredient + "\n";
         }
-        SpannableString ingredientsText=  new SpannableString(ingredients);
-        ingredientsText.setSpan(new RelativeSizeSpan(1.5f), 0,11, 0);// set size
+        SpannableString ingredientsText = new SpannableString(ingredients);
+        ingredientsText.setSpan(new RelativeSizeSpan(1.5f), 0, 11, 0);// set size
         titleRecipeIngredients.setText(ingredientsText);
         titleRecipeDescription.setText("Description");
         recipeDescription.setText(" " + recipe.getDescription());
-        recipeViews.setText("Views: " + recipe.getViews());
     }
 
 
