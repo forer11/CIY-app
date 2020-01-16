@@ -3,6 +3,8 @@ package com.example.ciy;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
@@ -14,7 +16,8 @@ import android.widget.Toast;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
+
+import java.util.List;
 
 /**
  * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
@@ -23,9 +26,13 @@ import com.google.firebase.auth.FirebaseUser;
  */
 public class BottomNavigationBar extends AppCompatActivity {
 
+    private static final String HOME = "Home";
+    private static final String FAVORITES = "Favorites";
+    private static final String SEARCH = "Search";
     private HomeFragment homeFragment;
     private FavoritesFragment favoritesFragment;
     private SearchFragment searchFragment;
+    private String lastPushed = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +46,13 @@ public class BottomNavigationBar extends AppCompatActivity {
             searchFragment = new SearchFragment();
         }
         //setting home fragment as default
-        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                homeFragment).commit();
+        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+        transaction
+                .add(R.id.fragment_container, homeFragment, HOME)
+                .setBreadCrumbShortTitle(HOME);
+        transaction.commit();
+        lastPushed = HOME;
+
     }
 
     @Override
@@ -54,8 +66,8 @@ public class BottomNavigationBar extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.icon_status: //TODO SHANI DIALOG
-                Toast.makeText(this, "logOut", Toast.LENGTH_SHORT).show();
+            case R.id.icon_status:
+                Toast.makeText(this, "logOut", Toast.LENGTH_SHORT).show(); //TODO SHANI
                 FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                 firebaseAuth.signOut();
                 Intent intent = new Intent(getBaseContext(), loginActivity.class);
@@ -71,73 +83,63 @@ public class BottomNavigationBar extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.nav_home:
-                    displayHomeFragment();
+                    showFragment(homeFragment, HOME, lastPushed);
+                    lastPushed = HOME;
                     break;
                 case R.id.nav_favorites:
-                    displayFavoritesFragment();
+                    showFragment(favoritesFragment, FAVORITES, lastPushed);
+                    lastPushed = FAVORITES;
                     break;
                 case R.id.nav_search:
-                    displaySearchFragment();
+                    showFragment(searchFragment, SEARCH, lastPushed);
+                    lastPushed = SEARCH;
                     break;
             }
             return true;
         }
     };
 
-    protected void displayHomeFragment() {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (homeFragment.isAdded()) { // if the fragment is already in container
-            fragmentTransaction.show(homeFragment);
-        } else { // fragment needs to be added to frame container
-            fragmentTransaction.add(R.id.fragment_container, homeFragment);
+    private void showFragment(Fragment fragment, String tag, String lastTag) {
+
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction transaction = fragmentManager.beginTransaction();
+
+        if (lastTag != null) {
+            Fragment lastFragment = fragmentManager.findFragmentByTag(lastTag);
+            if (lastFragment != null) {
+                transaction.hide(lastFragment);
+            }
         }
-        // Hide Favorites fragment
-        if (favoritesFragment.isAdded()) {
-            fragmentTransaction.hide(favoritesFragment);
+
+        if (fragment.isAdded()) {
+            transaction.show(fragment);
+        } else {
+            transaction.add(R.id.fragment_container, fragment, tag).setBreadCrumbShortTitle(tag);
         }
-        // Hide Search fragment
-        if (searchFragment.isAdded()) {
-            fragmentTransaction.hide(searchFragment);
-        }
-        // Commit changes
-        fragmentTransaction.commit();
+        transaction.commit();
     }
 
-    protected void displayFavoritesFragment() {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (favoritesFragment.isAdded()) { // if the fragment is already in container
-            fragmentTransaction.show(favoritesFragment);
-        } else { // fragment needs to be added to frame container
-            fragmentTransaction.add(R.id.fragment_container, favoritesFragment);
+    @Override
+    public void onBackPressed() {
+        Fragment currentFragment = getCurrentFragment();
+        if (currentFragment.getTag().equals(HOME)) {
+            finish();
         }
-        // Hide Favorites fragment
-        if (homeFragment.isAdded()) {
-            fragmentTransaction.hide(homeFragment);
-        }
-        // Hide Search fragment
-        if (searchFragment.isAdded()) {
-            fragmentTransaction.hide(searchFragment);
-        }
-        // Commit changes
-        fragmentTransaction.commit();
+        showFragment(homeFragment, HOME, lastPushed);
+        lastPushed = HOME;
+        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+
     }
 
-    protected void displaySearchFragment() {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        if (searchFragment.isAdded()) { // if the fragment is already in container
-            fragmentTransaction.show(searchFragment);
-        } else { // fragment needs to be added to frame container
-            fragmentTransaction.add(R.id.fragment_container, searchFragment);
+    private Fragment getCurrentFragment() {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        List<Fragment> fragments = fragmentManager.getFragments();
+        for (Fragment fragment : fragments) {
+            if (fragment != null && fragment.isVisible())
+                return fragment;
         }
-        // Hide Favorites fragment
-        if (homeFragment.isAdded()) {
-            fragmentTransaction.hide(homeFragment);
-        }
-        // Hide Search fragment
-        if (favoritesFragment.isAdded()) {
-            fragmentTransaction.hide(favoritesFragment);
-        }
-        // Commit changes
-        fragmentTransaction.commit();
+        return null;
     }
+
 }
