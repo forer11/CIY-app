@@ -34,6 +34,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     private SearchFragment searchFragment;
     private String lastPushed = null;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -121,9 +122,8 @@ public class BottomNavigationBar extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Fragment currentFragment = getCurrentFragment();
-        if (currentFragment.getTag().equals(HOME)) {
-            finish();
+        if (lastPushed.equals(HOME)) {
+            super.onBackPressed();
         }
         showFragment(homeFragment, HOME, lastPushed);
         lastPushed = HOME;
@@ -131,15 +131,4 @@ public class BottomNavigationBar extends AppCompatActivity {
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
     }
-
-    private Fragment getCurrentFragment() {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        List<Fragment> fragments = fragmentManager.getFragments();
-        for (Fragment fragment : fragments) {
-            if (fragment != null && fragment.isVisible())
-                return fragment;
-        }
-        return null;
-    }
-
 }
