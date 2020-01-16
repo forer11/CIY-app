@@ -16,7 +16,6 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.squareup.picasso.Picasso;
 
 
@@ -24,6 +23,7 @@ public class RecipeFragment extends Fragment {
 
     private Recipe recipe;
     private LottieAnimationView button_like;
+    private boolean userPressedLike = true;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -46,11 +46,21 @@ public class RecipeFragment extends Fragment {
 //        blurBackBackground();
         button_like = getView().findViewById(R.id.button_like);
         button_like.setOnClickListener(new View.OnClickListener() {
+
+
             @Override
             public void onClick(View view) {
-                button_like.setProgress(0);
-                button_like.playAnimation();
-            } // TODO- update to favorites
+                if (userPressedLike) {
+                    button_like.setProgress(0);
+                    button_like.playAnimation();
+                    userPressedLike = false;
+                    // TODO- add recipe to favorites
+                } else { //user pressed unlike
+                    button_like.setProgress(0);
+                    userPressedLike = true;
+                    //TODO - remove recipe from favorites
+                }
+            }
         });
         TextView recipeTitle = getView().findViewById(R.id.recipeTitle);
         ImageView recipeImage = getView().findViewById(R.id.recipeImage);

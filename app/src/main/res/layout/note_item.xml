@@ -6,7 +6,7 @@
     android:layout_marginStart="8dp"
     android:layout_marginTop="8dp"
     android:layout_marginEnd="8dp"
-    app:cardBackgroundColor="#59F3B4B4">
+    app:cardCornerRadius="15dp">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -49,7 +49,8 @@
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:layout_alignParentTop="true"
-            android:src="@drawable/icon_dog_chef" />
+            android:src="@drawable/icon_dog_chef"
+          />
 
     </RelativeLayout>
 
