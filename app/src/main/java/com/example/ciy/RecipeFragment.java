@@ -54,8 +54,8 @@ public class RecipeFragment extends Fragment  {
         TextView recipeViews= getView().findViewById(R.id.recipeViews);
         initializeUi(recipeTitle, recipeImage, titleRecipeIngredients, recipeIngredients,
                 titleRecipeDescription, recipeDescription, recipeViews);
-        BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
-        navBar.setVisibility(View.INVISIBLE);
+        //BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
+        //navBar.setVisibility(View.INVISIBLE);
 
     }
 
