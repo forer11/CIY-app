@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,9 +21,7 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.squareup.picasso.Picasso;
 
 
-
-
-public class RecipeFragment extends Fragment  {
+public class RecipeFragment extends Fragment {
 
 
     private Recipe recipe;
@@ -41,31 +41,32 @@ public class RecipeFragment extends Fragment  {
         return inflater.inflate(R.layout.fragment_recipe, container, false);
     }
 
-    public void onActivityCreated (Bundle savedInstanceState) {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Setup any handles to view objects here
-        blurBackBackground();
+//        blurBackBackground();
         TextView recipeTitle = getView().findViewById(R.id.recipeTitle);
         ImageView recipeImage = getView().findViewById(R.id.recipeImage);
-        TextView titleRecipeIngredients= getView().findViewById(R.id.titleRecipeIngredients);
-        TextView recipeIngredients= getView().findViewById(R.id.recipeIngredients);
-        TextView titleRecipeDescription= getView().findViewById(R.id.titleRecipeDescription);
-        TextView recipeDescription= getView().findViewById(R.id.recipeDescription);
-        TextView recipeViews= getView().findViewById(R.id.recipeViews);
-        initializeUi(recipeTitle, recipeImage, titleRecipeIngredients, recipeIngredients,
+
+        TextView ingredients = getView().findViewById(R.id.recipeIngredients);
+
+        TextView titleRecipeDescription = getView().findViewById(R.id.titleRecipeDescription);
+        TextView recipeDescription = getView().findViewById(R.id.recipeDescription);
+        TextView recipeViews = getView().findViewById(R.id.recipeViews);
+        initializeUi(recipeTitle, recipeImage, ingredients,
                 titleRecipeDescription, recipeDescription, recipeViews);
-        BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
-        navBar.setVisibility(View.INVISIBLE);
+//        BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
+//        navBar.setVisibility(View.INVISIBLE);
 
     }
 
-    private void blurBackBackground() {
-        Bitmap icon = BitmapFactory.decodeResource(getContext().getResources(),
-                R.drawable.n);
-        Bitmap blurredBitmap = BlurBuilder.blur( getActivity(), icon );
-
-        getView().setBackground( new BitmapDrawable( getResources(), blurredBitmap ) );
-        //TODO decide
+//    private void blurBackBackground() {
+//        Bitmap icon = BitmapFactory.decodeResource(getContext().getResources(),
+//                R.drawable.n);
+//        Bitmap blurredBitmap = BlurBuilder.blur( getActivity(), icon );
+//
+//        getView().setBackground( new BitmapDrawable( getResources(), blurredBitmap ) );
+    //TODO decide
 //        final Activity activity = getActivity();
 //        final View content = activity.findViewById(android.R.id.content).getRootView();
 //        if (content.getWidth() > 0) {
@@ -80,9 +81,12 @@ public class RecipeFragment extends Fragment  {
 //                }
 //            });
 //        }
-    }
+//    }
 
-    private void initializeUi(TextView recipeTitle, ImageView recipeImage, TextView titleRecipeIngredients, TextView recipeIngredients, TextView titleRecipeDescription, TextView recipeDescription, TextView recipeViews) {
+    private void initializeUi(TextView recipeTitle, ImageView recipeImage,
+                              TextView titleRecipeIngredients,
+                              TextView titleRecipeDescription, TextView recipeDescription,
+                              TextView recipeViews) {
         recipeTitle.setText(recipe.getTitle());
         try {
             Picasso.get()
@@ -90,13 +94,16 @@ public class RecipeFragment extends Fragment  {
         } catch (Exception e) {
             recipeImage.setImageResource(R.drawable.icon_dog_chef);
         }
-        titleRecipeIngredients.setText("Ingredients");
-        for (String ingredient:recipe.getIngredients()) {
-            recipeIngredients.append("* "+ingredient+"\n");
+        String ingredients = "Ingredients\n";
+        for (String ingredient : recipe.getIngredients()) {
+            ingredients+="\u2022 " + ingredient + "\n";
         }
+        SpannableString ingredientsText=  new SpannableString(ingredients);
+        ingredientsText.setSpan(new RelativeSizeSpan(1.5f), 0,11, 0);// set size
+        titleRecipeIngredients.setText(ingredientsText);
         titleRecipeDescription.setText("Description");
-        recipeDescription.setText(" "+recipe.getDescription());
-        recipeViews.setText("Views: "+recipe.getViews());
+        recipeDescription.setText(" " + recipe.getDescription());
+        recipeViews.setText("Views: " + recipe.getViews());
     }
 
 
