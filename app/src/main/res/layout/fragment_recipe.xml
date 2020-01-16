@@ -4,67 +4,77 @@
     android:id="@+id/scrollView"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#E0DEDE"
     android:clickable="true"
     android:focusable="true">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <ImageView
+            android:id="@+id/recipeImage"
+            android:layout_width="match_parent"
+            android:layout_height="300dp"
+            android:scaleType="centerCrop"
+            android:layout_alignParentTop="true" />
+
+        <TextView
+            android:id="@+id/recipeViews"
+            android:layout_marginEnd="10dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/alegreya_sc"
+            android:text="recipeViews"
+            android:textAllCaps="false"
+            android:textColorHighlight="@color/mediumPurple"
+            android:textColor="#FFFFFF"
+            android:textSize="20sp"
+            android:layout_below="@id/recipeImage"
+            android:layout_alignParentEnd="true"/>
 
         <TextView
             android:id="@+id/recipeTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="140dp"
             android:fontFamily="@font/abril_fatface"
-            android:text="TextView"
-            android:textAlignment="textStart"
+            android:text="recipeTitle"
             android:textAllCaps="true"
+            android:shadowColor="@color/black"
+            android:shadowDx="1"
+            android:shadowDy="1"
+            android:shadowRadius="2"
             android:textColor="#FFFFFF"
-            android:textSize="45sp"
+            android:textSize="30sp"
             android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/recipeViews"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipeImage" />
+           android:layout_below="@id/recipeViews" />
 
-        <ImageView
-            android:id="@+id/recipeImage"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:srcCompat="@tools:sample/avatars[0]" />
 
-        <TextView
-            android:id="@+id/titleRecipeIngredients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/alegreya_sc"
-            android:text="TextView"
-            android:textAlignment="textStart"
-            android:textAllCaps="false"
-            android:layout_marginTop="15dp"
-            android:textColor="#FFFFFF"
-            android:textSize="35sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipeTitle" />
 
         <TextView
             android:id="@+id/recipeIngredients"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/recipeTitle"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentEnd="true"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/ingredients_shape"
             android:fontFamily="@font/alegreya_sc"
+            android:paddingStart="20dp"
+            android:paddingTop="10dp"
+            android:paddingEnd="20dp"
+            android:paddingBottom="10dp"
+            android:text="titleRecipeIngredients"
             android:textAlignment="textStart"
-            android:textColor="#FFFFFF"
-            android:textSize="25sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleRecipeIngredients" />
+            android:textAllCaps="false"
+            android:textColor="#000000"
+            android:textSize="20sp" />
+
+
 
         <TextView
             android:id="@+id/titleRecipeDescription"
@@ -72,14 +82,13 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="20dp"
             android:fontFamily="@font/alegreya_sc"
-            android:text="TextView"
+            android:text="titleRecipeDescription"
             android:textAlignment="textStart"
             android:textAllCaps="false"
+            android:layout_below="@id/recipeIngredients"
             android:textColor="#FFFFFF"
             android:textSize="35sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipeIngredients" />
+             />
 
         <TextView
             android:id="@+id/recipeDescription"
@@ -88,26 +97,12 @@
             android:fontFamily="@font/alegreya_sc"
             android:textAlignment="textStart"
             android:textColor="#FFFFFF"
+            android:text="recipeDescription"
             android:textSize="25sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/titleRecipeDescription" />
-
-        <TextView
-            android:id="@+id/recipeViews"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginRight="10dp"
-            android:fontFamily="@font/alegreya_sc"
-            android:text="TextView"
-            android:textAllCaps="false"
-            android:textColor="#FFFFFF"
-            android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/recipeImage" />
+           android:layout_below="@id/titleRecipeDescription" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+    </RelativeLayout>
 
 
 </ScrollView>
