@@ -56,20 +56,20 @@ public class SearchFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
-        final List<String> ingredientOptions = new ArrayList<>();
-        ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                //we add all ingredients from our data base to 'ingredientOptions' list
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
-                    ingredientOptions.add(option);
-                }
-                adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
-                        android.R.layout.simple_list_item_1, ingredientOptions);
-                setUserInput();
-            }
-        });
+//        final List<String> ingredientOptions = new ArrayList<>();
+//        ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+//            @Override
+//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+//                //we add all ingredients from our data base to 'ingredientOptions' list
+//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+//                    String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
+//                    ingredientOptions.add(option);
+//                }
+//                adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+//                        android.R.layout.simple_list_item_1, ingredientOptions);
+//                setUserInput();
+//            }
+//        });
     }
 
     private void setUserInput() {

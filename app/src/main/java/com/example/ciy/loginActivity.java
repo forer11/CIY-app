@@ -75,6 +75,7 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
             Toast.makeText(loginActivity.this, "User = " + currentUser.getEmail(), Toast.LENGTH_SHORT).show();
             Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
             startActivity(intent);
+            finish();
         }
     }
 
