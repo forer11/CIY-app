@@ -7,9 +7,10 @@
     </style>
 
     <style name="BaseAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="colorPrimary">#9585D5C4</item>
-        <item name="colorPrimaryDark">#9585D5C4</item>
-        <item name="colorAccent">#9585D5C4</item>
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/white</item>
+        <item name="colorAccent">@color/white</item>
+        <item name="titleTextColor">@color/dark_red</item>
     </style>
 
 </resources>
