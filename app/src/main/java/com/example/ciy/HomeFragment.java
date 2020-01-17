@@ -51,6 +51,7 @@ import java.util.Random;
  * fragment representing our user home screen where he can see the top viewed recipes
  */
 public class HomeFragment extends Fragment {
+    private static int SPLASH_TIMEOUT = 4000;
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     /* reference to the firestore recipes collection */
