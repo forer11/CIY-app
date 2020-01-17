@@ -13,4 +13,12 @@
         <item name="titleTextColor">@color/dark_red</item>
     </style>
 
+    <style name="AppTheme.NoTitle">
+        <item name="android:windowNoTitle">true</item>
+
+        <!-- Support library compatibility -->
+        <item name="windowActionBar">false</item>
+    </style>
+
+
 </resources>
