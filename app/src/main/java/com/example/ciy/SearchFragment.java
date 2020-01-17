@@ -34,7 +34,7 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 /**
  * This class represents the Search fragment, which allows the user to type ingredients he has at
  * home, and get ingredient suggestions from our data base while doing so. The user can add as
- * many ingredients as he wishes, and can edit them afterwards (i.e- delete them).
+ * many ingredients as he wishes, and can edit them afterwards (splashscreen_background.e- delete them).
  */
 public class SearchFragment extends Fragment {
 
