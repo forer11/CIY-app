@@ -30,4 +30,21 @@
         app:itemTextColor="@drawable/selector_bottombar_text"
         app:menu="@menu/bottom_navigation" />
 
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?android:attr/windowBackground"
+        android:elevation="4dp"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="  CIY"
+        app:layout_scrollFlags="scroll|enterAlways">
+    </androidx.appcompat.widget.Toolbar>
+
+    <ImageView
+        android:id="@+id/profile_photo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+    </ImageView>
+
 </RelativeLayout>
