@@ -116,7 +116,7 @@ public class BottomNavigationBar extends AppCompatActivity {
                 }
                 catch (Exception e)
                 {
-                    menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.default_profile));
+                    menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
                 }
             }
         }
