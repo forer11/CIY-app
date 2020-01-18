@@ -8,37 +8,27 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    android:background="@drawable/splashscreen_background"
     tools:context=".SplashActivity" >
 
+    <ImageView
+        android:id="@+id/chef_woman_logo"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_centerInParent="true"
+        app:srcCompat="@drawable/chef_woman_logo" />
+
     <TextView
-        android:id="@+id/appNameText"
+        android:id="@+id/app_name_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentStart="true"
+        android:layout_below="@+id/chef_woman_logo"
         android:layout_alignParentBottom="true"
-        android:layout_marginStart="25dp"
-        android:layout_marginBottom="31dp"
-        android:fontFamily="@font/holtwood_one_sc"
-        android:shadowColor="#333333"
-        android:shadowDx="-1"
-        android:shadowDy="-1"
-        android:shadowRadius="2"
-        android:text="@string/app_name"
-        android:textAlignment="center"
-        android:textColor="#C62828"
-        android:textSize="65sp"
+        android:layout_centerInParent="true"
+        android:layout_marginTop="0dp"
+        android:layout_marginBottom="270dp"
+        android:fontFamily="@font/biorhyme"
+        android:text="Cook It Yourself"
+        android:textColor="#000000"
+        android:textSize="8sp"
         android:textStyle="bold" />
-
-    <ImageView
-        android:id="@+id/chef"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="70dp"
-        android:rotation="15"
-        app:srcCompat="@drawable/chef2" />
-
-
 </RelativeLayout>

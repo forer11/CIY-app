@@ -3,7 +3,11 @@
     <array name="preloaded_fonts" translatable="false">
         <item>@font/abril_fatface</item>
         <item>@font/alegreya_sc</item>
+        <item>@font/biorhyme</item>
+        <item>@font/cherry_swash</item>
+        <item>@font/cinzel_decorative_bold</item>
         <item>@font/faster_one</item>
         <item>@font/holtwood_one_sc</item>
+        <item>@font/vast_shadow</item>
     </array>
 </resources>
