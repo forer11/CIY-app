@@ -5,18 +5,23 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
+import androidx.core.graphics.drawable.RoundedBitmapDrawable;
+import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -26,10 +31,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.firebase.ui.auth.data.model.Resource;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.BufferedInputStream;
 import java.io.IOException;
@@ -91,7 +98,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.tool_bar_buttons,menu);
 
         //get the image of the user
@@ -105,19 +112,7 @@ public class BottomNavigationBar extends AppCompatActivity {
             }
             else
             {
-                try
-                {
-                Picasso.get()
-                .load(uri)
-                .fit()
-                .centerCrop()
-                .into((ImageView)findViewById(R.id.profile_photo));
-                menu.getItem(0).setIcon(((ImageView) findViewById(R.id.profile_photo)).getDrawable());
-                }
-                catch (Exception e)
-                {
-                    menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
-                }
+               setProfileImage(menu,uri);
             }
         }
         return true;
@@ -127,33 +122,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.icon_status:
-
-                int res_id = item.getItemId();
-
-                AlertDialog.Builder mBuilder = new AlertDialog.Builder(BottomNavigationBar.this);
-
-                mBuilder.setTitle("Hi you");
-                mBuilder.setMessage("Wer'e sorry to see you go");
-                mBuilder.setCancelable(false)
-                        .setPositiveButton("sign out", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                Toast.makeText(BottomNavigationBar.this, "logOut", Toast.LENGTH_SHORT).show(); //TODO SHANI
-                                FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                                firebaseAuth.signOut();
-                                Intent intent = new Intent(getBaseContext(), loginActivity.class);
-                                startActivity(intent);
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                            }
-                        });
-                final AlertDialog alertdialog = mBuilder.create();
-                alertdialog.show();
-
-                alertdialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
-
-                return true;
+                return showSignOutDialog();
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -211,6 +180,69 @@ public class BottomNavigationBar extends AppCompatActivity {
         BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
         bottomNavigationView.setSelectedItemId(R.id.nav_home);
 
+    }
+
+    /***
+     * show the sign out dialog on screen
+     */
+    private boolean showSignOutDialog()
+    {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(BottomNavigationBar.this);
+
+        mBuilder.setTitle("Hi you");
+        mBuilder.setMessage("Wer'e sorry to see you go");
+        mBuilder.setCancelable(false)
+                .setPositiveButton("sign out", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        Toast.makeText(BottomNavigationBar.this, "logOut", Toast.LENGTH_SHORT).show(); //TODO SHANI
+                        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+                        firebaseAuth.signOut();
+                        Intent intent = new Intent(getBaseContext(), loginActivity.class);
+                        startActivity(intent);
+                    }
+                })
+                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                    }
+                });
+
+        final AlertDialog alertdialog = mBuilder.create();
+        alertdialog.show();
+        alertdialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
+
+        return true;
+    }
+
+    /***
+     * get menu resource and url for user profile photo, and shows the image on the menu
+     * @param menu the menu bar object of the app or activity
+     * @param uri the url for the user's profile photo
+     */
+    private void setProfileImage(final Menu menu,Uri uri)
+    {
+        //create a new target to be used with picasso
+        final Target mTarget = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
+                Log.d("DEBUG", "onBitmapLoaded");
+                RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(getResources(),bitmap);
+                rounded.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()));
+                rounded.setBounds(0,0,5,5);
+                menu.getItem(0).setIcon(rounded);
+            }
+
+            @Override
+            public void onBitmapFailed(Exception e,Drawable drawable) {
+                Log.d("DEBUG", "onBitmapFailed");
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable drawable) {
+                Log.d("DEBUG", "onPrepareLoad");
+            }
+        };
+        // set the image to be presented on the menu bar
+        Picasso.get().load(uri).into(mTarget);
     }
 
 }
