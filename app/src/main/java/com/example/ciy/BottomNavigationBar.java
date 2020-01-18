@@ -1,5 +1,18 @@
 package com.example.ciy;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Bundle;
+import android.util.Log;
+import android.view.Gravity;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.widget.Toast;
+
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
@@ -11,39 +24,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.content.res.Resources;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.os.Bundle;
-import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.firebase.ui.auth.data.model.Resource;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
-
-import java.io.BufferedInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-import java.util.List;
 
 /**
  * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
@@ -59,28 +44,15 @@ public class BottomNavigationBar extends AppCompatActivity {
     private FavoritesFragment favoritesFragment;
     private SearchFragment searchFragment;
     private String lastPushed = null;
-    private FirebaseAuth mAuth;
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation_bar);
-
-        // define the bottom navigation bar to be used in the activity
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
-        bottomNav.setOnNavigationItemSelectedListener(navListener);
-
-        // define the toolbar to be used in the activity
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        Drawable logo = ContextCompat.getDrawable(this, R.drawable.toolbar_logo);
-        Bitmap bitmap = ((BitmapDrawable) logo).getBitmap();
-        // Scale it to 50 x 50
-        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80, true));
-        // Set your new, scaled drawable "d"
-        toolbar.setLogo(d);
+        // set bottom and top bars
+        setBars();
 
         if (savedInstanceState == null) {
             homeFragment = new HomeFragment();
@@ -97,22 +69,36 @@ public class BottomNavigationBar extends AppCompatActivity {
 
     }
 
+    private void setBars() {
+        // define the bottom navigation bar to be used in the activity
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        // define the toolbar to be used in the activity
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
+        Drawable logo = ContextCompat.getDrawable(this, R.drawable.toolbar_logo);
+        Bitmap bitmap = ((BitmapDrawable) logo).getBitmap();
+        // Scale it to 50 x 50
+        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80, true));
+        // Set your new, scaled drawable "d"
+        toolbar.setLogo(d);
+    }
+
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
-        getMenuInflater().inflate(R.menu.tool_bar_buttons,menu);
+        getMenuInflater().inflate(R.menu.tool_bar_buttons, menu);
 
         //get the image of the user
-        mAuth = FirebaseAuth.getInstance();
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             Uri uri = currentUser.getPhotoUrl();
-            if ( uri == null ) // user not sign in from google, so default profile picture defined
+            if (uri == null) // user not sign in from google, so default profile picture defined
             {
                 menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
-            }
-            else
-            {
-               setProfileImage(menu,uri);
+            } else {
+                setProfileImage(menu, uri);
             }
         }
         return true;
@@ -170,28 +156,15 @@ public class BottomNavigationBar extends AppCompatActivity {
         transaction.commit();
     }
 
-    @Override
-    public void onBackPressed() {
-        if (lastPushed.equals(HOME)) {
-            super.onBackPressed();
-        }
-        showFragment(homeFragment, HOME, lastPushed);
-        lastPushed = HOME;
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setSelectedItemId(R.id.nav_home);
-
-    }
-
     /***
      * show the sign out dialog on screen
      */
-    private boolean showSignOutDialog()
-    {
+    private boolean showSignOutDialog() {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(BottomNavigationBar.this);
 
         mBuilder.setTitle("Hi you");
         mBuilder.setMessage("Wer'e sorry to see you go");
-        mBuilder.setCancelable(false)
+        mBuilder.setCancelable(true)
                 .setPositiveButton("sign out", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Toast.makeText(BottomNavigationBar.this, "logOut", Toast.LENGTH_SHORT).show(); //TODO SHANI
@@ -218,21 +191,20 @@ public class BottomNavigationBar extends AppCompatActivity {
      * @param menu the menu bar object of the app or activity
      * @param uri the url for the user's profile photo
      */
-    private void setProfileImage(final Menu menu,Uri uri)
-    {
+    private void setProfileImage(final Menu menu, Uri uri) {
         //create a new target to be used with picasso
         final Target mTarget = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
                 Log.d("DEBUG", "onBitmapLoaded");
-                RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(getResources(),bitmap);
+                RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
                 rounded.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()));
-                rounded.setBounds(0,0,5,5);
+                rounded.setBounds(0, 0, 5, 5);
                 menu.getItem(0).setIcon(rounded);
             }
 
             @Override
-            public void onBitmapFailed(Exception e,Drawable drawable) {
+            public void onBitmapFailed(Exception e, Drawable drawable) {
                 Log.d("DEBUG", "onBitmapFailed");
             }
 
@@ -243,6 +215,19 @@ public class BottomNavigationBar extends AppCompatActivity {
         };
         // set the image to be presented on the menu bar
         Picasso.get().load(uri).into(mTarget);
+    }
+
+    @Override
+    public void onBackPressed() {
+//        if (lastPushed.equals(HOME)) { //TODO Lior, need to change logic, maybe implementing a stack
+//            super.onBackPressed();
+//        }
+//        showFragment(homeFragment, HOME, lastPushed);
+//        lastPushed = HOME;
+//        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+//        bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        super.onBackPressed();
+
     }
 
 }
