@@ -16,20 +16,43 @@ import android.widget.TextView;
 import androidx.fragment.app.Fragment;
 
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
+
+import java.util.HashMap;
+import java.util.Map;
 
 
 public class RecipeFragment extends Fragment {
 
     private Recipe recipe;
     private LottieAnimationView button_like;
-    private boolean userPressedLike = true;
+    private boolean userPressedLike;
+
+    /* the firestore database instance */
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    /* reference to the firestore users collection */
+    private CollectionReference usersRef = db.collection(SharedData.USERS);
+
+    private CollectionReference favoritesRef;
+
+    /* Firestore authentication reference */
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         // Get back arguments
         recipe = (Recipe) getArguments().getSerializable("recipe");
+        userPressedLike = getArguments().getBoolean("userPressedLike");
+        FirebaseUser user = firebaseAuth.getCurrentUser();
+        favoritesRef = usersRef.document(user.getUid()).collection(SharedData.Favorites);
     }
 
     // The onCreateView method is called when Fragment should create its View object hierarchy,
@@ -45,19 +68,27 @@ public class RecipeFragment extends Fragment {
         // Setup any handles to view objects here
 //        blurBackBackground();
         button_like = getView().findViewById(R.id.button_like);
+        if (userPressedLike) {
+            button_like.setProgress(1);
+        }
+
         button_like.setOnClickListener(new View.OnClickListener() {
 
 
             @Override
             public void onClick(View view) {
-                if (userPressedLike) {
+                if (!userPressedLike) {
                     button_like.setProgress(0);
                     button_like.playAnimation();
-                    userPressedLike = false;
+                    userPressedLike = true;
+                    Map<String, Object> newFavoriteRecipe = new HashMap<>();
+                    newFavoriteRecipe.put(recipe.getTitle(), recipe.getId());
+                    favoritesRef.document(recipe.getId()).set(newFavoriteRecipe, SetOptions.merge());
                     // TODO- add recipe to favorites
                 } else { //user pressed unlike
                     button_like.setProgress(0);
-                    userPressedLike = true;
+                    userPressedLike = false;
+                    favoritesRef.document(recipe.getId()).delete();
                     //TODO - remove recipe from favorites
                 }
             }
@@ -125,12 +156,20 @@ public class RecipeFragment extends Fragment {
 
 
     // Creates a new fragment given an int and title
-    static RecipeFragment newInstance(Recipe recipe) {
+    static RecipeFragment newInstance(Recipe recipe, boolean userPressedLike) {
         RecipeFragment rec = new RecipeFragment();
         Bundle args = new Bundle();
         args.putSerializable("recipe", recipe);
+        args.putBoolean("userPressedLike", userPressedLike);
         rec.setArguments(args);
         return rec;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        // only using this fragment with BottomNavigationBar
+        BottomNavigationBar activity = (BottomNavigationBar) getActivity();
+        activity.updateClickable(SharedData.HOME_CLICKABLE);
+    }
 }
