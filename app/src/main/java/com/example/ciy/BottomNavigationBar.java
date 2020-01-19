@@ -172,7 +172,7 @@ public class BottomNavigationBar extends AppCompatActivity {
                         Toast.makeText(BottomNavigationBar.this, "logOut", Toast.LENGTH_SHORT).show(); //TODO SHANI
                         FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
                         firebaseAuth.signOut();
-                        Intent intent = new Intent(getBaseContext(), loginActivity.class);
+                        Intent intent = new Intent(getBaseContext(), LoginActivity.class);
                         startActivity(intent);
                     }
                 })

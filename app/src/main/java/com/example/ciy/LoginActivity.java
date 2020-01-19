@@ -2,10 +2,8 @@ package com.example.ciy;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
@@ -34,14 +32,14 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 
-public class loginActivity extends BaseSignIn implements View.OnClickListener {
+public class LoginActivity extends BaseSignIn implements View.OnClickListener {
     private static final String TAG_1 = "EmailPassword";
     private static final String TAG = "GoogleActivity";
 
     private EditText mailInput;
     private EditText passwordInput;
 
-    private FirebaseAuth mAuth;
+    private FirebaseAuth firebaseAuth;
 
     private GoogleSignInClient mGoogleSignInClient;
     private static final int RC_SIGN_IN = 9001;
@@ -49,7 +47,7 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
         setContentView(R.layout.activity_login);
         setProgressBar(R.id.progressBar);
         findViewById(R.id.signInGoogleButton).setOnClickListener(this);
@@ -63,20 +61,12 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
         mGoogleSignInClient = GoogleSignIn.getClient(this, gso);
 
         // Initialize Firebase Auth
-        mAuth = FirebaseAuth.getInstance();
+        firebaseAuth = FirebaseAuth.getInstance();
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Toast.makeText(loginActivity.this, "User = " + currentUser.getEmail(), Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
-            startActivity(intent);
-            finish();
-        }
     }
 
     private void signIn(String email, String password) {
@@ -87,22 +77,22 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
 
         showProgressBar();
 
-        mAuth.signInWithEmailAndPassword(email, password)
+        firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG_1, "signInWithEmail:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
                             updateUI(user);
-                            Toast.makeText(loginActivity.this, "login succeeded", Toast.LENGTH_SHORT).show();
+                            Toast.makeText(LoginActivity.this, "login succeeded", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
                             startActivity(intent);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG_1, "signInWithEmail:failure", task.getException());
-                            Toast.makeText(loginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
 //                            updateUI(null);       // TODO
                         }
@@ -184,14 +174,14 @@ public class loginActivity extends BaseSignIn implements View.OnClickListener {
         showProgressBar();
 
         AuthCredential credential = GoogleAuthProvider.getCredential(acct.getIdToken(), null);
-        mAuth.signInWithCredential(credential)
+        firebaseAuth.signInWithCredential(credential)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             // Sign in success, update UI with the signed-in user's information
                             Log.d(TAG, "signInWithCredential:success");
-                            FirebaseUser user = mAuth.getCurrentUser();
+                            FirebaseUser user = firebaseAuth.getCurrentUser();
                             updateUI(user);
                             Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
                             startActivity(intent);

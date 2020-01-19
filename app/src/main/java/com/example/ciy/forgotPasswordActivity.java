@@ -42,7 +42,7 @@ public class forgotPasswordActivity extends BaseSignIn {
                             Log.d(TAG, "Email sent.");
                             Toast.makeText(forgotPasswordActivity.this, "Email sent",
                                     Toast.LENGTH_SHORT).show();
-                            Intent intent = new Intent(getBaseContext(), loginActivity.class);
+                            Intent intent = new Intent(getBaseContext(), LoginActivity.class);
                             startActivity(intent);
                         } else {
                             Toast.makeText(forgotPasswordActivity.this,
