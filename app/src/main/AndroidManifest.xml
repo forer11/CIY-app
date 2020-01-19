@@ -23,7 +23,7 @@
         </activity>
         <activity android:name=".signInActivity" />
         <activity
-            android:name=".loginActivity"
+            android:name=".LoginActivity"
             android:launchMode="singleTop">
 
         </activity>
