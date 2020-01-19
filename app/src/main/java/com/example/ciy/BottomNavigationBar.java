@@ -46,6 +46,8 @@ public class BottomNavigationBar extends AppCompatActivity {
     private String lastPushed = null;
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
+    private int restoreClickable = SharedData.DEFAULT;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -119,7 +121,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch (menuItem.getItemId()) {
-                case R.id.nav_home:
+                case R.id.nav_home: //TODO LIOR, IF PRESSED INSIDE HOME, SCROLL TO TOP
                     showFragment(homeFragment, HOME, lastPushed);
                     lastPushed = HOME;
                     break;
@@ -227,6 +229,17 @@ public class BottomNavigationBar extends AppCompatActivity {
 //        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
 //        bottomNavigationView.setSelectedItemId(R.id.nav_home);
         super.onBackPressed();
+    }
+
+    void updateClickable(int fragment) {
+        switch (fragment) {
+            case SharedData.HOME_CLICKABLE:
+                homeFragment.enableClickables();
+
+            default:
+
+        }
+
 
     }
 
