@@ -104,7 +104,7 @@ public class HomeFragment extends Fragment {
         setClickListeners();
         recipeAdapter.startListening();
         //updateIngredientsVector();
-        updateAllRecipes();
+//        updateAllRecipes();
     }
 
     // updates the recipes with the json file TODO delete before submission
