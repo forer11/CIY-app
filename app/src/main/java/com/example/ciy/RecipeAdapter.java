@@ -18,6 +18,10 @@ import com.squareup.picasso.Picasso;
 
 public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapter.NoteHolder> {
     private OnItemClickListener listener;
+
+    public boolean isClickable = true;
+
+
     public RecipeAdapter(FirestoreRecyclerOptions<Recipe> options) {
         super(options);
     }
@@ -26,7 +30,7 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
     protected void onBindViewHolder(NoteHolder noteHolder, int i, Recipe recipe) {
         noteHolder.textViewTitle.setText(recipe.getTitle());
         noteHolder.textViewDescription.setText(recipe.getDescription());
-        noteHolder.textViewViews.setText(String.valueOf(recipe.getViews())+" Views");
+        noteHolder.textViewViews.setText(String.valueOf(recipe.getViews()) + " Views");
         try {
             Picasso.get()
                     .load(recipe.getImageUrl())
@@ -68,9 +72,11 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    int position = getAdapterPosition();
-                    if (position != RecyclerView.NO_POSITION && listener != null) {
-                        listener.OnItemClick(getSnapshots().getSnapshot(position), position);
+                    if (isClickable) {
+                        int position = getAdapterPosition();
+                        if (position != RecyclerView.NO_POSITION && listener != null) {
+                            listener.OnItemClick(getSnapshots().getSnapshot(position), position);
+                        }
                     }
 
                 }

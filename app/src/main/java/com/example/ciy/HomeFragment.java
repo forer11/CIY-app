@@ -67,7 +67,6 @@ public class HomeFragment extends Fragment {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
     /* boolean for when we can click on the recyclerView items (when we load the data) */
-    private boolean canIClick = true;
     // TODO DECIDE IF NEEDED
     private FloatingActionButton addNoteButton;
 
@@ -79,6 +78,7 @@ public class HomeFragment extends Fragment {
             "https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1687,w_3000,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1575669519/191206-weill-dogs-in-politics-tease_ko5qke",
             "https://d.newsweek.com/en/full/1517827/coconut-rice-bear.jpg?w=1600&h=1600&q=88&f=8b37e38c82ec050dda787e009f0ef2ef",
             "https://compote.slate.com/images/8aedcaf8-0474-4644-b1b9-6a00220dc2dd.jpeg?width=780&height=520&rect=1560x1040&offset=0x0"};
+    private FirebaseUser user;
 
     @Nullable
     @Override
@@ -90,9 +90,7 @@ public class HomeFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        canIClick = false;
-
-        FirebaseUser user = firebaseAuth.getCurrentUser();
+        user = firebaseAuth.getCurrentUser();
 
         String userId;
         if (user != null) {
@@ -103,11 +101,10 @@ public class HomeFragment extends Fragment {
         setUpRecyclerView();
         View b = Objects.requireNonNull(getView()).findViewById(R.id.test);
         b.setVisibility(View.GONE);
-        canIClick = true;
         setClickListeners();
         recipeAdapter.startListening();
         //updateIngredientsVector();
-        //updateAllRecipes();
+        updateAllRecipes();
     }
 
     // updates the recipes with the json file TODO delete before submission
@@ -128,6 +125,7 @@ public class HomeFragment extends Fragment {
                     ingredients.add(jsonIngredients.getString(j));
                 }
                 Recipe recipe = new Recipe(title, description, views, ingredients, imageUrl);
+                recipe.setId(title);
                 recipesRef.document(title).set((recipe), SetOptions.merge()).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -254,25 +252,49 @@ public class HomeFragment extends Fragment {
         recipeAdapter.setOnItemClickListener(new RecipeAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
-                if (canIClick) {
-                    Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                    //doggy related keep for now
+                recipeAdapter.isClickable = false;
+                final Recipe recipe = documentSnapshot.toObject(Recipe.class);
+                //doggy related, keep it for now
 //                    Random random = new Random();
 //                    final int index = random.nextInt(urls.length);
 //                    recipesRef.document(documentSnapshot.getId()).update("imageUrl", urls[index]);
-                    //update or create recipe fragment
-                    executeTransaction(documentSnapshot.getId(), recipesRef);
-                    updatesRecipeFragment(recipe);
+                //update or create recipe fragment
+                executeTransaction(documentSnapshot.getId(), recipesRef);
 
+                setUpRecipeFragment(recipe);
+
+
+            }
+
+        });
+    }
+
+
+    private void setUpRecipeFragment(final Recipe recipe) {
+        CollectionReference favoritesRef = usersRef.
+                document(user.getUid()).collection(SharedData.Favorites);
+        final DocumentReference favoriteRecipeRef = favoritesRef.document(recipe.getId());
+        favoriteRecipeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                boolean userPressedLike = false;
+                if (!(documentSnapshot == null || !documentSnapshot.exists())) {
+                    userPressedLike = true;
                 }
+                updatesRecipeFragment(recipe, userPressedLike);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
             }
         });
     }
 
     @SuppressLint("RestrictedApi") //TODO CARMEL
-    private void updatesRecipeFragment(Recipe recipe) {
+    private void updatesRecipeFragment(Recipe recipe, boolean userPressedLike) {
 //        addNoteButton.setVisibility(View.INVISIBLE);
-        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe);
+        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, userPressedLike);
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.recipePlaceholder, recipeFragment);
@@ -311,4 +333,9 @@ public class HomeFragment extends Fragment {
             }
         });
     }
+
+    void enableClickables() {
+        recipeAdapter.isClickable = true;
+    }
+
 }
