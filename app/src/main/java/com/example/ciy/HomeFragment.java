@@ -107,7 +107,7 @@ public class HomeFragment extends Fragment {
         setClickListeners();
         recipeAdapter.startListening();
         //updateIngredientsVector();
-        //updateIngredientsVector();
+        //updateAllRecipes();
     }
 
     // updates the recipes with the json file TODO delete before submission
@@ -121,7 +121,7 @@ public class HomeFragment extends Fragment {
                 String description = jsonRecipe.getString("description");
                 String imageUrl = "https:" + jsonRecipe.getString("img_url");
                 Random random = new Random();
-                int views = random.nextInt(4000);
+                int views = random.nextInt(50000);
                 JSONArray jsonIngredients = jsonRecipe.getJSONArray("new ingredients");
                 List<String> ingredients = new ArrayList<>();
                 for (int j = 0; j < jsonIngredients.length(); j++) {
@@ -256,9 +256,10 @@ public class HomeFragment extends Fragment {
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
                 if (canIClick) {
                     Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                    Random random = new Random();
-                    final int index = random.nextInt(urls.length);
-                    recipesRef.document(documentSnapshot.getId()).update("imageUrl", urls[index]);
+                    //doggy related keep for now
+//                    Random random = new Random();
+//                    final int index = random.nextInt(urls.length);
+//                    recipesRef.document(documentSnapshot.getId()).update("imageUrl", urls[index]);
                     //update or create recipe fragment
                     executeTransaction(documentSnapshot.getId(), recipesRef);
                     updatesRecipeFragment(recipe);
@@ -306,7 +307,7 @@ public class HomeFragment extends Fragment {
         }).addOnSuccessListener(new OnSuccessListener<Long>() {
             @Override
             public void onSuccess(Long result) {
-                Toast.makeText(getActivity(), "Views updated to: " + result, Toast.LENGTH_SHORT).show();
+                //Toast.makeText(getActivity(), "Views updated to: " + result, Toast.LENGTH_SHORT).show();
             }
         });
     }
