@@ -43,10 +43,10 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
         mAuth = FirebaseAuth.getInstance();
         setProgressBar(R.id.progressBar);
         findViewById(R.id.signIn).setOnClickListener(this);
-        showProgressBar();
     }
 
     public void signIn(View view) {
+        showProgressBar();
         String mail, password;
         mailInput = (EditText) findViewById(R.id.mailSignIn);
         passwordInput = (EditText) findViewById(R.id.passwordSignIn);
@@ -69,9 +69,7 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
         passwordInput = findViewById(R.id.passwordSignIn);
         String email = mailInput.getText().toString();
         String password = passwordInput.getText().toString();
-
-        showProgressBar();
-
+        
         Log.d(TAG, "createAccount:" + email);
         if (!validateForm(mailInput, passwordInput)) {
             return;
