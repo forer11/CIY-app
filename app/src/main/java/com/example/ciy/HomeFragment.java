@@ -12,7 +12,6 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -95,7 +94,7 @@ public class HomeFragment extends Fragment {
         b.setVisibility(View.GONE);
         setClickListeners();
         recipeAdapter.startListening();
-        //updateIngredientsVector();
+//        updateIngredientsVector();
 //        updateAllRecipes();
     }
 
@@ -108,7 +107,11 @@ public class HomeFragment extends Fragment {
                 JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
                 String title = jsonRecipe.getString("name");
                 String description = jsonRecipe.getString("description");
+                String instructions = jsonRecipe.getJSONArray("method").getString(0);
+
                 String imageUrl = "https:" + jsonRecipe.getString("img_url");
+                String difficulty = jsonRecipe.getJSONArray("difficulty").getString(0);
+
                 Random random = new Random();
                 int views = random.nextInt(50000);
                 JSONArray jsonIngredients = jsonRecipe.getJSONArray("new ingredients");
@@ -116,7 +119,15 @@ public class HomeFragment extends Fragment {
                 for (int j = 0; j < jsonIngredients.length(); j++) {
                     ingredients.add(jsonIngredients.getString(j));
                 }
+                List<String> extendedIngredients = new ArrayList<>();
+                JSONArray jsonUserIngredients = jsonRecipe.getJSONArray("ingredients");
+                for (int j = 0; j < jsonUserIngredients.length(); j++) {
+                    extendedIngredients.add(jsonUserIngredients.getString(j));
+                }
                 Recipe recipe = new Recipe(title, description, views, ingredients, imageUrl);
+                recipe.setInstructions(instructions);
+                recipe.setExtendedIngredients(extendedIngredients);
+                recipe.setDifficulty(difficulty);
                 recipe.setId(title);
                 recipesRef.document(title).set((recipe), SetOptions.merge()).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -224,19 +235,20 @@ public class HomeFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recipeAdapter);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView
-                    .ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                recipeAdapter.deleteItem(viewHolder.getAdapterPosition());
-            }
-        }).attachToRecyclerView(recyclerView);
+        //TODO set touch logic if we need to, for now commented out
+//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+//                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+//            @Override
+//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView
+//                    .ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+//                return false;
+//            }
+//
+//            @Override
+//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+//                //recipeAdapter.deleteItem(viewHolder.getAdapterPosition());
+//            }
+//        }).attachToRecyclerView(recyclerView);
     }
 
 
