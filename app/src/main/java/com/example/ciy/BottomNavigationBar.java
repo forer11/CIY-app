@@ -36,18 +36,22 @@ import com.squareup.picasso.Target;
  * user requested- by typing at the corresponding icon in the bottom navigation bar.
  */
 public class BottomNavigationBar extends AppCompatActivity {
-
+    /* the Home fragment Tag */
     private static final String HOME = "Home";
+    /* the Favorites fragment Tag */
     private static final String FAVORITES = "Favorites";
+    /* the Search fragment Tag */
     private static final String SEARCH = "Search";
-    private HomeFragment homeFragment;
-    private FavoritesFragment favoritesFragment;
-    private SearchFragment searchFragment;
+    /* the Home fragment */
+    HomeFragment homeFragment;
+    /* the Favorites fragment */
+    FavoritesFragment favoritesFragment;
+    /* the Search fragment */
+    SearchFragment searchFragment;
+    /* the Tag of the last fragment we showed/added */
     private String lastPushed = null;
+    /* the FireBase authenticator */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-    private int restoreClickable = SharedData.DEFAULT;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -230,17 +234,4 @@ public class BottomNavigationBar extends AppCompatActivity {
 //        bottomNavigationView.setSelectedItemId(R.id.nav_home);
         super.onBackPressed();
     }
-
-    void updateClickable(int fragment) {
-        switch (fragment) {
-            case SharedData.HOME_CLICKABLE:
-                homeFragment.enableClickables();
-
-            default:
-
-        }
-
-
-    }
-
 }

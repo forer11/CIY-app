@@ -51,7 +51,6 @@ import java.util.Random;
  * fragment representing our user home screen where he can see the top viewed recipes
  */
 public class HomeFragment extends Fragment {
-    private static int SPLASH_TIMEOUT = 4000;
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     /* reference to the firestore recipes collection */
@@ -91,13 +90,6 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         user = firebaseAuth.getCurrentUser();
-
-        String userId;
-        if (user != null) {
-            userId = user.getUid();
-        } else {
-            userId = "guest";
-        }
         setUpRecyclerView();
         View b = Objects.requireNonNull(getView()).findViewById(R.id.test);
         b.setVisibility(View.GONE);
@@ -262,10 +254,7 @@ public class HomeFragment extends Fragment {
                 executeTransaction(documentSnapshot.getId(), recipesRef);
 
                 setUpRecipeFragment(recipe);
-
-
             }
-
         });
     }
 
@@ -334,7 +323,10 @@ public class HomeFragment extends Fragment {
         });
     }
 
-    void enableClickables() {
+    /**
+     * we call this function from the fragment we opened to enable the Recycler view
+     */
+    void enableClickable() {
         recipeAdapter.isClickable = true;
     }
 
