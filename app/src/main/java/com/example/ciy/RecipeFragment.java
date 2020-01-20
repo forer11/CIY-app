@@ -152,14 +152,14 @@ public class RecipeFragment extends Fragment {
         prepareTime.setText("\uD83D\uDD52 30 " + "min  " + "\uD83D\uDC69\u200D\uD83C\uDF73 "
                 + recipe.getViews() + " views");
         String ingredients = "Ingredients\n";
-        for (String ingredient : recipe.getIngredients()) {
+        for (String ingredient : recipe.getExtendedIngredients()) {
             ingredients += "\u2022 " + ingredient + "\n";
         }
         SpannableString ingredientsText = new SpannableString(ingredients);
         ingredientsText.setSpan(new RelativeSizeSpan(1.5f), 0, 11, 0);// set size
         titleRecipeIngredients.setText(ingredientsText);
         titleRecipeDescription.setText("Description");
-        recipeDescription.setText(" " + recipe.getDescription());
+        recipeDescription.setText(" " + recipe.getInstructions());
     }
 
 

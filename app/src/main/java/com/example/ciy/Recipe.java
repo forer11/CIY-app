@@ -18,8 +18,14 @@ public class Recipe implements Serializable {
     private String imageUrl;
     /* the recipe view counter */
     private int views;
-    /* list of all the ingredients needed to make that recipe */
+    /* list of all the ingredients needed to make that recipe*/
     private List<String> ingredients;
+    /* ingredients for user view */
+    private List<String> extendedIngredients;
+    /* instructions for how to make the dish */
+    private String instructions;
+    /* the difficulty of said recipe */
+    private String difficulty;
 
     public Recipe() {
         // public no-arg constructor necessary for Firestore
@@ -70,5 +76,29 @@ public class Recipe implements Serializable {
 
     public String getImageUrl() {
         return imageUrl;
+    }
+
+    public String getInstructions() {
+        return instructions;
+    }
+
+    public void setInstructions(String instructions) {
+        this.instructions = instructions;
+    }
+
+    public List<String> getExtendedIngredients() {
+        return extendedIngredients;
+    }
+
+    public void setExtendedIngredients(List<String> extendedIngredients) {
+        this.extendedIngredients = extendedIngredients;
+    }
+
+    public String getDifficulty() {
+        return difficulty;
+    }
+
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
     }
 }
