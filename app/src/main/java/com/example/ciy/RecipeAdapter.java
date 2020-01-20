@@ -1,6 +1,7 @@
 package com.example.ciy;
 
 
+import android.annotation.SuppressLint;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,21 +17,23 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 
-public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapter.NoteHolder> {
+public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapter.RecipeHolder> {
     private OnItemClickListener listener;
 
-    public boolean isClickable = true;
+    /* indicates if we can click the Recycler view */
+    boolean isClickable = true;
 
 
-    public RecipeAdapter(FirestoreRecyclerOptions<Recipe> options) {
+    RecipeAdapter(FirestoreRecyclerOptions<Recipe> options) {
         super(options);
     }
 
+    @SuppressLint("SetTextI18n")
     @Override
-    protected void onBindViewHolder(NoteHolder noteHolder, int i, Recipe recipe) {
+    protected void onBindViewHolder(RecipeHolder noteHolder, int i, Recipe recipe) {
         noteHolder.textViewTitle.setText(recipe.getTitle());
         noteHolder.textViewDescription.setText(recipe.getDescription());
-        noteHolder.textViewViews.setText(String.valueOf(recipe.getViews()) + " Views");
+        noteHolder.textViewViews.setText(recipe.getViews() + " Views");
         try {
             Picasso.get()
                     .load(recipe.getImageUrl())
@@ -45,24 +48,24 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
 
     @NonNull
     @Override
-    public NoteHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public RecipeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_item,
                 parent, false);
-        return new NoteHolder(v);
+        return new RecipeHolder(v);
     }
 
-    public void deleteItem(int position) {
+    void deleteItem(int position) {
         getSnapshots().getSnapshot(position).getReference().delete();
     }
 
-    class NoteHolder extends RecyclerView.ViewHolder {
+    class RecipeHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle;
         TextView textViewDescription;
         TextView textViewViews;
         ImageView imageViewDish;
 
 
-        public NoteHolder(@NonNull View itemView) {
+        RecipeHolder(@NonNull View itemView) {
             super(itemView);
             textViewTitle = itemView.findViewById(R.id.textViewTitle);
             textViewDescription = itemView.findViewById(R.id.textViewDescription);
@@ -88,7 +91,7 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
         void OnItemClick(DocumentSnapshot documentSnapshot, int position);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
+    void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
     }
 }

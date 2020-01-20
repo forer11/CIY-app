@@ -28,9 +28,12 @@ import java.util.Map;
 
 
 public class RecipeFragment extends Fragment {
-
+    /* the recipe we show in this page */
     private Recipe recipe;
+    /* the lottie animation like button */
     private LottieAnimationView button_like;
+    /* indicates if the user pressed like, we get the data
+    when we open this fragment from the server */
     private boolean userPressedLike;
 
     /* the firestore database instance */
@@ -39,6 +42,7 @@ public class RecipeFragment extends Fragment {
     /* reference to the firestore users collection */
     private CollectionReference usersRef = db.collection(SharedData.USERS);
 
+    /* reference to the individual user favorites collection */
     private CollectionReference favoritesRef;
 
     /* Firestore authentication reference */
@@ -51,6 +55,7 @@ public class RecipeFragment extends Fragment {
         // Get back arguments
         recipe = (Recipe) getArguments().getSerializable("recipe");
         userPressedLike = getArguments().getBoolean("userPressedLike");
+
         FirebaseUser user = firebaseAuth.getCurrentUser();
         favoritesRef = usersRef.document(user.getUid()).collection(SharedData.Favorites);
     }
@@ -66,7 +71,6 @@ public class RecipeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Setup any handles to view objects here
-//        blurBackBackground();
         button_like = getView().findViewById(R.id.button_like);
         if (userPressedLike) {
             button_like.setProgress(1);
@@ -93,6 +97,13 @@ public class RecipeFragment extends Fragment {
                 }
             }
         });
+        setRecipeView();
+//        BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
+//        navBar.setVisibility(View.INVISIBLE);
+
+    }
+
+    private void setRecipeView() {
         TextView recipeTitle = getView().findViewById(R.id.recipeTitle);
         ImageView recipeImage = getView().findViewById(R.id.recipeImage);
         TextView ingredients = getView().findViewById(R.id.recipeIngredients);
@@ -101,9 +112,6 @@ public class RecipeFragment extends Fragment {
         TextView recipeDescription = getView().findViewById(R.id.recipeDescription);
         initializeUi(recipeTitle, recipeImage, prepareTime, ingredients,
                 titleRecipeDescription, recipeDescription, button_like);
-//        BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
-//        navBar.setVisibility(View.INVISIBLE);
-
     }
 
 //    private void blurBackBackground() {
@@ -170,6 +178,7 @@ public class RecipeFragment extends Fragment {
         super.onDestroy();
         // only using this fragment with BottomNavigationBar
         BottomNavigationBar activity = (BottomNavigationBar) getActivity();
-        activity.updateClickable(SharedData.HOME_CLICKABLE);
+        // after we exit the recipe fragment we will enable the home fragment.
+        activity.homeFragment.enableClickable();
     }
 }
