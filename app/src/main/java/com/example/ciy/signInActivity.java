@@ -46,19 +46,6 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
         showProgressBar();
     }
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        if (currentUser != null) {
-            Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
-            startActivity(intent);
-        }
-    }
-
-
     public void signIn(View view) {
         String mail, password;
         mailInput = (EditText) findViewById(R.id.mailSignIn);
@@ -101,6 +88,7 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
                             updateUI(user);
                             Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());

@@ -178,6 +178,7 @@ public class BottomNavigationBar extends AppCompatActivity {
                         firebaseAuth.signOut();
                         Intent intent = new Intent(getBaseContext(), LoginActivity.class);
                         startActivity(intent);
+                        finish();
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

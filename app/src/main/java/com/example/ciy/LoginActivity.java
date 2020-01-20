@@ -89,6 +89,7 @@ public class LoginActivity extends BaseSignIn implements View.OnClickListener {
                             Toast.makeText(LoginActivity.this, "login succeeded", Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG_1, "signInWithEmail:failure", task.getException());
@@ -185,6 +186,7 @@ public class LoginActivity extends BaseSignIn implements View.OnClickListener {
                             updateUI(user);
                             Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
                             startActivity(intent);
+                            finish();
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
