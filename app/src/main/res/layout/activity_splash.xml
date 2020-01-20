@@ -12,8 +12,8 @@
 
     <ImageView
         android:id="@+id/chef_woman_logo"
-        android:layout_width="80dp"
-        android:layout_height="80dp"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
         android:layout_centerInParent="true"
         app:srcCompat="@drawable/chef_woman_logo" />
 
@@ -22,13 +22,21 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_below="@+id/chef_woman_logo"
-        android:layout_alignParentBottom="true"
         android:layout_centerInParent="true"
-        android:layout_marginTop="0dp"
-        android:layout_marginBottom="270dp"
+        android:fontFamily="@font/biorhyme"
+        android:text="C.I.Y"
+        android:textColor="#000000"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+    <TextView
+        android:id="@+id/app_name_extended"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/app_name_title"
+        android:layout_centerInParent="true"
         android:fontFamily="@font/biorhyme"
         android:text="Cook It Yourself"
         android:textColor="#000000"
-        android:textSize="8sp"
+        android:textSize="12sp"
         android:textStyle="bold" />
 </RelativeLayout>
