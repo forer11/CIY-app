@@ -48,8 +48,12 @@ public class BottomNavigationBar extends AppCompatActivity {
     FavoritesFragment favoritesFragment;
     /* the Search fragment */
     SearchFragment searchFragment;
-    /* the Tag of the last fragment we showed/added */
-    private String lastPushed = null;
+    /* the indicator of the last fragment we showed/added */
+    private int lastPushed = SharedData.DEFAULT;
+    /* the tag of the last fragment we showed/added */
+    private String lastTag = null;
+
+
     /* the FireBase authenticator */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
@@ -71,10 +75,13 @@ public class BottomNavigationBar extends AppCompatActivity {
                 .add(R.id.fragment_container, homeFragment, HOME)
                 .setBreadCrumbShortTitle(HOME);
         transaction.commit();
-        lastPushed = HOME;
+        lastPushed = SharedData.HOME;
 
     }
 
+    /**
+     * sets the bottom navigation bar and upper toolbar
+     */
     private void setBars() {
         // define the bottom navigation bar to be used in the activity
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -126,21 +133,39 @@ public class BottomNavigationBar extends AppCompatActivity {
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch (menuItem.getItemId()) {
                 case R.id.nav_home: //TODO LIOR, IF PRESSED INSIDE HOME, SCROLL TO TOP
-                    showFragment(homeFragment, HOME, lastPushed);
-                    lastPushed = HOME;
+                    homePressHandler();
                     break;
                 case R.id.nav_favorites:
-                    showFragment(favoritesFragment, FAVORITES, lastPushed);
-                    lastPushed = FAVORITES;
+                    showFragment(favoritesFragment, FAVORITES, lastTag);
+                    lastPushed = SharedData.FAVORITES;
+                    lastTag = FAVORITES;
                     break;
                 case R.id.nav_search:
-                    showFragment(searchFragment, SEARCH, lastPushed);
-                    lastPushed = SEARCH;
+                    showFragment(searchFragment, SEARCH, lastTag);
+                    lastPushed = SharedData.SEARCH;
+                    lastTag = SEARCH;
                     break;
             }
             return true;
         }
     };
+
+    /**
+     * handling the event we pressed the home icon in the bottom navigation bar
+     */
+    private void homePressHandler() {
+        if (lastPushed == SharedData.HOME) {
+            if (homeFragment.isRecipeCurrentlyOpen()) {
+                getSupportFragmentManager().popBackStack();
+            } else {
+                homeFragment.scrollToTop();
+            }
+        } else {
+            showFragment(homeFragment, HOME, lastTag);
+            lastPushed = SharedData.HOME;
+            lastTag = HOME;
+        }
+    }
 
     private void showFragment(Fragment fragment, String tag, String lastTag) {
 
@@ -226,13 +251,12 @@ public class BottomNavigationBar extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-//        if (lastPushed.equals(HOME)) { //TODO Lior, need to change logic, maybe implementing a stack
-//            super.onBackPressed();
-//        }
-//        showFragment(homeFragment, HOME, lastPushed);
-//        lastPushed = HOME;
-//        BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-//        bottomNavigationView.setSelectedItemId(R.id.nav_home);
-        super.onBackPressed();
+        if (lastPushed == SharedData.HOME) {
+            super.onBackPressed();
+        } else {
+            homePressHandler();
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+            bottomNavigationView.setSelectedItemId(R.id.nav_home);
+        }
     }
 }
