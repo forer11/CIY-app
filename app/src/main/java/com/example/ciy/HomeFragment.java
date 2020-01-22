@@ -50,6 +50,7 @@ import java.util.Random;
  * fragment representing our user home screen where he can see the top viewed recipes
  */
 public class HomeFragment extends Fragment {
+    private static final int FAST_SCROLL_POSITION = 10;
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     /* reference to the firestore recipes collection */
@@ -63,6 +64,8 @@ public class HomeFragment extends Fragment {
     private RecipeAdapter recipeAdapter;
     /* Firestore authentication reference */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+    /* the recycler view object */
+    private RecyclerView recyclerView;
 
     /* boolean for when we can click on the recyclerView items (when we load the data) */
     // TODO DECIDE IF NEEDED
@@ -229,7 +232,7 @@ public class HomeFragment extends Fragment {
                 .build();
 
         recipeAdapter = new RecipeAdapter(options);
-        RecyclerView recyclerView = Objects.requireNonNull(getView())
+        recyclerView = Objects.requireNonNull(getView())
                 .findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
@@ -340,6 +343,28 @@ public class HomeFragment extends Fragment {
      */
     void enableClickable() {
         recipeAdapter.isClickable = true;
+    }
+
+    /**
+     * scroll to the top of the recycler view when we double press home
+     */
+    void scrollToTop() {
+        int position = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                .findFirstVisibleItemPosition();
+        if (position > 10) {
+            recyclerView.getLayoutManager().scrollToPosition(FAST_SCROLL_POSITION);
+        }
+        recyclerView.smoothScrollToPosition(0);
+
+    }
+
+    /**
+     * indicates if we opened a recipe
+     * @return true if a recipe is opened, false otherwise
+     */
+    boolean isRecipeCurrentlyOpen()
+    {
+        return !recipeAdapter.isClickable;
     }
 
 }
