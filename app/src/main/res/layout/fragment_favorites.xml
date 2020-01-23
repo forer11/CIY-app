@@ -1,25 +1,18 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
     android:layout_width="match_parent"
+    android:id="@+id/favorites_layout"
     android:layout_height="match_parent"
-    android:background="#E0DEDE"
-    android:clickable="true"
-    android:focusable="true">
+    tools:context=".BottomNavigationBar">
 
-
-    <RelativeLayout
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent"
+        android:background="#72B9B6B6"
+        />
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="Favorites Fragment"
-            android:textSize="30sp" />
 
-    </RelativeLayout>
-
-</ScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

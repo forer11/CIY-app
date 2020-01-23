@@ -20,6 +20,8 @@ import com.squareup.picasso.Picasso;
 public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapter.RecipeHolder> {
     private OnItemClickListener listener;
 
+    private int layout;
+
     /* indicates if we can click the Recycler view */
     boolean isClickable = true;
 
@@ -30,18 +32,36 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
 
     @SuppressLint("SetTextI18n")
     @Override
-    protected void onBindViewHolder(RecipeHolder noteHolder, int i, Recipe recipe) {
-        noteHolder.textViewTitle.setText(recipe.getTitle());
-        noteHolder.textViewDescription.setText(recipe.getDescription());
-        noteHolder.textViewViews.setText(recipe.getViews() + " Views");
+    protected void onBindViewHolder(RecipeHolder recipeHolder, int i, Recipe recipe) {
+        if (layout == R.layout.recipe_item) {
+            setRecipeItemLayout(recipeHolder, recipe);
+        } else if (layout == R.layout.favorite_item) {
+            recipeHolder.textViewTitle.setText(recipe.getTitle());
+            try {
+                Picasso.get()
+                        .load(recipe.getImageUrl())
+                        .fit()
+                        .centerCrop()
+                        .into(recipeHolder.circularImageViewDish);
+            } catch (Exception e) {
+                recipeHolder.circularImageViewDish.setImageResource(R.drawable.icon_dog_chef);
+            }
+
+        }
+    }
+
+    private void setRecipeItemLayout(RecipeHolder recipeHolder, Recipe recipe) {
+        recipeHolder.textViewTitle.setText(recipe.getTitle());
+        recipeHolder.textViewDescription.setText(recipe.getDescription());
+        recipeHolder.textViewViews.setText(recipe.getViews() + " Views");
         try {
             Picasso.get()
                     .load(recipe.getImageUrl())
                     .fit()
                     .centerCrop()
-                    .into(noteHolder.imageViewDish);
+                    .into(recipeHolder.imageViewDish);
         } catch (Exception e) {
-            noteHolder.imageViewDish.setImageResource(R.drawable.icon_dog_chef);
+            recipeHolder.imageViewDish.setImageResource(R.drawable.icon_dog_chef);
         }
     }
 
@@ -49,7 +69,7 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
     @NonNull
     @Override
     public RecipeHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.recipe_item,
+        View v = LayoutInflater.from(parent.getContext()).inflate(layout,
                 parent, false);
         return new RecipeHolder(v);
     }
@@ -63,6 +83,7 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
         TextView textViewDescription;
         TextView textViewViews;
         ImageView imageViewDish;
+        ImageView circularImageViewDish;
 
 
         RecipeHolder(@NonNull View itemView) {
@@ -71,6 +92,7 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
             textViewDescription = itemView.findViewById(R.id.textViewDescription);
             textViewViews = itemView.findViewById(R.id.textViewViews);
             imageViewDish = itemView.findViewById(R.id.dishImage);
+            circularImageViewDish = itemView.findViewById(R.id.circularImageViewDish);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -93,5 +115,9 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
 
     void setOnItemClickListener(OnItemClickListener listener) {
         this.listener = listener;
+    }
+
+    public void setLayout(int layout) {
+        this.layout = layout;
     }
 }

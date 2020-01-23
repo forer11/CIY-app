@@ -19,7 +19,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="25dp"
-            android:layout_toEndOf="@+id/imageViewDish"
+            android:layout_toEndOf="@+id/circularImageViewDish"
             android:layout_centerInParent="true"
             android:fontFamily="@font/andika"
             android:text="Title"
@@ -27,7 +27,7 @@
             android:textStyle="bold" />
 
         <de.hdodenhof.circleimageview.CircleImageView
-            android:id="@+id/imageViewDish"
+            android:id="@+id/circularImageViewDish"
             android:layout_width="96dp"
             android:layout_height="96dp"
             android:layout_centerInParent="true"
