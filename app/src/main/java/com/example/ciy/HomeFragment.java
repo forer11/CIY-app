@@ -232,6 +232,7 @@ public class HomeFragment extends Fragment {
                 .build();
 
         recipeAdapter = new RecipeAdapter(options);
+        recipeAdapter.setLayout(R.layout.recipe_item);
         recyclerView = Objects.requireNonNull(getView())
                 .findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
@@ -360,10 +361,10 @@ public class HomeFragment extends Fragment {
 
     /**
      * indicates if we opened a recipe
+     *
      * @return true if a recipe is opened, false otherwise
      */
-    boolean isRecipeCurrentlyOpen()
-    {
+    boolean isRecipeCurrentlyOpen() {
         return !recipeAdapter.isClickable;
     }
 

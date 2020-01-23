@@ -76,6 +76,7 @@ public class BottomNavigationBar extends AppCompatActivity {
                 .setBreadCrumbShortTitle(HOME);
         transaction.commit();
         lastPushed = SharedData.HOME;
+        lastTag = HOME;
 
     }
 
@@ -256,7 +257,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         } else {
             homePressHandler();
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-            bottomNavigationView.setSelectedItemId(R.id.nav_home);
+            bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
         }
     }
 }

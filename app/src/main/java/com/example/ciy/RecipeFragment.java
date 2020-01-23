@@ -85,22 +85,21 @@ public class RecipeFragment extends Fragment {
                     button_like.setProgress(0);
                     button_like.playAnimation();
                     userPressedLike = true;
-                    Map<String, Object> newFavoriteRecipe = new HashMap<>();
-                    newFavoriteRecipe.put(recipe.getTitle(), recipe.getId());
-                    favoritesRef.document(recipe.getId()).set(newFavoriteRecipe, SetOptions.merge());
+//                    Map<String, Object> newFavoriteRecipe = new HashMap<>();
+//                    newFavoriteRecipe.put("id", recipe.getId());
+                    favoritesRef.document(recipe.getId()).set(recipe, SetOptions.merge());
+                    //activity.updateFavorites();
                     // TODO- add recipe to favorites
                 } else { //user pressed unlike
                     button_like.setProgress(0);
                     userPressedLike = false;
                     favoritesRef.document(recipe.getId()).delete();
+                    //activity.updateFavorites();
                     //TODO - remove recipe from favorites
                 }
             }
         });
         setRecipeView();
-//        BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
-//        navBar.setVisibility(View.INVISIBLE);
-
     }
 
     private void setRecipeView() {
