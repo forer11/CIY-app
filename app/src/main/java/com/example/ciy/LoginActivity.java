@@ -142,11 +142,11 @@ public class LoginActivity extends BaseSignIn implements View.OnClickListener {
 
 
     public void goToSignIn(View view) {
-        startActivity(new Intent(this, signInActivity.class));
+        startActivity(new Intent(this, SignInActivity.class));
     }
 
     public void goToForgetPassword(View view) {
-        startActivity(new Intent(this, forgotPasswordActivity.class));
+        startActivity(new Intent(this, ForgotPasswordActivity.class));
 
     }
 

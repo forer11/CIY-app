@@ -18,6 +18,7 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
@@ -61,6 +62,7 @@ public class FavoritesFragment extends Fragment {
         FirebaseUser user = firebaseAuth.getCurrentUser();
         favoritesRef = usersRef.document(user.getUid()).collection(SharedData.Favorites);
         setUpRecyclerView();
+        setClickListeners();
     }
 
 
@@ -82,7 +84,6 @@ public class FavoritesFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recipeAdapter);
         recipeAdapter.startListening();
-
         //TODO set touch logic if we need to, for now commented out
 //        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
 //                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -97,6 +98,16 @@ public class FavoritesFragment extends Fragment {
 //                //recipeAdapter.deleteItem(viewHolder.getAdapterPosition());
 //            }
 //        }).attachToRecyclerView(recyclerView);
+    }
+
+    private void setClickListeners() {
+        recipeAdapter.setOnItemClickListener(new RecipeAdapter.OnItemClickListener() {
+            @Override
+            public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
+                recipeAdapter.isClickable = false;
+                final Recipe recipe = documentSnapshot.toObject(Recipe.class);
+            }
+        });
     }
 
     public void refreshData() {
