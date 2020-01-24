@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
 import androidx.fragment.app.Fragment;
@@ -25,6 +26,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class RecipeFragment extends Fragment {
@@ -177,7 +179,19 @@ public class RecipeFragment extends Fragment {
         super.onDestroy();
         // only using this fragment with BottomNavigationBar
         BottomNavigationBar activity = (BottomNavigationBar) getActivity();
-        // after we exit the recipe fragment we will enable the home fragment.
-        activity.homeFragment.enableClickable();
+        // after we exit the recipe fragment we will enable the Home\Favorites fragment.
+        if (activity != null) {
+            if (activity.favoritesFragment.isAdded()) {
+                activity.favoritesFragment.enableClickable();
+            }
+            if (activity.lastPushed == SharedData.HOME) {
+                activity.homeFragment.enableClickable();
+            }
+        } else {
+            // if this pops out we maybe opening the recipe fragment from an unexpected activity,
+            //TODO delete before submission
+            Toast.makeText(getContext(), "app Failure, current activity is " + getActivity(),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }

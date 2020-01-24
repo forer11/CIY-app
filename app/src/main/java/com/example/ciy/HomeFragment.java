@@ -303,7 +303,7 @@ public class HomeFragment extends Fragment {
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.recipePlaceholder, recipeFragment);
-        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.addToBackStack("HomeRecipe");
         // Complete the changes added above
         fragmentTransaction.commit();
     }

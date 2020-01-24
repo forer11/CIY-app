@@ -1,13 +1,17 @@
 package com.example.ciy;
 
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -18,11 +22,14 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.Transaction;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,14 +113,46 @@ public class FavoritesFragment extends Fragment {
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
                 recipeAdapter.isClickable = false;
                 final Recipe recipe = documentSnapshot.toObject(Recipe.class);
+                updatesRecipeFragment(recipe);
             }
         });
     }
 
+
+    @SuppressLint("RestrictedApi") //TODO CARMEL
+    private void updatesRecipeFragment(Recipe recipe) {
+        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, true);
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.FavoritesPlaceholder, recipeFragment);
+        fragmentTransaction.addToBackStack("FavoritesRecipe");
+        // Complete the changes added above
+        fragmentTransaction.commit();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        recipeAdapter.stopListening();
+    }
+
+    /**
+     * indicates if we opened a recipe
+     *
+     * @return true if a recipe is opened, false otherwise
+     */
+    boolean isRecipeCurrentlyOpen() {
+        return !recipeAdapter.isClickable;
+    }
+
+    // Currently have no use, do we want same behavior as Home? TODO Lior
     public void refreshData() {
         if (recipeAdapter != null) {
             recipeAdapter.stopListening();
         }
         setUpRecyclerView();
+    }
+    void enableClickable() {
+        recipeAdapter.isClickable = true;
     }
 }
