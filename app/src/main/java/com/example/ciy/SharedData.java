@@ -1,5 +1,7 @@
 package com.example.ciy;
 
+import java.util.ArrayList;
+
 /**
  * the App Shared data
  */
@@ -14,4 +16,6 @@ class SharedData {
     static final int HOME =1;
     static final int FAVORITES =2;
     static final int SEARCH = 3;
+
+    static ArrayList<Recipe> searchRecepies = new ArrayList<>();
 }

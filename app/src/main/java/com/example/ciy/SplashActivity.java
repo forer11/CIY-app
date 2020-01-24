@@ -1,5 +1,6 @@
 package com.example.ciy;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,13 +8,24 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class SplashActivity extends AppCompatActivity {
 
     private Handler handler;
     private Runnable callback;
+
+    /* the firestore database instance */
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    /* reference to the firestore recipes collection */
+    private CollectionReference recipesRef = db.collection(SharedData.RECIPES);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -21,8 +33,14 @@ public class SplashActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_splash);
 
-        //launch the next screen after delay
+        // make a copy of our recipes asynchronously
+        loadRecipeCopy();
 
+        //launch the next screen after delay
+        appStartHandler();
+    }
+
+    private void appStartHandler() {
         handler = new Handler();
         callback = new Runnable() {
             @Override
@@ -42,6 +60,24 @@ public class SplashActivity extends AppCompatActivity {
             }
         };
         handler.postDelayed(callback, 1000);
+    }
+
+    private void loadRecipeCopy() {
+        recipesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    Recipe recipe = documentSnapshot.toObject(Recipe.class);
+                    SharedData.searchRecepies.add(recipe);
+                }
+
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+
+            }
+        });
     }
 
     @Override
