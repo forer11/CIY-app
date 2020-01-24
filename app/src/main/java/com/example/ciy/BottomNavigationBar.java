@@ -49,7 +49,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     /* the Search fragment */
     SearchFragment searchFragment;
     /* the indicator of the last fragment we showed/added */
-    private int lastPushed = SharedData.DEFAULT;
+    int lastPushed = SharedData.DEFAULT;
     /* the tag of the last fragment we showed/added */
     private String lastTag = null;
 
@@ -175,6 +175,10 @@ public class BottomNavigationBar extends AppCompatActivity {
 
         if (lastTag != null) {
             Fragment lastFragment = fragmentManager.findFragmentByTag(lastTag);
+            if (lastTag.equals(FAVORITES)&&favoritesFragment.isRecipeCurrentlyOpen())
+            {
+                getSupportFragmentManager().popBackStack();
+            }
             if (lastFragment != null) {
                 transaction.hide(lastFragment);
             }
@@ -253,6 +257,10 @@ public class BottomNavigationBar extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         if (lastPushed == SharedData.HOME) {
+            super.onBackPressed();
+        }
+        // currently does the same as above, need to see if we want different behavior TODO Lior
+        else if (lastPushed == SharedData.FAVORITES && favoritesFragment.isRecipeCurrentlyOpen()) {
             super.onBackPressed();
         } else {
             homePressHandler();
