@@ -11,7 +11,10 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".forgotPasswordActivity"></activity>
+        <activity
+            android:name=".SearchRecipeActivity"
+            android:theme="@style/BaseAppTheme" />
+        <activity android:name=".ForgotPasswordActivity" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/AppTheme.NoTitle">
@@ -21,7 +24,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".signInActivity" />
+        <activity android:name=".SignInActivity" />
         <activity
             android:name=".LoginActivity"
             android:launchMode="singleTop">

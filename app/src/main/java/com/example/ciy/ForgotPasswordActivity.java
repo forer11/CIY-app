@@ -12,7 +12,7 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 
-public class forgotPasswordActivity extends BaseSignIn {
+public class ForgotPasswordActivity extends BaseSignIn {
 
     private static final String TAG = "Forgot Password";
     private FirebaseAuth mAuth;
@@ -40,12 +40,12 @@ public class forgotPasswordActivity extends BaseSignIn {
                     public void onComplete(@NonNull Task<Void> task) {
                         if (task.isSuccessful()) {
                             Log.d(TAG, "Email sent.");
-                            Toast.makeText(forgotPasswordActivity.this, "Email sent",
+                            Toast.makeText(ForgotPasswordActivity.this, "Email sent",
                                     Toast.LENGTH_SHORT).show();
                             Intent intent = new Intent(getBaseContext(), LoginActivity.class);
                             startActivity(intent);
                         } else {
-                            Toast.makeText(forgotPasswordActivity.this,
+                            Toast.makeText(ForgotPasswordActivity.this,
                                     "Email not registered",Toast.LENGTH_SHORT).show();
                         }
                     }
