@@ -8,12 +8,24 @@
     tools:context=".SearchRecipeActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
+        android:id="@+id/searchRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#72B9B6B6"
         android:scrollbars="vertical"
-        android:padding="4dp"/>
+        android:paddingTop="?attr/actionBarSize"
+        android:layout_marginTop="5dp"
+        />
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/searchToolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?android:attr/windowBackground"
+        android:elevation="4dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="  CIY" />
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

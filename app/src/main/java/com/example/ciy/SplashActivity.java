@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -37,7 +36,7 @@ public class SplashActivity extends AppCompatActivity {
         loadRecipeCopy();
 
         //launch the next screen after delay
-        appStartHandler();
+        //appStartHandler();
     }
 
     private void appStartHandler() {
@@ -45,6 +44,21 @@ public class SplashActivity extends AppCompatActivity {
         callback = new Runnable() {
             @Override
             public void run() {
+
+
+            }
+        };
+        handler.postDelayed(callback, 1000);
+    }
+
+    private void loadRecipeCopy() {
+        recipesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+            @Override
+            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                    Recipe recipe = documentSnapshot.toObject(Recipe.class);
+                    SharedData.searchRecipes.add(recipe);
+                }
                 // Check if user is signed in (non-null) and update UI accordingly.
                 FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
                 Intent intent;
@@ -58,20 +72,6 @@ public class SplashActivity extends AppCompatActivity {
                 overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
 
             }
-        };
-        handler.postDelayed(callback, 1000);
-    }
-
-    private void loadRecipeCopy() {
-        recipesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                    SharedData.searchRecepies.add(recipe);
-                }
-
-            }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
             public void onFailure(@NonNull Exception e) {
@@ -83,6 +83,6 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-        handler.removeCallbacks(callback);
+        // handler.removeCallbacks(callback);
     }
 }
