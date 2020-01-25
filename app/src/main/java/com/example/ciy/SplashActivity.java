@@ -55,6 +55,8 @@ public class SplashActivity extends AppCompatActivity {
         recipesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
             @Override
             public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                // sometimes having duplicates, didn't figure why, for now i will try this.
+                SharedData.searchRecipes.clear();
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                     Recipe recipe = documentSnapshot.toObject(Recipe.class);
                     SharedData.searchRecipes.add(recipe);
