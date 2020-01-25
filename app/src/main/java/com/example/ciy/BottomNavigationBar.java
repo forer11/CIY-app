@@ -110,7 +110,7 @@ public class BottomNavigationBar extends AppCompatActivity {
             Uri uri = currentUser.getPhotoUrl();
             if (uri == null) // user not sign in from google, so default profile picture defined
             {
-                menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
+                menu.getItem(1).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
             } else {
                 setProfileImage(menu, uri);
             }
@@ -123,6 +123,10 @@ public class BottomNavigationBar extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.icon_status:
                 return showSignOutDialog();
+            case R.id.actionSearchNavigation:
+                Intent intent = new Intent(getBaseContext(), SearchRecipeActivity.class);
+                startActivity(intent);
+                return true;
 
             default:
                 return super.onOptionsItemSelected(item);
@@ -240,7 +244,7 @@ public class BottomNavigationBar extends AppCompatActivity {
                 RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
                 rounded.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()));
                 rounded.setBounds(0, 0, 5, 5);
-                menu.getItem(0).setIcon(rounded);
+                menu.getItem(1).setIcon(rounded);
             }
 
             @Override

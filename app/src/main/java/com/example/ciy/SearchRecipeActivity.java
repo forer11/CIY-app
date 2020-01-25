@@ -1,17 +1,15 @@
 package com.example.ciy;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.view.MenuItemCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
+
 import androidx.appcompat.widget.SearchView;
 
 import java.util.ArrayList;
@@ -27,7 +25,7 @@ public class SearchRecipeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_recipe);
-        final ArrayList<Recipe> searchRecipes = new ArrayList<>(SharedData.searchRecipes);
+        final ArrayList<Recipe> searchRecipes = new ArrayList<>();
 
         // define the toolbar to be used in the activity
         Toolbar toolbar = findViewById(R.id.searchToolbar);
@@ -41,11 +39,17 @@ public class SearchRecipeActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.search_menu, menu);
 
-        MenuItem searchItem = menu.findItem(R.id.actionSearch);
-        SearchView searchView =  (SearchView) searchItem.getActionView();
-
+        MenuItem searchItem = menu.findItem(R.id.actionSearchNavigation);
+        SearchView searchView = (SearchView) searchItem.getActionView();
         // will not enable search click, only realtime search //TODO Lior
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
+        searchView.setIconified(false);
+        searchItem.expandActionView();
+        searchView.requestFocus();
+        searchView.setIconifiedByDefault(false);
+
+
+
 
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -67,8 +71,6 @@ public class SearchRecipeActivity extends AppCompatActivity {
 
             @Override
             public boolean onMenuItemActionCollapse(MenuItem item) {
-                Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
-                startActivity(intent);
                 finish();
                 return true;
             }
