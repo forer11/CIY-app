@@ -16,7 +16,7 @@
         tools:ignore="GoogleAppIndexingWarning">
         <activity
             android:name=".SearchRecipeActivity"
-            android:theme="@style/BaseAppTheme" />
+            android:theme="@style/SearchAppTheme" />
         <activity android:name=".ForgotPasswordActivity" />
         <activity
             android:name=".SplashActivity"
