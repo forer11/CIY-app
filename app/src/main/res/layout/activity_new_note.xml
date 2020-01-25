@@ -13,9 +13,7 @@
     <eightbitlab.com.blurview.BlurView
         android:id="@+id/blurView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_centerInParent="true"
-        android:layout_centerHorizontal="true"
+        android:layout_height="wrap_content"
         android:scaleType="centerInside"
         app:blurOverlayColor="#78FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -29,102 +27,203 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:scaleType="centerCrop" />
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
 
-
-
-
-        <EditText
-            android:id="@+id/Title"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_above="@+id/Description"
-            android:layout_marginTop="20dp"
-            android:hint="Title"
-            android:inputType="text"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <EditText
-            android:id="@+id/PreparationTime"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/PreparationInstructions"
-            android:layout_marginTop="20dp"
-            android:hint="Preparation Time"
-            android:inputType="textMultiLine"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/Title" />
-
-        <EditText
-            android:id="@+id/Description"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/PreparationTime"
-            android:layout_marginTop="20dp"
-            android:hint="Description"
-            android:inputType="textMultiLine"
-            app:layout_constraintTop_toBottomOf="@+id/PreparationTime"
-            tools:layout_editor_absoluteX="53dp" />
+            android:layout_marginStart="10dp">
 
 
-        <EditText
-            android:id="@+id/PreparationInstructions"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/ingredients"
-            android:layout_marginTop="20dp"
-            android:hint="Preparation Instructions"
-            android:inputType="textMultiLine"
-            app:layout_constraintTop_toBottomOf="@+id/Description"
-            tools:layout_editor_absoluteX="127dp" />
-
-        <EditText
-            android:id="@+id/ingredients"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_above="@+id/cameraButton"
-            android:layout_marginTop="20dp"
-            android:hint="Ingredients"
-            android:inputType="textMultiLine"
-            app:layout_constraintTop_toBottomOf="@+id/PreparationInstructions"
-            tools:layout_editor_absoluteX="127dp" />
-
-        <ImageButton
-            android:id="@+id/cameraButton"
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:layout_above="@+id/userPicture"
-            android:layout_centerHorizontal="true"
-            android:layout_marginTop="20dp"
-            android:background="@color/transperent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:baselineAlignBottom="true"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/ingredients"
-            android:scaleType="fitCenter"
-            android:src="@drawable/camera"
-         />
-
-        <ImageView
-            android:id="@+id/userPicture"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:cropToPadding="true"
-            android:padding="12dp"
-            android:scaleType="centerCrop"
-            android:baselineAlignBottom="true"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cameraButton" />
+            <EditText
+                android:id="@+id/Title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:layout_above="@+id/Description"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/andika"
+                android:hint="Enter Dish Name"
+                android:inputType="text"
+                android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:id="@+id/PreparationTimeTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/PreparationInstructionsTitle"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/andika"
+                android:text="Preparation Time"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/Description"
+                tools:layout_editor_absoluteX="127dp" />
+
+
+            <TextView
+                android:id="@+id/DescriptionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/Description"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/andika"
+                android:text="Description"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/Title"
+                tools:layout_editor_absoluteX="127dp" />
+
+            <EditText
+                android:id="@+id/Description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/PreparationTimeTitle"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/andika"
+                android:hint="Enter Description"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:inputType="textMultiLine"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintTop_toBottomOf="@+id/DescriptionTitle"
+                tools:layout_editor_absoluteX="53dp" />
+
+            <EditText
+                android:id="@+id/PreparationTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/PreparationInstructionsTitle"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/andika"
+                android:hint="Enter Preparation Time in minutes"
+                android:inputType="textMultiLine"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/PreparationTimeTitle" />
+
+
+            <TextView
+                android:id="@+id/PreparationInstructionsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/PreparationInstructions"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/andika"
+                android:text="Preparation Instructions"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/PreparationTime"
+                tools:layout_editor_absoluteX="127dp" />
+
+            <EditText
+                android:id="@+id/PreparationInstructions"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/ingredientsTitle"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/andika"
+                android:hint="Enter Preparation Instructions"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:inputType="textMultiLine"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintTop_toBottomOf="@+id/PreparationInstructionsTitle"
+                tools:layout_editor_absoluteX="127dp" />
+
+            <TextView
+                android:id="@+id/ingredientsTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/ingredients"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/andika"
+                android:text="Ingredients"
+                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@+id/PreparationInstructions"
+                tools:layout_editor_absoluteX="127dp" />
+
+
+            <EditText
+                android:id="@+id/ingredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/takePicButton"
+                android:foreground="?android:attr/selectableItemBackground"
+                android:layout_marginTop="20dp"
+                android:fontFamily="@font/andika"
+                android:hint="Enter Ingredients"
+                android:inputType="textMultiLine"
+                android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                app:layout_constraintTop_toBottomOf="@+id/ingredientsTitle"
+                tools:layout_editor_absoluteX="127dp"
+                />
+
+            <ImageButton
+                android:id="@+id/cameraSign"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_above="@+id/userPicture"
+                android:background="@color/transperent"
+                android:baselineAlignBottom="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/camera"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="15dp"
+                app:layout_constraintBottom_toBottomOf="@+id/takePicButton"
+                app:layout_constraintTop_toTopOf="@+id/takePicButton"
+                app:layout_constraintEnd_toEndOf="@+id/takePicButton" />
+
+            <ImageButton
+                android:id="@+id/takePicButton"
+                android:layout_width="230dp"
+                android:layout_height="76dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/ripple_rounded_corners"
+                android:baselineAlignBottom="true"
+                android:scaleType="centerInside"
+                android:layout_marginBottom="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ingredients"
+                app:layout_constraintBottom_toTopOf="@+id/userPicture"
+                />
+
+            <TextView
+                android:id="@+id/takePicText"
+                android:layout_width="130dp"
+                android:layout_height="wrap_content"
+                android:text="Take a Picture\n of your dish"
+                android:textAlignment="center"
+                app:layout_constraintBottom_toBottomOf="@+id/takePicButton"
+                app:layout_constraintEnd_toStartOf="@+id/cameraSign"
+                app:layout_constraintStart_toStartOf="@+id/takePicButton"
+                android:textStyle="bold"
+                android:textSize="16sp"
+                android:fontFamily="@font/andika"
+                app:layout_constraintTop_toTopOf="@+id/takePicButton" />
+
+
+            <ImageView
+                android:id="@+id/userPicture"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:baselineAlignBottom="true"
+                android:cropToPadding="true"
+                android:padding="12dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                 />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
     </eightbitlab.com.blurview.BlurView>
 
