@@ -4,21 +4,21 @@
     <item
         android:id="@+id/navHome"
         android:icon="@drawable/ic_home_black_24dp"
-        android:title="Home"/>
+        android:title="Home" />
 
     <item
         android:id="@+id/navFavorites"
         android:icon="@drawable/ic_favorite_black_24dp"
-        android:title="Favorites"/>
+        android:title="Favorites" />
 
     <item
         android:id="@+id/navSearch"
-        android:icon="@drawable/ic_search_black_24dp"
-        android:title="Search"/>
+        android:icon="@drawable/ic_search"
+        android:title="Search" />
 
     <item
         android:id="@+id/navAddRecipe"
         android:icon="@drawable/ic_add_circle_black_24dp"
-        android:title="Add new"/>
+        android:title="Add new" />
 
 </menu>
