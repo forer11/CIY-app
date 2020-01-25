@@ -3,6 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.ciy">
 
+    <uses-permission-sdk-23 android:name="android.permission.CAMERA" />
+    <uses-permission-sdk-23 android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/icon_chef_woman"
@@ -34,7 +37,7 @@
         <activity
             android:name=".NewNoteActivity"
             android:parentActivityName=".BottomNavigationBar"
-            android:theme="@style/BaseAppTheme" />
+            android:theme="@style/NewRecipeAppTheme" />
         <activity android:name=".Window2" />
         <activity
             android:name=".BottomNavigationBar"

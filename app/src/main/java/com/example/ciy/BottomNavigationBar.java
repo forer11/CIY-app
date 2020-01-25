@@ -133,18 +133,22 @@ public class BottomNavigationBar extends AppCompatActivity {
         @Override
         public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
             switch (menuItem.getItemId()) {
-                case R.id.nav_home: //TODO LIOR, IF PRESSED INSIDE HOME, SCROLL TO TOP
+                case R.id.navHome: //TODO LIOR, IF PRESSED INSIDE HOME, SCROLL TO TOP
                     homePressHandler();
                     break;
-                case R.id.nav_favorites:
+                case R.id.navFavorites:
                     showFragment(favoritesFragment, FAVORITES, lastTag);
                     lastPushed = SharedData.FAVORITES;
                     lastTag = FAVORITES;
                     break;
-                case R.id.nav_search:
+                case R.id.navSearch:
                     showFragment(searchFragment, SEARCH, lastTag);
                     lastPushed = SharedData.SEARCH;
                     lastTag = SEARCH;
+                    break;
+                case R.id.navAddRecipe:
+                    startActivity(new Intent(BottomNavigationBar.this, NewNoteActivity.class));
+
                     break;
             }
             return true;
@@ -175,8 +179,7 @@ public class BottomNavigationBar extends AppCompatActivity {
 
         if (lastTag != null) {
             Fragment lastFragment = fragmentManager.findFragmentByTag(lastTag);
-            if (lastTag.equals(FAVORITES)&&favoritesFragment.isRecipeCurrentlyOpen())
-            {
+            if (lastTag.equals(FAVORITES) && favoritesFragment.isRecipeCurrentlyOpen()) {
                 getSupportFragmentManager().popBackStack();
             }
             if (lastFragment != null) {
@@ -265,7 +268,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         } else {
             homePressHandler();
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-            bottomNavigationView.getMenu().findItem(R.id.nav_home).setChecked(true);
+            bottomNavigationView.getMenu().findItem(R.id.navHome).setChecked(true);
         }
     }
 }

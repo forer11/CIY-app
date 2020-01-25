@@ -1,35 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/newNoteLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/background_kitchen"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".NewNoteActivity">
 
-    <EditText
-        android:id="@+id/editTextTitle"
+    <eightbitlab.com.blurview.BlurView
+        android:id="@+id/blurView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Title"
-        android:inputType="text" />
-    <EditText
-        android:id="@+id/editTextDescription"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true"
+        android:layout_centerHorizontal="true"
+        android:scaleType="centerInside"
+        app:blurOverlayColor="#78FFFFFF"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <!--Any child View here, TabLayout for example-->
+        <ImageView
+            android:id="@+id/background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scaleType="centerCrop" />
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Description"
-        android:inputType="textMultiLine" />
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Views"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-    <NumberPicker
-        android:id="@+id/numberPickerViews"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
 
-</LinearLayout>
+
+
+        <EditText
+            android:id="@+id/Title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/Description"
+            android:layout_marginTop="20dp"
+            android:hint="Title"
+            android:inputType="text"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <EditText
+            android:id="@+id/PreparationTime"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/PreparationInstructions"
+            android:layout_marginTop="20dp"
+            android:hint="Preparation Time"
+            android:inputType="textMultiLine"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/Title" />
+
+        <EditText
+            android:id="@+id/Description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/PreparationTime"
+            android:layout_marginTop="20dp"
+            android:hint="Description"
+            android:inputType="textMultiLine"
+            app:layout_constraintTop_toBottomOf="@+id/PreparationTime"
+            tools:layout_editor_absoluteX="53dp" />
+
+
+        <EditText
+            android:id="@+id/PreparationInstructions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/ingredients"
+            android:layout_marginTop="20dp"
+            android:hint="Preparation Instructions"
+            android:inputType="textMultiLine"
+            app:layout_constraintTop_toBottomOf="@+id/Description"
+            tools:layout_editor_absoluteX="127dp" />
+
+        <EditText
+            android:id="@+id/ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/cameraButton"
+            android:layout_marginTop="20dp"
+            android:hint="Ingredients"
+            android:inputType="textMultiLine"
+            app:layout_constraintTop_toBottomOf="@+id/PreparationInstructions"
+            tools:layout_editor_absoluteX="127dp" />
+
+        <ImageButton
+            android:id="@+id/cameraButton"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_above="@+id/userPicture"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp"
+            android:background="@color/transperent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:baselineAlignBottom="true"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/ingredients"
+            android:scaleType="fitCenter"
+            android:src="@drawable/camera"
+         />
+
+        <ImageView
+            android:id="@+id/userPicture"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:cropToPadding="true"
+            android:padding="12dp"
+            android:scaleType="centerCrop"
+            android:baselineAlignBottom="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/cameraButton" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </eightbitlab.com.blurview.BlurView>
+
+</ScrollView>
