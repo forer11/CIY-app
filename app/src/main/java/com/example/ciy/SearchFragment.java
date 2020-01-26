@@ -55,21 +55,29 @@ public class SearchFragment extends Fragment {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
-//        final List<String> ingredientOptions = new ArrayList<>();
-//        ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                //we add all ingredients from our data base to 'ingredientOptions' list
-//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//                    String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
-//                    ingredientOptions.add(option);
-//                }
-//                adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
-//                        android.R.layout.simple_list_item_1, ingredientOptions);
-//                setUserInput();
-//            }
-//        });
+    public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        if (SharedData.allIngredients.isEmpty()) {
+            ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    //we add all ingredients from our data base to 'ingredientOptions' list
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
+                        SharedData.allIngredients.add(option);
+                    }
+                    final List<String> ingredientOptions =
+                            new ArrayList<>(SharedData.allIngredients);
+                    adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+                            android.R.layout.simple_list_item_1, ingredientOptions);
+                    setUserInput();
+                }
+            });
+        } else {
+            final List<String> ingredientOptions = new ArrayList<>(SharedData.allIngredients);
+            adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+                    android.R.layout.simple_list_item_1, ingredientOptions);
+            setUserInput();
+        }
     }
 
     private void setUserInput() {
@@ -80,6 +88,7 @@ public class SearchFragment extends Fragment {
         ingredientName = getView().findViewById(R.id.output);
         userInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             private String input;
+
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //get the input like for a normal EditText
@@ -99,22 +108,22 @@ public class SearchFragment extends Fragment {
 //                ingredientName.setVisibility(View.VISIBLE);
             }
         });
-        blurIngredientsView();
+//        blurIngredientsView();
     }
 
-    private void blurIngredientsView() {
-        float radius = 20f;
-        View decorView = Objects.requireNonNull(getActivity()).getWindow().getDecorView();
-        //ViewGroup we want to start blur from.
-        ViewGroup rootView = (ViewGroup) decorView.findViewById(android.R.id.content);
-        //Set drawable to draw in the beginning of each blurred frame.
-        Drawable windowBackground = decorView.getBackground();
-        BlurView blurView = decorView.findViewById(R.id.blurView);
-        blurView.setupWith(rootView).setFrameClearDrawable(windowBackground)
-                .setBlurAlgorithm(new RenderScriptBlur(getActivity())).setBlurRadius(radius)
-                .setHasFixedTransformationMatrix(false);
-        ImageView background = getView().findViewById(R.id.background);
-        BlurImage.with(getActivity()).load(R.drawable.background_kitchen).intensity(5).
-                Async(true).into(background);
-    }
+//    private void blurIngredientsView() {
+//        float radius = 20f;
+//        View decorView = Objects.requireNonNull(getActivity()).getWindow().getDecorView();
+//        //ViewGroup we want to start blur from.
+//        ViewGroup rootView = decorView.findViewById(android.R.id.content);
+//        //Set drawable to draw in the beginning of each blurred frame.
+//        Drawable windowBackground = decorView.getBackground();
+//        BlurView blurView = decorView.findViewById(R.id.blurView);
+//        blurView.setupWith(rootView).setFrameClearDrawable(windowBackground)
+//                .setBlurAlgorithm(new RenderScriptBlur(getActivity())).setBlurRadius(radius)
+//                .setHasFixedTransformationMatrix(false);
+//        ImageView background = getView().findViewById(R.id.background);
+//        BlurImage.with(getActivity()).load(R.drawable.background_kitchen).intensity(5).
+//                Async(true).into(background);
+//    }
 }
