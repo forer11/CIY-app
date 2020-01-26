@@ -1,7 +1,6 @@
 package com.example.ciy;
 
 import android.graphics.Color;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.text.InputType;
 import android.view.LayoutInflater;
@@ -10,9 +9,12 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
-import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -22,14 +24,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
-import com.jackandphantom.blurimage.BlurImage;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-
-import eightbitlab.com.blurview.BlurView;
-import eightbitlab.com.blurview.RenderScriptBlur;
 
 /**
  * This class represents the Search fragment, which allows the user to type ingredients he has at
@@ -38,13 +36,20 @@ import eightbitlab.com.blurview.RenderScriptBlur;
  */
 public class SearchFragment extends Fragment {
 
+    /* the autoComplete object for the possible ingredients */
     private AutoCompleteTextView userInput;
-    private ArrayList<String> ingredients = new ArrayList<>();
-    private TextView ingredientName;
-    private boolean firstIngredient = true;
+    /* the user's current ingredients */
+    private ArrayList<String> ingredients;
+    /* the firestore data base instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    /* the firestore ingredients collection reference */
     private CollectionReference ingredientsRef = db.collection(SharedData.Ingredients);
-    private ArrayAdapter<String> adapter;
+    /* the search option adapter */
+    private ArrayAdapter<String> searchOptionsAdapter;
+    /* the ingredients recycleView adapter */
+    private IngredientsAdapter ingredientsAdapter;
+    /* the search options ingredients list */
+    private List<String> ingredientOptions;
 
 
     @Nullable
@@ -56,6 +61,49 @@ public class SearchFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        ingredients = new ArrayList<>();
+        // sets up the recyclerView adapter and swipe option
+        setUpRecyclerView();
+        // sets up the auto fill search adapter and data
+        setUpSearchAdapter();
+
+    }
+
+    private void setUpRecyclerView() {
+        RecyclerView recyclerView = getView().findViewById(R.id.ingredientsRecyclerView);
+        recyclerView.setHasFixedSize(true);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
+        ingredientsAdapter = new IngredientsAdapter(ingredients);
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(ingredientsAdapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
+                DividerItemDecoration.VERTICAL));
+        setItemTouchHelpers(recyclerView);
+    }
+
+    private void setItemTouchHelpers(RecyclerView recyclerView) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView
+                    .ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                ingredientOptions.add(ingredients.get(position));
+                ingredients.remove(position);
+                ingredientsAdapter.notifyItemRemoved(position);
+                searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+                        android.R.layout.simple_list_item_1, ingredientOptions);
+                userInput.setAdapter(searchOptionsAdapter);
+            }
+        }).attachToRecyclerView(recyclerView);
+    }
+
+    private void setUpSearchAdapter() {
         if (SharedData.allIngredients.isEmpty()) {
             ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                 @Override
@@ -65,16 +113,14 @@ public class SearchFragment extends Fragment {
                         String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
                         SharedData.allIngredients.add(option);
                     }
-                    final List<String> ingredientOptions =
-                            new ArrayList<>(SharedData.allIngredients);
-                    adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+                    ingredientOptions = new ArrayList<>(SharedData.allIngredients);
+                    searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
                             android.R.layout.simple_list_item_1, ingredientOptions);
                     setUserInput();
                 }
             });
         } else {
-            final List<String> ingredientOptions = new ArrayList<>(SharedData.allIngredients);
-            adapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+            searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
                     android.R.layout.simple_list_item_1, ingredientOptions);
             setUserInput();
         }
@@ -82,10 +128,9 @@ public class SearchFragment extends Fragment {
 
     private void setUserInput() {
         userInput = Objects.requireNonNull(getView()).findViewById(R.id.enterIngredients);
-        userInput.setAdapter(adapter);
+        userInput.setAdapter(searchOptionsAdapter);
         userInput.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
         userInput.setTextColor(Color.DKGRAY);
-        ingredientName = getView().findViewById(R.id.output);
         userInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             private String input;
 
@@ -95,17 +140,14 @@ public class SearchFragment extends Fragment {
                 input = userInput.getText().toString();
                 //update user entered ingredient in data and ingredientName his choice on screen
                 ingredients.add(input);
+                ingredientsAdapter.notifyItemInserted(ingredients.size() - 1);
+                ingredientOptions.remove(input);
+                // notify data has changed don't work for android adapter, known issue online.
+                searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+                        android.R.layout.simple_list_item_1, ingredientOptions);
+                userInput.setAdapter(searchOptionsAdapter);
                 //clears search tab for next search
                 userInput.setText("");
-
-                //TODO - create a recycler view for new ingredient
-//                if (firstIngredient) {
-//                    ingredientName.append(input);
-//                    firstIngredient = false;
-//                } else {
-//                    ingredientName.append(", " + input);
-//                }
-//                ingredientName.setVisibility(View.VISIBLE);
             }
         });
 //        blurIngredientsView();

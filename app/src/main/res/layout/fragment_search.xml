@@ -9,7 +9,8 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_marginBottom="10dp">
 
 
         <AutoCompleteTextView
@@ -21,24 +22,31 @@
             android:layout_alignParentTop="true"
             android:background="@drawable/search_shape"
             android:completionThreshold="1"
-            android:drawableEnd="@drawable/ic_search"
+            android:drawableEnd="@drawable/ic_pencil"
             android:ems="10"
             android:fontFamily="casual"
-            android:hint="Select Ingredients"
+            android:hint="Add Ingredients"
             android:imeOptions="actionNext"
             android:inputType="textAutoCorrect"
-            android:maxLength="21"
             android:paddingLeft="10dp"
             android:paddingRight="10dp" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/searchRecyclerView"
+            android:id="@+id/ingredientsRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#72B9B6B6"
             android:layout_below="@id/enterIngredients"
+            android:layout_above="@id/goToFilteredRecipes"
             android:layout_centerInParent="true"
-            android:layout_marginTop="100dp"/>
+            android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"/>
+        <Button
+            android:id="@+id/goToFilteredRecipes"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerInParent="true"
+            android:text="Search recipes"/>
     </RelativeLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
