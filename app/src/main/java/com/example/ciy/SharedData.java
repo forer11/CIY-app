@@ -19,4 +19,6 @@ class SharedData {
 
     /* array list of all recipes shared by all activities*/
     static ArrayList<Recipe> searchRecipes = new ArrayList<>();
+    /* array list of all ingredients shared by all activities */
+    static ArrayList<String> allIngredients = new ArrayList<>();
 }

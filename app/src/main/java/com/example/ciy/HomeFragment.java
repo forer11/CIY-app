@@ -234,7 +234,7 @@ public class HomeFragment extends Fragment {
         recipeAdapter = new RecipeAdapter(options);
         recipeAdapter.setLayout(R.layout.recipe_item);
         recyclerView = Objects.requireNonNull(getView())
-                .findViewById(R.id.recyclerView);
+                .findViewById(R.id.homeRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recipeAdapter);
