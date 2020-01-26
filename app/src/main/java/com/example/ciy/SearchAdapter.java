@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> implements Filterable {
     private ArrayList<Recipe> searchRecipes;
@@ -77,8 +76,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     @Override
     public SearchViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.search_item, parent, false);
-        SearchViewHolder searchViewHolder = new SearchViewHolder(view, searchListener);
-        return searchViewHolder;
+        return new SearchViewHolder(view, searchListener);
     }
 
     @Override

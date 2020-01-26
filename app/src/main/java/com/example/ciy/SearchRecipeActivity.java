@@ -16,9 +16,8 @@ import java.util.ArrayList;
 
 public class SearchRecipeActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
+    /* the search recyclerView adapter */
     private SearchAdapter searchAdapter;
-    private RecyclerView.LayoutManager layoutManager;
 
 
     @Override
@@ -32,7 +31,8 @@ public class SearchRecipeActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         setUpRecyclerView(searchRecipes);
-        setUpListeners(searchRecipes);
+
+        setUpAdapterListeners(searchRecipes);
     }
 
     @Override
@@ -49,8 +49,11 @@ public class SearchRecipeActivity extends AppCompatActivity {
         searchView.setIconifiedByDefault(false);
 
 
+        setUpSearchViewListeners(searchItem, searchView);
+        return true;
+    }
 
-
+    private void setUpSearchViewListeners(MenuItem searchItem, SearchView searchView) {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -75,10 +78,9 @@ public class SearchRecipeActivity extends AppCompatActivity {
                 return true;
             }
         });
-        return true;
     }
 
-    private void setUpListeners(final ArrayList<Recipe> searchRecipes) {
+    private void setUpAdapterListeners(final ArrayList<Recipe> searchRecipes) {
         searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(int position) {
@@ -95,9 +97,9 @@ public class SearchRecipeActivity extends AppCompatActivity {
     }
 
     private void setUpRecyclerView(ArrayList<Recipe> searchRecipes) {
-        recyclerView = findViewById(R.id.searchRecyclerView);
+        RecyclerView recyclerView = findViewById(R.id.searchRecyclerView);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new LinearLayoutManager(this);
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         searchAdapter = new SearchAdapter(searchRecipes);
 
         recyclerView.setLayoutManager(layoutManager);
