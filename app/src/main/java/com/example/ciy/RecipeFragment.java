@@ -9,11 +9,13 @@ import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -23,11 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
-import java.util.HashMap;
-import java.util.Map;
 
-
-public class RecipeFragment extends Fragment {
+public class RecipeFragment extends DialogFragment {
     /* the recipe we show in this page */
     private Recipe recipe;
     /* the lottie animation like button */
@@ -49,9 +48,12 @@ public class RecipeFragment extends Fragment {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // sets the dialog to be full screen
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.BaseAppTheme);
         // Get back arguments
         recipe = (Recipe) getArguments().getSerializable("recipe");
         userPressedLike = getArguments().getBoolean("userPressedLike");
@@ -71,11 +73,27 @@ public class RecipeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Setup any handles to view objects here
+        ImageButton goBackButton = getView().findViewById(R.id.mockUpToolBarBackButton);
         button_like = getView().findViewById(R.id.button_like);
         if (userPressedLike) {
             button_like.setProgress(1);
         }
 
+        likeButtonListener();
+
+        goBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+
+
+        setRecipeView();
+    }
+
+    private void likeButtonListener() {
         button_like.setOnClickListener(new View.OnClickListener() {
 
 
@@ -85,22 +103,20 @@ public class RecipeFragment extends Fragment {
                     button_like.setProgress(0);
                     button_like.playAnimation();
                     userPressedLike = true;
-                    Map<String, Object> newFavoriteRecipe = new HashMap<>();
-                    newFavoriteRecipe.put(recipe.getTitle(), recipe.getId());
-                    favoritesRef.document(recipe.getId()).set(newFavoriteRecipe, SetOptions.merge());
+//                    Map<String, Object> newFavoriteRecipe = new HashMap<>();
+//                    newFavoriteRecipe.put("id", recipe.getId());
+                    favoritesRef.document(recipe.getId()).set(recipe, SetOptions.merge());
+                    //activity.updateFavorites();
                     // TODO- add recipe to favorites
                 } else { //user pressed unlike
                     button_like.setProgress(0);
                     userPressedLike = false;
                     favoritesRef.document(recipe.getId()).delete();
+                    //activity.updateFavorites();
                     //TODO - remove recipe from favorites
                 }
             }
         });
-        setRecipeView();
-//        BottomNavigationView navBar = getActivity().findViewById(R.id.bottom_navigation);
-//        navBar.setVisibility(View.INVISIBLE);
-
     }
 
     private void setRecipeView() {
@@ -178,7 +194,19 @@ public class RecipeFragment extends Fragment {
         super.onDestroy();
         // only using this fragment with BottomNavigationBar
         BottomNavigationBar activity = (BottomNavigationBar) getActivity();
-        // after we exit the recipe fragment we will enable the home fragment.
-        activity.homeFragment.enableClickable();
+        // after we exit the recipe fragment we will enable the Home\Favorites fragment.
+        if (activity != null) {
+            if (activity.favoritesFragment.isAdded()) {
+                activity.favoritesFragment.enableClickable();
+            }
+            if (activity.lastPushed == SharedData.HOME) {
+                activity.homeFragment.enableClickable();
+            }
+        } else {
+            // if this pops out we maybe opening the recipe fragment from an unexpected activity,
+            //TODO delete before submission
+            Toast.makeText(getContext(), "app Failure, current activity is " + getActivity(),
+                    Toast.LENGTH_SHORT).show();
+        }
     }
 }

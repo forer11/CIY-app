@@ -26,6 +26,8 @@ public class Recipe implements Serializable {
     private String instructions;
     /* the difficulty of said recipe */
     private String difficulty;
+    /* the preparation time */
+    private String preparationTime;
 
     public Recipe() {
         // public no-arg constructor necessary for Firestore
@@ -47,6 +49,29 @@ public class Recipe implements Serializable {
         this.views = views;
         this.ingredients = ingredients;
         this.imageUrl = imageUrl;
+    }
+
+    //TODO - for now i added another constructor -we need to delete one of them
+
+    /**
+     * constructor for or recipe
+     *
+     * @param title                   the title
+     * @param description             the description
+     * @param preparationTime         the preparation Time
+     * @param preparationInstructions the preparation Instructions
+     * @param ingredients             ingredients needed
+     * @param imageUrl                the image url
+     */
+    Recipe(String title, String description, String preparationTime, String preparationInstructions,
+           List<String> ingredients, String imageUrl) {
+        this.title = title;
+        this.description = description;
+        this.preparationTime = preparationTime;
+        this.instructions = preparationInstructions;
+        this.ingredients = ingredients;
+        this.imageUrl = imageUrl;
+        this.views = 0; //new recipe
     }
 
     public String getTitle() {

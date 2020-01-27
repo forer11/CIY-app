@@ -2,23 +2,30 @@
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/home_layout"
     android:layout_width="match_parent"
-    android:id="@+id/favorites_layout"
     android:layout_height="match_parent"
-    tools:context=".BottomNavigationBar">
+    tools:context=".SearchRecipeActivity">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/favoritesRecyclerView"
+        android:id="@+id/searchRecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#72B9B6B6"
+        android:scrollbars="vertical"
+        android:paddingTop="?attr/actionBarSize"
+        android:layout_marginTop="5dp"
         />
 
-    <FrameLayout
-        android:id="@+id/FavoritesPlaceholder"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/searchToolbar"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="?attr/actionBarSize"
+        android:background="?android:attr/windowBackground"
+        android:elevation="4dp"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:title="  CIY" />
 
-    </FrameLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -4,18 +4,14 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
-import androidx.appcompat.widget.TooltipCompat;
 import androidx.core.content.ContextCompat;
 
-import android.accessibilityservice.AccessibilityService;
-import android.content.ClipData;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.ImageView;
 
 public class Window2 extends AppCompatActivity {
 
@@ -50,7 +46,7 @@ public class Window2 extends AppCompatActivity {
         mBuilder.setCancelable(false)
                 .setPositiveButton("sign out", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
-                        startActivity(new Intent(Window2.this, signInActivity.class));
+                        startActivity(new Intent(Window2.this, SignInActivity.class));
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {

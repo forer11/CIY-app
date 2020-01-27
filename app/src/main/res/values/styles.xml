@@ -13,6 +13,20 @@
         <item name="titleTextColor">@color/dark_red</item>
     </style>
 
+    <style name="SearchAppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/gray</item>
+        <item name="colorAccent">@color/dark_gray</item>
+        <item name="titleTextColor">@color/dark_red</item>
+    </style>
+  
+    <style name="NewRecipeAppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <item name="colorPrimary">@color/white</item>
+        <item name="colorPrimaryDark">@color/gray</item>
+        <item name="colorAccent">@color/dark_gray</item>
+        <item name="titleTextColor">@color/dark_red</item>
+    </style>
+
     <style name="AppTheme.NoTitle">
         <item name="android:windowNoTitle">true</item>
 

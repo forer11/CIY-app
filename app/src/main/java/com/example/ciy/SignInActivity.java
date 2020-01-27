@@ -1,15 +1,12 @@
 package com.example.ciy;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -27,7 +24,7 @@ import com.google.firebase.firestore.SetOptions;
 
 import java.util.HashMap;
 
-public class signInActivity extends BaseSignIn implements View.OnClickListener {
+public class SignInActivity extends BaseSignIn implements View.OnClickListener {
 
     private static final String TAG = "EmailPassword";
 
@@ -55,12 +52,12 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
 
         if (!isEmailValid(mailInput)) {
             mailInput.setError("Field can't be empty");
-//            Toast.makeText(signInActivity.this, "not valid mail format", Toast.LENGTH_SHORT).show();
+//            Toast.makeText(SignInActivity.this, "not valid mail format", Toast.LENGTH_SHORT).show();
 //            signIn(view);
         }
         createAccount();
-//        Toast.makeText(signInActivity.this,mail,Toast.LENGTH_SHORT).show();
-//        Toast.makeText(signInActivity.this,password,Toast.LENGTH_SHORT).show();
+//        Toast.makeText(SignInActivity.this,mail,Toast.LENGTH_SHORT).show();
+//        Toast.makeText(SignInActivity.this,password,Toast.LENGTH_SHORT).show();
 
     }
 
@@ -90,7 +87,7 @@ public class signInActivity extends BaseSignIn implements View.OnClickListener {
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "createUserWithEmail:failure", task.getException());
-                            Toast.makeText(signInActivity.this, "Authentication failed.",
+                            Toast.makeText(SignInActivity.this, "Authentication failed.",
                                     Toast.LENGTH_SHORT).show();
 //                            updateUI(null);
                         }
