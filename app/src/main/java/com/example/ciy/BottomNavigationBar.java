@@ -187,9 +187,6 @@ public class BottomNavigationBar extends AppCompatActivity {
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
 
-        RecyclerView recycleView = findViewById(R.id.recyclerView);
-        recycleView.getLayoutManager().scrollToPosition(0);
-
         if (lastTag != null) {
             Fragment lastFragment = fragmentManager.findFragmentByTag(lastTag);
             if (lastFragment != null) {

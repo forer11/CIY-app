@@ -38,7 +38,6 @@ public class SignInActivity extends BaseSignIn implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
         mAuth = FirebaseAuth.getInstance();
-        setProgressBar(R.id.progressBar);
         findViewById(R.id.signIn).setOnClickListener(this);
     }
 
