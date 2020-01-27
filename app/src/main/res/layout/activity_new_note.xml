@@ -114,7 +114,7 @@
                     android:fontFamily="@font/andika"
                     android:foreground="?android:attr/selectableItemBackground"
                     android:hint="Enter Preparation Time"
-                    android:inputType="textMultiLine"
+                    android:inputType="time"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
                     tools:layout_editor_absoluteX="53dp" />
 
