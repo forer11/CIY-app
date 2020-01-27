@@ -42,6 +42,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     private static final String FAVORITES = "Favorites";
     /* the Search fragment Tag */
     private static final String SEARCH = "Search";
+    private static final int ADD_RECIPE_REQUEST_CODE = 2;
     /* the Home fragment */
     HomeFragment homeFragment;
     /* the Favorites fragment */
@@ -65,8 +66,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         setContentView(R.layout.activity_bottom_navigation_bar);
 
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null)
-        {
+        if (currentUser != null) {
             uri = currentUser.getPhotoUrl();
         }
         // set bottom and top bars
@@ -156,7 +156,8 @@ public class BottomNavigationBar extends AppCompatActivity {
                     lastTag = SEARCH;
                     break;
                 case R.id.navAddRecipe:
-                    startActivity(new Intent(BottomNavigationBar.this, NewNoteActivity.class));
+                    startActivityForResult(new Intent(BottomNavigationBar.this,
+                            NewRecipeActivity.class), ADD_RECIPE_REQUEST_CODE);
 
                     break;
             }
@@ -169,11 +170,7 @@ public class BottomNavigationBar extends AppCompatActivity {
      */
     private void homePressHandler() {
         if (lastPushed == SharedData.HOME) {
-            if (homeFragment.isRecipeCurrentlyOpen()) {
-                getSupportFragmentManager().popBackStack();
-            } else {
-                homeFragment.scrollToTop();
-            }
+            homeFragment.scrollToTop();
         } else {
             showFragment(homeFragment, HOME, lastTag);
             lastPushed = SharedData.HOME;
@@ -188,9 +185,6 @@ public class BottomNavigationBar extends AppCompatActivity {
 
         if (lastTag != null) {
             Fragment lastFragment = fragmentManager.findFragmentByTag(lastTag);
-            if (lastTag.equals(FAVORITES) && favoritesFragment.isRecipeCurrentlyOpen()) {
-                getSupportFragmentManager().popBackStack();
-            }
             if (lastFragment != null) {
                 transaction.hide(lastFragment);
             }
@@ -270,12 +264,18 @@ public class BottomNavigationBar extends AppCompatActivity {
     public void onBackPressed() {
         if (lastPushed == SharedData.HOME) {
             super.onBackPressed();
-        }
-        // currently does the same as above, need to see if we want different behavior TODO Lior
-        else if (lastPushed == SharedData.FAVORITES && favoritesFragment.isRecipeCurrentlyOpen()) {
-            super.onBackPressed();
         } else {
             homePressHandler();
+            BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
+            bottomNavigationView.getMenu().findItem(R.id.navHome).setChecked(true);
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        // check if the request code is same as what is passed  here it is 2
+        if (requestCode == ADD_RECIPE_REQUEST_CODE) {
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
             bottomNavigationView.getMenu().findItem(R.id.navHome).setChecked(true);
         }

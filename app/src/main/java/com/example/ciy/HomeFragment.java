@@ -214,7 +214,7 @@ public class HomeFragment extends Fragment {
 //        addNoteButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                startActivity(new Intent(getActivity(), NewNoteActivity.class));
+//                startActivity(new Intent(getActivity(), NewRecipeActivity.class));
 //            }
 //        });
     }

@@ -8,7 +8,7 @@
     android:background="@drawable/background_kitchen"
     android:orientation="vertical"
     android:padding="16dp"
-    tools:context=".NewNoteActivity">
+    tools:context=".NewRecipeActivity">
 
     <eightbitlab.com.blurview.BlurView
         android:id="@+id/blurView"

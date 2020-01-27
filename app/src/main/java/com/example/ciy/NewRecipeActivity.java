@@ -59,7 +59,7 @@ import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
 
-public class NewNoteActivity extends AppCompatActivity {
+public class NewRecipeActivity extends AppCompatActivity {
     public static final String INSTRUCTIONS_NEW_LINE = "\uD83D\uDCCC";
     public static final String INGREDIENT_NEW_LINE = "\uD83D\uDCCD";
     public static final String PREPERATION_TIME_NEW_LINE = "⏰";
@@ -106,6 +106,8 @@ public class NewNoteActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent=new Intent();
+        setResult(2,intent);
         setContentView(R.layout.activity_new_note);
         initializeUi();
         //Check if there's a permission to access camera and external storage
