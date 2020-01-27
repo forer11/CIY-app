@@ -301,11 +301,7 @@ public class HomeFragment extends Fragment {
 //        addNoteButton.setVisibility(View.INVISIBLE);
         RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, userPressedLike);
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.recipePlaceholder, recipeFragment);
-        fragmentTransaction.addToBackStack("HomeRecipe");
-        // Complete the changes added above
-        fragmentTransaction.commit();
+        recipeFragment.show(fragmentManager, "RecipeFromHome");
     }
 
     @Override

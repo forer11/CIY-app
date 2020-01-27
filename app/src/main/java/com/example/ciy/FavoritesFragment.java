@@ -112,11 +112,7 @@ public class FavoritesFragment extends Fragment {
     private void updatesRecipeFragment(Recipe recipe) {
         RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, true);
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.FavoritesPlaceholder, recipeFragment);
-        fragmentTransaction.addToBackStack("FavoritesRecipe");
-        // Complete the changes added above
-        fragmentTransaction.commit();
+        recipeFragment.show(fragmentManager, "RecipeFromFavorites");
     }
 
     @Override
@@ -141,6 +137,7 @@ public class FavoritesFragment extends Fragment {
         }
         setUpRecyclerView();
     }
+
     void enableClickable() {
         recipeAdapter.isClickable = true;
     }
