@@ -214,7 +214,7 @@ public class HomeFragment extends Fragment {
 //        addNoteButton.setOnClickListener(new View.OnClickListener() {
 //            @Override
 //            public void onClick(View v) {
-//                startActivity(new Intent(getActivity(), NewNoteActivity.class));
+//                startActivity(new Intent(getActivity(), NewRecipeActivity.class));
 //            }
 //        });
     }
@@ -299,13 +299,11 @@ public class HomeFragment extends Fragment {
     @SuppressLint("RestrictedApi") //TODO CARMEL
     private void updatesRecipeFragment(Recipe recipe, boolean userPressedLike) {
 //        addNoteButton.setVisibility(View.INVISIBLE);
-        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, userPressedLike);
-        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.recipePlaceholder, recipeFragment);
-        fragmentTransaction.addToBackStack("HomeRecipe");
-        // Complete the changes added above
-        fragmentTransaction.commit();
+        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, userPressedLike,
+                SharedData.BOTTOM_NAV);
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
+                .getSupportFragmentManager();
+        recipeFragment.show(fragmentManager, "RecipeFromHome");
     }
 
     @Override

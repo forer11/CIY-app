@@ -17,6 +17,10 @@ class SharedData {
     static final int FAVORITES =2;
     static final int SEARCH = 3;
 
+    static final int BOTTOM_NAV = 10;
+    static final int SEARCH_RECIPE = 11;
+
+
     /* array list of all recipes shared by all activities*/
     static ArrayList<Recipe> searchRecipes = new ArrayList<>();
     /* array list of all ingredients shared by all activities */

@@ -110,13 +110,11 @@ public class FavoritesFragment extends Fragment {
 
     @SuppressLint("RestrictedApi") //TODO CARMEL
     private void updatesRecipeFragment(Recipe recipe) {
-        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, true);
-        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
-        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.FavoritesPlaceholder, recipeFragment);
-        fragmentTransaction.addToBackStack("FavoritesRecipe");
-        // Complete the changes added above
-        fragmentTransaction.commit();
+        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, true,
+                SharedData.BOTTOM_NAV);
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
+                .getSupportFragmentManager();
+        recipeFragment.show(fragmentManager, "RecipeFromFavorites");
     }
 
     @Override
@@ -141,6 +139,7 @@ public class FavoritesFragment extends Fragment {
         }
         setUpRecyclerView();
     }
+
     void enableClickable() {
         recipeAdapter.isClickable = true;
     }

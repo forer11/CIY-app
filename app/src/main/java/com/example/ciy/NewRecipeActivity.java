@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.DialogFragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -16,23 +18,21 @@ import android.os.Bundle;
 import android.os.StrictMode;
 import android.provider.MediaStore;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.jackandphantom.blurimage.BlurImage;
 
 import java.io.File;
@@ -44,6 +44,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -58,15 +59,22 @@ import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
 
-public class NewNoteActivity extends AppCompatActivity {
+public class NewRecipeActivity extends AppCompatActivity {
     public static final String INSTRUCTIONS_NEW_LINE = "\uD83D\uDCCC";
     public static final String INGREDIENT_NEW_LINE = "\uD83D\uDCCD";
     public static final String PREPERATION_TIME_NEW_LINE = "⏰";
-    private EditText editTextTitle;
-    private EditText editTextDescription;
-    private EditText editTextPrepInstructions;
-    private EditText editTextPrepTime;
-    private EditText editTextIngredients;
+
+    private TextInputEditText titleText;
+    private TextInputEditText descriptionText;
+    private TextInputEditText instructionsText;
+    private TextInputEditText prepTimeText;
+    private TextInputEditText ingredientsText;
+
+    private TextInputLayout titleLayout;
+    private TextInputLayout descriptionLayout;
+    private TextInputLayout instructionsLayout;
+    private TextInputLayout prepTimeLayout;
+    private TextInputLayout ingredientsLayout;
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
@@ -90,11 +98,16 @@ public class NewNoteActivity extends AppCompatActivity {
     /* mediaPath is the path of the file which contains the photo the user took, and imName is the
      *  unique name we give to each image the user take */
     String mediaPath, imName;
+    private String finalInstructions;
+    private List<String> finalIngredientsList;
+    private String finalPrepTime;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Intent intent=new Intent();
+        setResult(2,intent);
         setContentView(R.layout.activity_new_note);
         initializeUi();
         //Check if there's a permission to access camera and external storage
@@ -148,111 +161,103 @@ public class NewNoteActivity extends AppCompatActivity {
     private void initializeUi() {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Add Recipe");
-        editTextTitle = findViewById(R.id.Title);
-        editTextDescription = findViewById(R.id.Description);
-        handlePreparationTime();
-        handlePreparationInstruction();
-        handleIngredientsInput();
+        titleText = findViewById(R.id.titleText);
+        titleLayout = findViewById(R.id.title);
+        descriptionText = findViewById(R.id.descriptionText);
+        prepTimeLayout = findViewById(R.id.description);
+        ingredientsText = findViewById(R.id.ingredientsText);
+        ingredientsText.addTextChangedListener(new ValidationTextWatcher(ingredientsText));
+        ingredientsLayout = findViewById(R.id.ingredients);
+        prepTimeText = findViewById(R.id.preparationTimeText);
+        prepTimeText.addTextChangedListener(new ValidationTextWatcher(prepTimeText));
+        prepTimeLayout = findViewById(R.id.prepTime);
+        instructionsText = findViewById(R.id.preparationInstructionsText);
+        instructionsText.addTextChangedListener(new ValidationTextWatcher(instructionsText));
+        instructionsLayout = findViewById(R.id.preparationInstructions);
+        userPicture = findViewById(R.id.userPicture);
+        cameraButton = findViewById(R.id.takePicButton);
         //Build upon an existing VmPolicy
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        userPicture = findViewById(R.id.userPicture);
-        cameraButton = findViewById(R.id.takePicButton);
     }
 
     private void handlePreparationInstruction() {
-        editTextPrepInstructions = findViewById(R.id.PreparationInstructions);
-        editTextPrepInstructions.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable e) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-                if (lengthAfter > lengthBefore) {
-                    if (text.toString().length() == 1) {
-                        text = INSTRUCTIONS_NEW_LINE + " " + text;
-                        editTextPrepInstructions.setText(text);
-                        editTextPrepInstructions.setSelection(editTextPrepInstructions.getText()
-                                .length());
-                    }
-                    if (text.toString().endsWith("\n")) {
-                        text = text.toString().replace("\n", "\n" +
-                                INSTRUCTIONS_NEW_LINE + " ");
-                        text = text.toString().replace(INSTRUCTIONS_NEW_LINE + " " +
-                                INSTRUCTIONS_NEW_LINE, INSTRUCTIONS_NEW_LINE);
-                        editTextPrepInstructions.setText(text);
-                        editTextPrepInstructions.setSelection(editTextPrepInstructions.getText()
-                                .length());
-                    }
+        if (instructionsText.getText().toString().trim().isEmpty()) {
+            instructionsLayout.setErrorEnabled(false);
+        } else {
+            String[] instructions = instructionsText.getText().toString().split("\n");
+            finalInstructions = "";
+            for (String line : instructions) {
+                if (!TextUtils.isEmpty(line.trim())) {
+                    finalInstructions += line + "\n";
                 }
+                instructionsLayout.setErrorEnabled(false);
             }
-        });
+        }
     }
+
 
     private void handlePreparationTime() {
-        editTextPrepTime = findViewById(R.id.PreparationTime);
-        editTextPrepTime.setFocusable(false);
-        editTextPrepTime.setClickable(true);
-        editTextPrepTime.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Calendar currentTime = Calendar.getInstance();
-                final int hour = currentTime.get(Calendar.HOUR_OF_DAY);
-                final int min = currentTime.get(Calendar.MINUTE);
-                TimePickerDialog TimePicker;
-                TimePicker = new TimePickerDialog(view.getContext(),
-                        new TimePickerDialog.OnTimeSetListener() {
-                            @Override
-                            public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                                String time = hourOfDay + ":" + minute + " " + PREPERATION_TIME_NEW_LINE;
-                                editTextPrepTime.setText(time);
-                            }
-                        }, hour, min, true);
-                TimePicker.setTitle("Select Time");
-                TimePicker.show();
-            }
-        });
+        String time = prepTimeText.getText().toString();
+        if (time.trim().isEmpty()) {
+            prepTimeLayout.setErrorEnabled(false);
+        } else if (time.contains(":")) {
+            String[] temp = time.split(":");
+            int timeInMin = ((Integer.parseInt(temp[0])*60)+(Integer.parseInt(temp[1])));
+            finalPrepTime = Integer.toString(timeInMin);
+        } else if (Integer.parseInt(time) <= 0) {
+            prepTimeLayout.setError("Invalid Time, please set legal time in minutes");
+            prepTimeText.requestFocus();
+        } else {
+            finalPrepTime = time;
+            prepTimeLayout.setErrorEnabled(false);
+        }
     }
 
+
     private void handleIngredientsInput() {
-        editTextIngredients = findViewById(R.id.ingredients);
-        editTextIngredients.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void afterTextChanged(Editable e) {
-
-            }
-
-            @Override
-            public void beforeTextChanged(CharSequence arg0, int arg1, int arg2, int arg3) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence text, int start, int lengthBefore, int lengthAfter) {
-                if (lengthAfter > lengthBefore) {
-                    if (text.toString().length() == 1) {
-                        text = INGREDIENT_NEW_LINE + " " + text;
-                        editTextIngredients.setText(text);
-                        editTextIngredients.setSelection(editTextIngredients.getText().length());
-                    }
-                    if (text.toString().endsWith("\n")) {
-                        text = text.toString().replace("\n", "\n" +
-                                INGREDIENT_NEW_LINE + " ");
-                        text = text.toString().replace(INGREDIENT_NEW_LINE + " " +
-                                INGREDIENT_NEW_LINE, INGREDIENT_NEW_LINE);
-                        editTextIngredients.setText(text);
-                        editTextIngredients.setSelection(editTextIngredients.getText().length());
-                    }
+        if (ingredientsText.getText().toString().trim().isEmpty()) {
+            ingredientsLayout.setErrorEnabled(false);
+        } else {
+            String[] ingredients = ingredientsText.getText().toString().split("\n");
+            finalIngredientsList = new ArrayList<>();
+            for (String line : ingredients) {
+                if (!TextUtils.isEmpty(line.trim())) {
+                    finalIngredientsList.add(line);
                 }
+                ingredientsLayout.setErrorEnabled(false);
             }
-        });
+        }
+    }
+
+    private class ValidationTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private ValidationTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()) {
+                case R.id.prepTime:
+                    handlePreparationTime();
+                    break;
+                case R.id.ingredients:
+                    handleIngredientsInput();
+                    break;
+                case R.id.preparationInstructions:
+                    handlePreparationInstruction();
+                    break;
+            }
+        }
     }
 
     @Override
@@ -336,24 +341,16 @@ public class NewNoteActivity extends AppCompatActivity {
     }
 
     private void saveNote() throws MalformedURLException {
-        String title = editTextTitle.getText().toString();
-        String description = editTextDescription.getText().toString();
-        String preparationTime = editTextPrepTime.getText().toString();
-        String preparationInstruction = editTextPrepInstructions.getText().toString();
-        String ingredients = editTextIngredients.getText().toString();
-        if (title.trim().isEmpty() || description.trim().isEmpty() || preparationTime.trim().isEmpty()
-                || preparationInstruction.trim().isEmpty() || ingredients.trim().isEmpty() || file.getPath().equals("")) {
+        String title = titleText.toString();
+        String description = descriptionText.getText().toString();
+        if (title.trim().isEmpty() || description.trim().isEmpty() || finalPrepTime.trim().isEmpty()
+                || finalInstructions.trim().isEmpty() || finalIngredientsList.isEmpty() || file.getPath().equals("")) {
             Toast.makeText(this, "Please fill in all the fields above", Toast.LENGTH_SHORT).show();
             return;
         }
-        preparationTime = preparationTime.substring(0, preparationTime.length() - 2);
-        List<String> ingredientsList = new LinkedList<>(Arrays.asList(ingredients.split(INGREDIENT_NEW_LINE)));
-        ingredientsList.removeAll(Arrays.asList(" ","","\n"));
-        List<String> instructionsList = new LinkedList<>(Arrays.asList(ingredients.split(INSTRUCTIONS_NEW_LINE)));
-        instructionsList.removeAll(Collections.singleton(","));
-        preparationInstruction = instructionsList.toString();
-        Recipe recipe = new Recipe(title, description, preparationTime,
-                preparationInstruction, ingredientsList, new URL(file.toString()).toString());
+        Recipe recipe = new Recipe(title, description, finalPrepTime,
+                finalInstructions, finalIngredientsList, new URL(file.toString()).toString());
+        int x = 5;
         finish();
     }
 

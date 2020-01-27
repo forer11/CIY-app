@@ -1,6 +1,8 @@
 package com.example.ciy;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.appcompat.widget.Toolbar;
@@ -9,20 +11,42 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class SearchRecipeActivity extends AppCompatActivity {
 
     /* the search recyclerView adapter */
     private SearchAdapter searchAdapter;
 
+    /* the firestore database instance */
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    /* reference to the firestore users collection */
+    private CollectionReference usersRef = db.collection(SharedData.USERS);
+    /* Firestore authentication reference */
+    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
+
+    private FirebaseUser user;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        user = firebaseAuth.getCurrentUser();
+
         setContentView(R.layout.activity_search_recipe);
         final ArrayList<Recipe> searchRecipes = new ArrayList<>();
 
@@ -84,8 +108,9 @@ public class SearchRecipeActivity extends AppCompatActivity {
         searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(int position) {
-                searchRecipes.get(position).setId("wichongo");
-                searchAdapter.notifyItemChanged(position);
+//                searchRecipes.get(position).setId("wichongo");
+//                searchAdapter.notifyItemChanged(position);
+                setUpRecipeFragment(searchRecipes.get(position));
             }
 
             @Override
@@ -94,6 +119,35 @@ public class SearchRecipeActivity extends AppCompatActivity {
                 searchAdapter.notifyItemRemoved(position);
             }
         });
+    }
+
+    private void setUpRecipeFragment(final Recipe recipe) {
+        CollectionReference favoritesRef = usersRef.
+                document(user.getUid()).collection(SharedData.Favorites);
+        final DocumentReference favoriteRecipeRef = favoritesRef.document(recipe.getId());
+        favoriteRecipeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                boolean userPressedLike = false;
+                if (!(documentSnapshot == null || !documentSnapshot.exists())) {
+                    userPressedLike = true;
+                }
+                updatesRecipeFragment(recipe, userPressedLike);
+            }
+        }).addOnFailureListener(new OnFailureListener() {
+            @Override
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(SearchRecipeActivity.this, "Failed to load data", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    private void updatesRecipeFragment(Recipe recipe, boolean userPressedLike) {
+        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, userPressedLike
+                , SharedData.SEARCH_RECIPE);
+        FragmentManager fragmentManager = Objects.requireNonNull(SearchRecipeActivity.this)
+                .getSupportFragmentManager();
+        recipeFragment.show(fragmentManager, "RecipeFromSearchRecipe");
     }
 
     private void setUpRecyclerView(ArrayList<Recipe> searchRecipes) {

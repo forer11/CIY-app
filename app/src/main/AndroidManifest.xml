@@ -35,12 +35,13 @@
         </activity>
         <activity android:name=".Blurred" />
         <activity
-            android:name=".NewNoteActivity"
+            android:name=".NewRecipeActivity"
             android:parentActivityName=".BottomNavigationBar"
             android:theme="@style/NewRecipeAppTheme" />
         <activity android:name=".Window2" />
         <activity
             android:name=".BottomNavigationBar"
+            android:launchMode="singleTop"
             android:theme="@style/BaseAppTheme">
 
         </activity>
