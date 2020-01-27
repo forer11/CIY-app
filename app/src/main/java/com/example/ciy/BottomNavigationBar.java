@@ -57,10 +57,18 @@ public class BottomNavigationBar extends AppCompatActivity {
     /* the FireBase authenticator */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
+    private Uri uri = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_bottom_navigation_bar);
+
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null)
+        {
+            uri = currentUser.getPhotoUrl();
+        }
         // set bottom and top bars
         setBars();
 
@@ -105,15 +113,12 @@ public class BottomNavigationBar extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.tool_bar_buttons, menu);
 
         //get the image of the user
-        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
-        if (currentUser != null) {
-            Uri uri = currentUser.getPhotoUrl();
-            if (uri == null) // user not sign in from google, so default profile picture defined
-            {
-                menu.getItem(1).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
-            } else {
-                setProfileImage(menu, uri);
-            }
+
+        if (uri == null) // user not sign in from google, so default profile picture defined
+        {
+            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
+        } else {
+            setProfileImage(menu, uri);
         }
         return true;
     }
