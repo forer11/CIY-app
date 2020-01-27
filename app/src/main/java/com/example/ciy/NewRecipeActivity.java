@@ -4,12 +4,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.DialogFragment;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
-import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
@@ -25,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageButton;
 
 import com.google.android.material.textfield.TextInputEditText;
@@ -40,19 +38,13 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Collections;
 import java.util.Date;
-import java.util.GregorianCalendar;
-import java.util.LinkedList;
 import java.util.List;
 
 
 import android.os.Environment;
 
 import android.widget.ImageView;
-import android.widget.TimePicker;
 import android.widget.Toast;
 
 import eightbitlab.com.blurview.BlurView;
@@ -106,8 +98,8 @@ public class NewRecipeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Intent intent=new Intent();
-        setResult(2,intent);
+        Intent intent = new Intent();
+        setResult(2, intent);
         setContentView(R.layout.activity_new_note);
         initializeUi();
         //Check if there's a permission to access camera and external storage
@@ -181,9 +173,45 @@ public class NewRecipeActivity extends AppCompatActivity {
         StrictMode.setVmPolicy(builder.build());
     }
 
-    private void handlePreparationInstruction() {
+
+    private boolean validatePreparationTime() {
+        String time = prepTimeText.getText().toString();
+        if (time.trim().isEmpty()) {
+            prepTimeLayout.setErrorEnabled(false);
+            return false;
+        } else if (Integer.parseInt(Character.toString(time.charAt(0))) <= 0) {
+            prepTimeLayout.setError("Invalid Time, please set legal time");
+            prepTimeText.requestFocus();
+            return false;
+        } else {
+            finalPrepTime = time;
+            prepTimeLayout.setErrorEnabled(false);
+            return true;
+        }
+    }
+
+
+    private boolean validateIngredientsInput() {
+        if (ingredientsText.getText().toString().trim().isEmpty()) {
+            ingredientsLayout.setErrorEnabled(false);
+            return false;
+        } else {
+            String[] ingredients = ingredientsText.getText().toString().split("\n");
+            finalIngredientsList = new ArrayList<>();
+            for (String line : ingredients) {
+                if (!TextUtils.isEmpty(line.trim())) {
+                    finalIngredientsList.add(line);
+                }
+                ingredientsLayout.setErrorEnabled(false);
+            }
+        }
+        return true;
+    }
+
+    private boolean validateInstructionsInput() {
         if (instructionsText.getText().toString().trim().isEmpty()) {
             instructionsLayout.setErrorEnabled(false);
+            return false;
         } else {
             String[] instructions = instructionsText.getText().toString().split("\n");
             finalInstructions = "";
@@ -194,39 +222,12 @@ public class NewRecipeActivity extends AppCompatActivity {
                 instructionsLayout.setErrorEnabled(false);
             }
         }
+        return true;
     }
 
-
-    private void handlePreparationTime() {
-        String time = prepTimeText.getText().toString();
-        if (time.trim().isEmpty()) {
-            prepTimeLayout.setErrorEnabled(false);
-        } else if (time.contains(":")) {
-            String[] temp = time.split(":");
-            int timeInMin = ((Integer.parseInt(temp[0])*60)+(Integer.parseInt(temp[1])));
-            finalPrepTime = Integer.toString(timeInMin);
-        } else if (Integer.parseInt(time) <= 0) {
-            prepTimeLayout.setError("Invalid Time, please set legal time in minutes");
-            prepTimeText.requestFocus();
-        } else {
-            finalPrepTime = time;
-            prepTimeLayout.setErrorEnabled(false);
-        }
-    }
-
-
-    private void handleIngredientsInput() {
-        if (ingredientsText.getText().toString().trim().isEmpty()) {
-            ingredientsLayout.setErrorEnabled(false);
-        } else {
-            String[] ingredients = ingredientsText.getText().toString().split("\n");
-            finalIngredientsList = new ArrayList<>();
-            for (String line : ingredients) {
-                if (!TextUtils.isEmpty(line.trim())) {
-                    finalIngredientsList.add(line);
-                }
-                ingredientsLayout.setErrorEnabled(false);
-            }
+    private void requestFocus(View view) {
+        if (view.requestFocus()) {
+            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
         }
     }
 
@@ -247,14 +248,14 @@ public class NewRecipeActivity extends AppCompatActivity {
 
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {
-                case R.id.prepTime:
-                    handlePreparationTime();
+                case R.id.preparationTimeText:
+                    validatePreparationTime();
                     break;
-                case R.id.ingredients:
-                    handleIngredientsInput();
+                case R.id.ingredientsText:
+                    validateIngredientsInput();
                     break;
-                case R.id.preparationInstructions:
-                    handlePreparationInstruction();
+                case R.id.preparationInstructionsText:
+                    validateInstructionsInput();
                     break;
             }
         }
@@ -279,10 +280,9 @@ public class NewRecipeActivity extends AppCompatActivity {
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
-
-
         }
     }
+
 
     /**
      * Callback for the result from requesting permissions.
@@ -343,14 +343,21 @@ public class NewRecipeActivity extends AppCompatActivity {
     private void saveNote() throws MalformedURLException {
         String title = titleText.toString();
         String description = descriptionText.getText().toString();
-        if (title.trim().isEmpty() || description.trim().isEmpty() || finalPrepTime.trim().isEmpty()
+        if (!validateIngredientsInput() || !validatePreparationTime() || !validateInstructionsInput()) {
+            Toast.makeText(this, "Please fill legal values in all the fields above", Toast.LENGTH_SHORT).show();
+            return;
+        } else if (title.trim().isEmpty() || description.trim().isEmpty() || finalPrepTime.trim().isEmpty()
                 || finalInstructions.trim().isEmpty() || finalIngredientsList.isEmpty() || file.getPath().equals("")) {
             Toast.makeText(this, "Please fill in all the fields above", Toast.LENGTH_SHORT).show();
             return;
         }
+        if (finalPrepTime.contains(":")) {
+            String[] temp = finalPrepTime.split(":");
+            int timeInMin = ((Integer.parseInt(temp[0]) * 60) + (Integer.parseInt(temp[1])));
+            finalPrepTime = Integer.toString(timeInMin);
+        }
         Recipe recipe = new Recipe(title, description, finalPrepTime,
                 finalInstructions, finalIngredientsList, new URL(file.toString()).toString());
-        int x = 5;
         finish();
     }
 
