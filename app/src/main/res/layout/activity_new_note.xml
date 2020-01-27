@@ -29,155 +29,154 @@
             android:scaleType="centerCrop" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp">
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            >
 
 
-            <EditText
-                android:id="@+id/Title"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/title"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:layout_above="@+id/Description"
+                android:layout_above="@+id/description"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
-                android:fontFamily="@font/andika"
-                android:hint="Enter Dish Name"
-                android:inputType="text"
-                android:textAppearance="@style/TextAppearance.AppCompat.Large"
-                android:textStyle="bold"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintBottom_toTopOf="@id/description"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="parent">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/titleText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:fontFamily="@font/andika"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:hint="Enter Dish Name"
+                    android:inputType="text"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Large"
+                    android:textStyle="bold" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <TextView
-                android:id="@+id/PreparationTimeTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/PreparationInstructionsTitle"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/andika"
-                android:text="Preparation Time"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/Description"
-                tools:layout_editor_absoluteX="127dp" />
-
-
-            <TextView
-                android:id="@+id/DescriptionTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/Description"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/andika"
-                android:text="Description"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/Title"
-                tools:layout_editor_absoluteX="127dp" />
-
-            <EditText
-                android:id="@+id/Description"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/PreparationTimeTitle"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/andika"
-                android:hint="Enter Description"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:inputType="textMultiLine"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                app:layout_constraintTop_toBottomOf="@+id/DescriptionTitle"
-                tools:layout_editor_absoluteX="53dp" />
-
-            <EditText
-                android:id="@+id/PreparationTime"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/PreparationInstructionsTitle"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/andika"
-                android:hint="Enter Preparation Time in minutes"
-                android:inputType="textMultiLine"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/PreparationTimeTitle" />
-
-
-            <TextView
-                android:id="@+id/PreparationInstructionsTitle"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/PreparationInstructions"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/andika"
-                android:text="Preparation Instructions"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/PreparationTime"
-                tools:layout_editor_absoluteX="127dp" />
-
-            <EditText
-                android:id="@+id/PreparationInstructions"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/ingredientsTitle"
-                android:layout_marginTop="20dp"
-                android:fontFamily="@font/andika"
-                android:hint="Enter Preparation Instructions"
-                android:foreground="?android:attr/selectableItemBackground"
-                android:inputType="textMultiLine"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                app:layout_constraintTop_toBottomOf="@+id/PreparationInstructionsTitle"
-                tools:layout_editor_absoluteX="127dp" />
-
-            <TextView
-                android:id="@+id/ingredientsTitle"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/description"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/ingredients"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
-                android:fontFamily="@font/andika"
-                android:text="Ingredients"
-                android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-                android:textStyle="bold"
-                app:layout_constraintTop_toBottomOf="@+id/PreparationInstructions"
-                tools:layout_editor_absoluteX="127dp" />
+                android:layout_marginEnd="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/descriptionText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transperent"
+                    android:fontFamily="@font/andika"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:hint="Enter Description"
+                    android:inputType="textMultiLine"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    tools:layout_editor_absoluteX="53dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-            <EditText
-                android:id="@+id/ingredients"
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/prepTime"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/preparationInstructions"
+                android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ingredients">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/preparationTimeText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transperent"
+                    android:fontFamily="@font/andika"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:hint="Enter Preparation Time"
+                    android:inputType="textMultiLine"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    tools:layout_editor_absoluteX="53dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/preparationInstructions"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/takePicButton"
-                android:foreground="?android:attr/selectableItemBackground"
+                android:layout_marginStart="5dp"
                 android:layout_marginTop="20dp"
-                android:fontFamily="@font/andika"
-                android:hint="Enter Ingredients"
-                android:inputType="textMultiLine"
-                android:textAppearance="@style/TextAppearance.AppCompat.Small"
-                app:layout_constraintTop_toBottomOf="@+id/ingredientsTitle"
-                tools:layout_editor_absoluteX="127dp"
-                />
+                android:layout_marginEnd="5dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/prepTime">
 
-            <ImageButton
-                android:id="@+id/cameraSign"
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_above="@+id/userPicture"
-                android:background="@color/transperent"
-                android:baselineAlignBottom="true"
-                android:scaleType="fitCenter"
-                android:src="@drawable/camera"
-                android:layout_marginEnd="20dp"
-                android:layout_marginTop="15dp"
-                android:layout_marginBottom="15dp"
-                app:layout_constraintBottom_toBottomOf="@+id/takePicButton"
-                app:layout_constraintTop_toTopOf="@+id/takePicButton"
-                app:layout_constraintEnd_toEndOf="@+id/takePicButton" />
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/preparationInstructionsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/transperent"
+                    android:fontFamily="@font/andika"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:hint="Enter Preparation Instructions"
+                    android:inputType="textMultiLine"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    tools:layout_editor_absoluteX="53dp" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/ingredients"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_above="@+id/prepTime"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/description"
+                android:layout_marginStart="5dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginTop="20dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/ingredientsText"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/andika"
+                    android:hint="Enter Ingredients"
+                    android:background="@color/transperent"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:inputType="textMultiLine"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Small"
+                    tools:layout_editor_absoluteX="53dp"  />
+
+            </com.google.android.material.textfield.TextInputLayout>
 
             <ImageButton
                 android:id="@+id/takePicButton"
@@ -185,28 +184,44 @@
                 android:layout_height="76dp"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="20dp"
+                android:layout_marginBottom="15dp"
                 android:background="@drawable/ripple_rounded_corners"
                 android:baselineAlignBottom="true"
                 android:scaleType="centerInside"
-                android:layout_marginBottom="15dp"
+                app:layout_constraintBottom_toTopOf="@+id/userPicture"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/ingredients"
-                app:layout_constraintBottom_toTopOf="@+id/userPicture"
-                />
+                app:layout_constraintTop_toBottomOf="@+id/preparationInstructions" />
+
+            <ImageButton
+                android:id="@+id/cameraSign"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_above="@+id/userPicture"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="15dp"
+                android:background="@color/transperent"
+                android:baselineAlignBottom="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/camera"
+                app:layout_constraintBottom_toBottomOf="@+id/takePicButton"
+                app:layout_constraintEnd_toEndOf="@+id/takePicButton"
+                app:layout_constraintTop_toTopOf="@+id/takePicButton" />
+
 
             <TextView
                 android:id="@+id/takePicText"
                 android:layout_width="130dp"
                 android:layout_height="wrap_content"
+                android:fontFamily="@font/andika"
                 android:text="Take a Picture\n of your dish"
                 android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/takePicButton"
                 app:layout_constraintEnd_toStartOf="@+id/cameraSign"
                 app:layout_constraintStart_toStartOf="@+id/takePicButton"
-                android:textStyle="bold"
-                android:textSize="16sp"
-                android:fontFamily="@font/andika"
                 app:layout_constraintTop_toTopOf="@+id/takePicButton" />
 
 
@@ -220,8 +235,8 @@
                 android:scaleType="centerCrop"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                 />
+                app:layout_constraintStart_toStartOf="parent" />
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
