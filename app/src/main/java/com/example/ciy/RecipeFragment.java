@@ -9,12 +9,13 @@ import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 
-import androidx.fragment.app.Fragment;
+import androidx.fragment.app.DialogFragment;
 
 
 import com.google.firebase.auth.FirebaseAuth;
@@ -24,12 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
 
-
-public class RecipeFragment extends Fragment {
+public class RecipeFragment extends DialogFragment {
     /* the recipe we show in this page */
     private Recipe recipe;
     /* the lottie animation like button */
@@ -51,9 +48,12 @@ public class RecipeFragment extends Fragment {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        // sets the dialog to be full screen
+        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.BaseAppTheme);
         // Get back arguments
         recipe = (Recipe) getArguments().getSerializable("recipe");
         userPressedLike = getArguments().getBoolean("userPressedLike");
@@ -73,11 +73,27 @@ public class RecipeFragment extends Fragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Setup any handles to view objects here
+        ImageButton goBackButton = getView().findViewById(R.id.mockUpToolBarBackButton);
         button_like = getView().findViewById(R.id.button_like);
         if (userPressedLike) {
             button_like.setProgress(1);
         }
 
+        likeButtonListener();
+
+        goBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+
+
+
+        setRecipeView();
+    }
+
+    private void likeButtonListener() {
         button_like.setOnClickListener(new View.OnClickListener() {
 
 
@@ -101,7 +117,6 @@ public class RecipeFragment extends Fragment {
                 }
             }
         });
-        setRecipeView();
     }
 
     private void setRecipeView() {

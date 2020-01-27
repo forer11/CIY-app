@@ -1,138 +1,163 @@
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/scrollView"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="#E0DEDE"
-    android:clickable="true"
-    android:focusable="true">
-
+    android:layout_height="match_parent">
 
     <RelativeLayout
+        android:id="@+id/mockUpToolBar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-
         <ImageView
-            android:id="@+id/recipeImage"
+            android:id="@+id/mockUpToolBarBackground"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
-            android:layout_alignParentTop="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginTop="0dp"
-            android:layout_marginEnd="0dp"
-            android:scaleType="centerCrop" />
+            android:layout_height="40dp"
+            android:background="@color/white" />
 
-        <TextView
-            android:id="@+id/recipeTitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/abril_fatface"
-            android:layout_marginTop="10dp"
-            android:layout_marginStart="10dp"
-            android:text="recipeTitle"
-            android:textAllCaps="true"
-            android:shadowColor="@color/black"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="2"
-            android:textColor="#FFFFFF"
-            android:textSize="25sp"
-            android:textStyle="bold"
-           android:layout_below="@id/recipeImage" />
-
-
-
-        <TextView
-            android:id="@+id/recipeIngredients"
+        <ImageButton
+            android:id="@+id/mockUpToolBarBackButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/recipeTitle"
             android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/window_frame"
-            android:fontFamily="@font/alegreya_sc"
-            android:paddingStart="20dp"
-            android:paddingTop="10dp"
-            android:paddingEnd="20dp"
-            android:paddingBottom="10dp"
-            android:text="titleRecipeIngredients"
-            android:textAlignment="textStart"
-            android:textAllCaps="false"
-            android:textColor="#000000"
-            android:textSize="20sp" />
-
-
-
-        <TextView
-            android:id="@+id/titleRecipeDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:fontFamily="@font/alegreya_sc"
-            android:text="titleRecipeDescription"
-            android:textAlignment="textStart"
-            android:textAllCaps="false"
-            android:shadowColor="@color/black"
-            android:shadowDx="1"
-            android:shadowDy="1"
-            android:shadowRadius="2"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_below="@id/recipeIngredients"
-            android:textColor="#FFFFFF"
-            android:textSize="35sp"
-             />
-
-        <TextView
-            android:id="@+id/recipeDescription"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/alegreya_sc"
-            android:textAlignment="textStart"
-            android:textColor="@color/black"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:layout_marginBottom="10dp"
-            android:text="recipeDescription"
-            android:textSize="20sp"
-           android:layout_below="@id/titleRecipeDescription" />
-
-        <TextView
-            android:id="@+id/prepareTime"
-            android:layout_width="260dp"
-            android:layout_height="35dp"
-            android:layout_below="@id/recipeImage"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentEnd="true"
-            android:layout_marginStart="145dp"
-            android:layout_marginTop="-25dp"
-            android:layout_marginEnd="6dp"
-            android:background="@drawable/window_frame"
-            android:fontFamily="@font/alegreya_sc"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:textColor="#615E5E"
-            android:textSize="18sp" />
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/button_like"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
-            android:layout_alignBottom="@+id/recipeImage"
-            android:layout_alignParentStart="true"
-            android:layout_marginTop="20dp"
-            android:clickable="true"
-            app:lottie_fileName="like_heart_animation.json"
-            app:lottie_scale="0.15" />
-
+            android:layout_centerInParent="true"
+            android:layout_marginStart="5dp"
+            android:background="@color/transperent"
+            android:foreground="?android:attr/selectableItemBackground"
+            android:src="@drawable/ic_arrow_back" />
     </RelativeLayout>
 
+    <ScrollView xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/scrollView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/mockUpToolBar"
+        android:layout_marginTop="5dp"
+        android:background="#E0DEDE"
+        android:clickable="true"
+        android:focusable="true">
 
-</ScrollView>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
 
 
+            <ImageView
+                android:id="@+id/recipeImage"
+                android:layout_width="match_parent"
+                android:layout_height="300dp"
+                android:layout_alignParentTop="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="0dp"
+                android:layout_marginEnd="0dp"
+                android:scaleType="centerCrop" />
+
+            <TextView
+                android:id="@+id/recipeTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/recipeImage"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:fontFamily="@font/abril_fatface"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="recipeTitle"
+                android:textAllCaps="true"
+                android:textColor="#FFFFFF"
+                android:textSize="25sp"
+                android:textStyle="bold" />
+
+
+            <TextView
+                android:id="@+id/recipeIngredients"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/recipeTitle"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/window_frame"
+                android:fontFamily="@font/alegreya_sc"
+                android:paddingStart="20dp"
+                android:paddingTop="10dp"
+                android:paddingEnd="20dp"
+                android:paddingBottom="10dp"
+                android:text="titleRecipeIngredients"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#000000"
+                android:textSize="20sp" />
+
+
+            <TextView
+                android:id="@+id/titleRecipeDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/recipeIngredients"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="10dp"
+                android:fontFamily="@font/alegreya_sc"
+                android:shadowColor="@color/black"
+                android:shadowDx="1"
+                android:shadowDy="1"
+                android:shadowRadius="2"
+                android:text="titleRecipeDescription"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textColor="#FFFFFF"
+                android:textSize="35sp" />
+
+            <TextView
+                android:id="@+id/recipeDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/titleRecipeDescription"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:fontFamily="@font/alegreya_sc"
+                android:text="recipeDescription"
+                android:textAlignment="textStart"
+                android:textColor="@color/black"
+                android:textSize="20sp" />
+
+            <TextView
+                android:id="@+id/prepareTime"
+                android:layout_width="260dp"
+                android:layout_height="35dp"
+                android:layout_below="@id/recipeImage"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="145dp"
+                android:layout_marginTop="-25dp"
+                android:layout_marginEnd="6dp"
+                android:background="@drawable/window_frame"
+                android:fontFamily="@font/alegreya_sc"
+                android:textAlignment="center"
+                android:textAllCaps="false"
+                android:textColor="#615E5E"
+                android:textSize="18sp" />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/button_like"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:layout_alignBottom="@+id/recipeImage"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="20dp"
+                android:clickable="true"
+                app:lottie_fileName="like_heart_animation.json"
+                app:lottie_scale="0.15" />
+
+        </RelativeLayout>
+
+
+    </ScrollView>
+
+</RelativeLayout>
