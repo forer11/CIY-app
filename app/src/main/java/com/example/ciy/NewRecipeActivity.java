@@ -184,7 +184,7 @@ public class NewRecipeActivity extends AppCompatActivity {
             prepTimeText.requestFocus();
             return false;
         } else {
-            finalPrepTime = time;
+            finalPrepTime = Integer.toString(Integer.parseInt(time)* 60);
             prepTimeLayout.setErrorEnabled(false);
             return true;
         }
