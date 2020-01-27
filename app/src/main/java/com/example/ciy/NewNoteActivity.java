@@ -22,24 +22,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 import android.widget.ImageButton;
 
-import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.jackandphantom.blurimage.BlurImage;
 
 import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collections;
@@ -62,11 +58,18 @@ public class NewNoteActivity extends AppCompatActivity {
     public static final String INSTRUCTIONS_NEW_LINE = "\uD83D\uDCCC";
     public static final String INGREDIENT_NEW_LINE = "\uD83D\uDCCD";
     public static final String PREPERATION_TIME_NEW_LINE = "⏰";
-    private EditText editTextTitle;
-    private EditText editTextDescription;
-    private EditText editTextPrepInstructions;
-    private EditText editTextPrepTime;
-    private EditText editTextIngredients;
+
+    private TextInputEditText titleText;
+    private TextInputEditText descriptionText;
+    private TextInputEditText instructionsText;
+    private TextInputEditText prepTimeText;
+    private TextInputEditText ingredientsText;
+
+    private TextInputLayout titleLayout;
+    private TextInputLayout descriptionLayout;
+    private TextInputLayout instructionsLayout;
+    private TextInputLayout prepTimeLayout;
+    private TextInputLayout ingredientsLayout;
 
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
@@ -148,21 +151,29 @@ public class NewNoteActivity extends AppCompatActivity {
     private void initializeUi() {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Add Recipe");
-        editTextTitle = findViewById(R.id.Title);
-        editTextDescription = findViewById(R.id.Description);
+        titleText = findViewById(R.id.titleText);
+        titleLayout=findViewById(R.id.title);
+        descriptionText = findViewById(R.id.descriptionText);
+        prepTimeLayout=findViewById(R.id.description);
+        ingredientsText = findViewById(R.id.ingredientsText);
+        ingredientsLayout = findViewById(R.id.ingredients);
+        prepTimeText = findViewById(R.id.preparationTimeText);
+        prepTimeLayout=findViewById(R.id.prepTime);
+        instructionsText = findViewById(R.id.preparationInstructionsText);
+        instructionsLayout=findViewById(R.id.preparationInstructions);
+        userPicture = findViewById(R.id.userPicture);
+        cameraButton = findViewById(R.id.takePicButton);
         handlePreparationTime();
         handlePreparationInstruction();
         handleIngredientsInput();
         //Build upon an existing VmPolicy
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        userPicture = findViewById(R.id.userPicture);
-        cameraButton = findViewById(R.id.takePicButton);
     }
 
     private void handlePreparationInstruction() {
-        editTextPrepInstructions = findViewById(R.id.PreparationInstructions);
-        editTextPrepInstructions.addTextChangedListener(new TextWatcher() {
+
+        instructionsText.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable e) {
 
@@ -178,8 +189,8 @@ public class NewNoteActivity extends AppCompatActivity {
                 if (lengthAfter > lengthBefore) {
                     if (text.toString().length() == 1) {
                         text = INSTRUCTIONS_NEW_LINE + " " + text;
-                        editTextPrepInstructions.setText(text);
-                        editTextPrepInstructions.setSelection(editTextPrepInstructions.getText()
+                        instructionsText.setText(text);
+                        instructionsText.setSelection(instructionsText.getText()
                                 .length());
                     }
                     if (text.toString().endsWith("\n")) {
@@ -187,8 +198,8 @@ public class NewNoteActivity extends AppCompatActivity {
                                 INSTRUCTIONS_NEW_LINE + " ");
                         text = text.toString().replace(INSTRUCTIONS_NEW_LINE + " " +
                                 INSTRUCTIONS_NEW_LINE, INSTRUCTIONS_NEW_LINE);
-                        editTextPrepInstructions.setText(text);
-                        editTextPrepInstructions.setSelection(editTextPrepInstructions.getText()
+                        instructionsText.setText(text);
+                        instructionsText.setSelection(instructionsText.getText()
                                 .length());
                     }
                 }
@@ -197,10 +208,9 @@ public class NewNoteActivity extends AppCompatActivity {
     }
 
     private void handlePreparationTime() {
-        editTextPrepTime = findViewById(R.id.PreparationTime);
-        editTextPrepTime.setFocusable(false);
-        editTextPrepTime.setClickable(true);
-        editTextPrepTime.setOnClickListener(new View.OnClickListener() {
+        prepTimeText.setFocusable(false);
+        prepTimeText.setClickable(true);
+        prepTimeText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Calendar currentTime = Calendar.getInstance();
@@ -212,7 +222,7 @@ public class NewNoteActivity extends AppCompatActivity {
                             @Override
                             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                                 String time = hourOfDay + ":" + minute + " " + PREPERATION_TIME_NEW_LINE;
-                                editTextPrepTime.setText(time);
+                                prepTimeText.setText(time);
                             }
                         }, hour, min, true);
                 TimePicker.setTitle("Select Time");
@@ -222,8 +232,7 @@ public class NewNoteActivity extends AppCompatActivity {
     }
 
     private void handleIngredientsInput() {
-        editTextIngredients = findViewById(R.id.ingredients);
-        editTextIngredients.addTextChangedListener(new TextWatcher() {
+        ingredientsText.addTextChangedListener(new TextWatcher() {
             @Override
             public void afterTextChanged(Editable e) {
 
@@ -239,20 +248,45 @@ public class NewNoteActivity extends AppCompatActivity {
                 if (lengthAfter > lengthBefore) {
                     if (text.toString().length() == 1) {
                         text = INGREDIENT_NEW_LINE + " " + text;
-                        editTextIngredients.setText(text);
-                        editTextIngredients.setSelection(editTextIngredients.getText().length());
+                        ingredientsText.setText(text);
+                        ingredientsText.setSelection(ingredientsText.getText().length());
                     }
                     if (text.toString().endsWith("\n")) {
                         text = text.toString().replace("\n", "\n" +
                                 INGREDIENT_NEW_LINE + " ");
                         text = text.toString().replace(INGREDIENT_NEW_LINE + " " +
                                 INGREDIENT_NEW_LINE, INGREDIENT_NEW_LINE);
-                        editTextIngredients.setText(text);
-                        editTextIngredients.setSelection(editTextIngredients.getText().length());
+                        ingredientsText.setText(text);
+                        ingredientsText.setSelection(ingredientsText.getText().length());
                     }
                 }
             }
         });
+    }
+    private class ValidationTextWatcher implements TextWatcher {
+
+        private View view;
+
+        private ValidationTextWatcher(View view) {
+            this.view = view;
+        }
+
+        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+        }
+
+        public void afterTextChanged(Editable editable) {
+            switch (view.getId()) {
+                case R.id.ingredients:
+
+                    break;
+                case R.id.prepTime:
+
+                    break;
+            }
+        }
     }
 
     @Override
@@ -336,11 +370,11 @@ public class NewNoteActivity extends AppCompatActivity {
     }
 
     private void saveNote() throws MalformedURLException {
-        String title = editTextTitle.getText().toString();
-        String description = editTextDescription.getText().toString();
-        String preparationTime = editTextPrepTime.getText().toString();
-        String preparationInstruction = editTextPrepInstructions.getText().toString();
-        String ingredients = editTextIngredients.getText().toString();
+        String title = titleText.toString();
+        String description = descriptionText.getText().toString();
+        String preparationTime = prepTimeText.getText().toString();
+        String preparationInstruction = instructionsText.getText().toString();
+        String ingredients = ingredientsText.getText().toString();
         if (title.trim().isEmpty() || description.trim().isEmpty() || preparationTime.trim().isEmpty()
                 || preparationInstruction.trim().isEmpty() || ingredients.trim().isEmpty() || file.getPath().equals("")) {
             Toast.makeText(this, "Please fill in all the fields above", Toast.LENGTH_SHORT).show();
