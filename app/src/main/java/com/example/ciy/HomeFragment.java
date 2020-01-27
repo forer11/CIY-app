@@ -299,8 +299,10 @@ public class HomeFragment extends Fragment {
     @SuppressLint("RestrictedApi") //TODO CARMEL
     private void updatesRecipeFragment(Recipe recipe, boolean userPressedLike) {
 //        addNoteButton.setVisibility(View.INVISIBLE);
-        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, userPressedLike);
-        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, userPressedLike,
+                SharedData.BOTTOM_NAV);
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
+                .getSupportFragmentManager();
         recipeFragment.show(fragmentManager, "RecipeFromHome");
     }
 

@@ -47,6 +47,7 @@ public class RecipeFragment extends DialogFragment {
     /* Firestore authentication reference */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
+    private int openningActivity;
 
 
     @Override
@@ -57,6 +58,8 @@ public class RecipeFragment extends DialogFragment {
         // Get back arguments
         recipe = (Recipe) getArguments().getSerializable("recipe");
         userPressedLike = getArguments().getBoolean("userPressedLike");
+        openningActivity = getArguments().getInt("activity");
+
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
         favoritesRef = usersRef.document(user.getUid()).collection(SharedData.Favorites);
@@ -87,7 +90,6 @@ public class RecipeFragment extends DialogFragment {
                 dismiss();
             }
         });
-
 
 
         setRecipeView();
@@ -180,11 +182,12 @@ public class RecipeFragment extends DialogFragment {
 
 
     // Creates a new fragment given an int and title
-    static RecipeFragment newInstance(Recipe recipe, boolean userPressedLike) {
+    static RecipeFragment newInstance(Recipe recipe, boolean userPressedLike, int activity) {
         RecipeFragment rec = new RecipeFragment();
         Bundle args = new Bundle();
         args.putSerializable("recipe", recipe);
         args.putBoolean("userPressedLike", userPressedLike);
+        args.putInt("activity", activity);
         rec.setArguments(args);
         return rec;
     }
@@ -192,21 +195,23 @@ public class RecipeFragment extends DialogFragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        // only using this fragment with BottomNavigationBar
-        BottomNavigationBar activity = (BottomNavigationBar) getActivity();
-        // after we exit the recipe fragment we will enable the Home\Favorites fragment.
-        if (activity != null) {
-            if (activity.favoritesFragment.isAdded()) {
-                activity.favoritesFragment.enableClickable();
+        if (openningActivity == SharedData.BOTTOM_NAV) {
+            // only using this fragment with BottomNavigationBar
+            BottomNavigationBar activity = (BottomNavigationBar) getActivity();
+            // after we exit the recipe fragment we will enable the Home\Favorites fragment.
+            if (activity != null) {
+                if (activity.favoritesFragment.isAdded()) {
+                    activity.favoritesFragment.enableClickable();
+                }
+                if (activity.lastPushed == SharedData.HOME) {
+                    activity.homeFragment.enableClickable();
+                }
+            } else {
+                // if this pops out we maybe opening the recipe fragment from an unexpected activity,
+                //TODO delete before submission
+                Toast.makeText(getContext(), "app Failure, current activity is " + getActivity(),
+                        Toast.LENGTH_SHORT).show();
             }
-            if (activity.lastPushed == SharedData.HOME) {
-                activity.homeFragment.enableClickable();
-            }
-        } else {
-            // if this pops out we maybe opening the recipe fragment from an unexpected activity,
-            //TODO delete before submission
-            Toast.makeText(getContext(), "app Failure, current activity is " + getActivity(),
-                    Toast.LENGTH_SHORT).show();
         }
     }
 }
