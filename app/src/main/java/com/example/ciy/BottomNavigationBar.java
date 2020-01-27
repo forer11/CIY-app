@@ -47,6 +47,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     /* the Search fragment Tag */
     private static final String SEARCH = "Search";
     private static final int ADD_RECIPE_REQUEST_CODE = 2;
+    private static final int ERROR = -1;
     /* the Home fragment */
     HomeFragment homeFragment;
     /* the Favorites fragment */
@@ -281,7 +282,24 @@ public class BottomNavigationBar extends AppCompatActivity {
         // check if the request code is same as what is passed  here it is 2
         if (requestCode == ADD_RECIPE_REQUEST_CODE) {
             BottomNavigationView bottomNavigationView = findViewById(R.id.bottom_navigation);
-            bottomNavigationView.getMenu().findItem(R.id.navHome).setChecked(true);
+
+            int navIcon = returnNavIcon();
+            if (navIcon != ERROR) {
+                bottomNavigationView.getMenu().findItem(navIcon).setChecked(true);
+            }
+        }
+    }
+
+    private int returnNavIcon() {
+        switch (lastPushed) {
+            case SharedData.HOME:
+                return R.id.navHome;
+            case SharedData.FAVORITES:
+                return R.id.navFavorites;
+            case SharedData.SEARCH:
+                return R.id.navSearch;
+            default:
+                return ERROR;
         }
     }
 }

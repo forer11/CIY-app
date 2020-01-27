@@ -110,8 +110,10 @@ public class FavoritesFragment extends Fragment {
 
     @SuppressLint("RestrictedApi") //TODO CARMEL
     private void updatesRecipeFragment(Recipe recipe) {
-        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, true);
-        FragmentManager fragmentManager = Objects.requireNonNull(getActivity()).getSupportFragmentManager();
+        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, true,
+                SharedData.BOTTOM_NAV);
+        FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
+                .getSupportFragmentManager();
         recipeFragment.show(fragmentManager, "RecipeFromFavorites");
     }
 
