@@ -26,17 +26,6 @@
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textStyle="bold" />
 
-
-        <TextView
-            android:id="@+id/textViewViews"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/frameDishImage"
-            android:fontFamily="@font/andika"
-            android:text="0 Views"
-            android:textAlignment="textStart"
-            android:textSize="14sp" />
-
         <TextView
             android:id="@+id/textViewDescription"
             android:layout_width="wrap_content"
@@ -70,8 +59,18 @@
                 android:layout_width="141dp"
                 android:layout_height="141dp"
                 android:src="@drawable/round_edges" />
-
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/textViewViews"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/andika"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentEnd="true"
+            android:text="0 Views"
+            android:textAlignment="textStart"
+            android:textSize="14sp" />
 
     </RelativeLayout>
 
