@@ -118,11 +118,10 @@ public class BottomNavigationBar extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.tool_bar_buttons, menu);
 
         //get the image of the user
+        menu.findItem(R.id.icon_status).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
 
-        if (uri == null) // user not sign in from google, so default profile picture defined
+        if (uri != null) // user not sign in from google, so default profile picture defined
         {
-            menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
-        } else {
             setProfileImage(menu, uri);
         }
         return true;
@@ -248,7 +247,8 @@ public class BottomNavigationBar extends AppCompatActivity {
                 RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
                 rounded.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()));
                 rounded.setBounds(0, 0, 5, 5);
-                menu.getItem(1).setIcon(rounded);
+                menu.findItem(R.id.icon_status).setIcon(rounded);
+//                menu.getItem(0).setIcon(rounded);
             }
 
             @Override
