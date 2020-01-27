@@ -5,7 +5,7 @@
     android:id="@+id/newNoteLayout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_kitchen"
+    android:background="@color/white"
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".NewRecipeActivity">
@@ -21,7 +21,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <!--Any child View here, TabLayout for example-->
+
         <ImageView
             android:id="@+id/background"
             android:layout_width="match_parent"
