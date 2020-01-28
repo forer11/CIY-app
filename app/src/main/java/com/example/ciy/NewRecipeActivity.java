@@ -55,6 +55,9 @@ public class NewRecipeActivity extends AppCompatActivity {
     public static final String INSTRUCTIONS_NEW_LINE = "\uD83D\uDCCC";
     public static final String INGREDIENT_NEW_LINE = "\uD83D\uDCCD";
     public static final String PREPERATION_TIME_NEW_LINE = "⏰";
+    public static final int HOURS_IDX = 0;
+    public static final int MINUTES_IDX = 1;
+    public static final String INVALID_PREP_TIME_MSG = "Invalid Time, please set legal time";
 
     private TextInputEditText titleText;
     private TextInputEditText descriptionText;
@@ -92,7 +95,7 @@ public class NewRecipeActivity extends AppCompatActivity {
     String mediaPath, imName;
     private String finalInstructions;
     private List<String> finalIngredientsList;
-    private String finalPrepTime;
+    private String prepTimeHours;
 
 
     @Override
@@ -174,20 +177,16 @@ public class NewRecipeActivity extends AppCompatActivity {
     }
 
 
-    private boolean validatePreparationTime() {
+    private boolean getPrepTimeHours() {
         String time = prepTimeText.getText().toString();
         if (time.trim().isEmpty()) {
             prepTimeLayout.setErrorEnabled(false);
             return false;
-        } else if (Integer.parseInt(Character.toString(time.charAt(0))) <= 0) {
-            prepTimeLayout.setError("Invalid Time, please set legal time");
-            prepTimeText.requestFocus();
-            return false;
-        } else {
-            finalPrepTime = Integer.toString(Integer.parseInt(time)* 60);
-            prepTimeLayout.setErrorEnabled(false);
-            return true;
         }
+        int hours = time.contains(":") ? Integer.parseInt(time.substring(0,time.indexOf(":"))) * 60 : 0;
+        prepTimeHours = Integer.toString(hours);
+        prepTimeLayout.setErrorEnabled(false);
+        return true;
     }
 
 
@@ -249,7 +248,7 @@ public class NewRecipeActivity extends AppCompatActivity {
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {
                 case R.id.preparationTimeText:
-                    validatePreparationTime();
+                    getPrepTimeHours();
                     break;
                 case R.id.ingredientsText:
                     validateIngredientsInput();
@@ -259,6 +258,7 @@ public class NewRecipeActivity extends AppCompatActivity {
                     break;
             }
         }
+
     }
 
     @Override
@@ -343,20 +343,19 @@ public class NewRecipeActivity extends AppCompatActivity {
     private void saveNote() throws MalformedURLException {
         String title = titleText.toString();
         String description = descriptionText.getText().toString();
-        if (!validateIngredientsInput() || !validatePreparationTime() || !validateInstructionsInput()) {
+        String prepTime = prepTimeText.getText().toString();
+        if (!validateIngredientsInput() || !getPrepTimeHours() || !validateInstructionsInput()) {
             Toast.makeText(this, "Please fill legal values in all the fields above", Toast.LENGTH_SHORT).show();
             return;
-        } else if (title.trim().isEmpty() || description.trim().isEmpty() || finalPrepTime.trim().isEmpty()
+        } else if (title.trim().isEmpty() || description.trim().isEmpty() || prepTime.trim().isEmpty()
                 || finalInstructions.trim().isEmpty() || finalIngredientsList.isEmpty() || file.getPath().equals("")) {
             Toast.makeText(this, "Please fill in all the fields above", Toast.LENGTH_SHORT).show();
             return;
         }
-        if (finalPrepTime.contains(":")) {
-            String[] temp = finalPrepTime.split(":");
-            int timeInMin = ((Integer.parseInt(temp[0]) * 60) + (Integer.parseInt(temp[1])));
-            finalPrepTime = Integer.toString(timeInMin);
-        }
-        Recipe recipe = new Recipe(title, description, finalPrepTime,
+        int prepTimeMinutes = prepTime.contains(":") ? Integer.parseInt(prepTimeHours) +
+                Integer.parseInt(prepTime.substring(prepTime.indexOf(":") + 1)) :
+                Integer.parseInt(prepTime);
+        Recipe recipe = new Recipe(title, description, Integer.toString(prepTimeMinutes),
                 finalInstructions, finalIngredientsList, new URL(file.toString()).toString());
         finish();
     }
