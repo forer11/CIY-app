@@ -3,14 +3,14 @@ package com.example.ciy;
 
 import com.airbnb.lottie.LottieAnimationView;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.SpannableString;
-import android.text.style.RelativeSizeSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +24,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
+
+import java.util.List;
 
 
 public class RecipeFragment extends DialogFragment {
@@ -124,11 +126,11 @@ public class RecipeFragment extends DialogFragment {
     private void setRecipeView() {
         TextView recipeTitle = getView().findViewById(R.id.recipeTitle);
         ImageView recipeImage = getView().findViewById(R.id.recipeImage);
-        TextView ingredients = getView().findViewById(R.id.recipeIngredients);
+        TextView ingredientsTitle = getView().findViewById(R.id.ingredientsTitle);
         TextView prepareTime = getView().findViewById(R.id.prepareTime);
         TextView titleRecipeDescription = getView().findViewById(R.id.titleRecipeDescription);
         TextView recipeDescription = getView().findViewById(R.id.recipeDescription);
-        initializeUi(recipeTitle, recipeImage, prepareTime, ingredients,
+        initializeUi(recipeTitle, recipeImage, prepareTime,ingredientsTitle,
                 titleRecipeDescription, recipeDescription, button_like);
     }
 
@@ -156,7 +158,7 @@ public class RecipeFragment extends DialogFragment {
 //    }
 
     private void initializeUi(TextView recipeTitle, ImageView recipeImage,
-                              TextView prepareTime, TextView titleRecipeIngredients,
+                              TextView prepareTime, TextView ingredientsTitle,
                               TextView titleRecipeDescription, TextView recipeDescription,
                               LottieAnimationView button_like) {
         recipeTitle.setText(recipe.getTitle());
@@ -169,49 +171,72 @@ public class RecipeFragment extends DialogFragment {
         //TODO - update to real time from db
         prepareTime.setText("\uD83D\uDD52 30 " + "min  " + "\uD83D\uDC69\u200D\uD83C\uDF73 "
                 + recipe.getViews() + " views");
-        String ingredients = "Ingredients\n";
-        for (String ingredient : recipe.getExtendedIngredients()) {
-            ingredients += "\u2022 " + ingredient + "\n";
-        }
-        SpannableString ingredientsText = new SpannableString(ingredients);
-        ingredientsText.setSpan(new RelativeSizeSpan(1.5f), 0, 11, 0);// set size
-        titleRecipeIngredients.setText(ingredientsText);
-        titleRecipeDescription.setText("Description");
-        recipeDescription.setText(" " + recipe.getInstructions());
+        setIngredients(ingredientsTitle);
+            titleRecipeDescription.setText("Description");
+            recipeDescription.setText(recipe.getInstructions());
     }
 
-
-    // Creates a new fragment given an int and title
-    static RecipeFragment newInstance(Recipe recipe, boolean userPressedLike, int activity) {
-        RecipeFragment rec = new RecipeFragment();
-        Bundle args = new Bundle();
-        args.putSerializable("recipe", recipe);
-        args.putBoolean("userPressedLike", userPressedLike);
-        args.putInt("activity", activity);
-        rec.setArguments(args);
-        return rec;
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        if (openningActivity == SharedData.BOTTOM_NAV) {
-            // only using this fragment with BottomNavigationBar
-            BottomNavigationBar activity = (BottomNavigationBar) getActivity();
-            // after we exit the recipe fragment we will enable the Home\Favorites fragment.
-            if (activity != null) {
-                if (activity.favoritesFragment.isAdded()) {
-                    activity.favoritesFragment.enableClickable();
+    private void setIngredients(TextView ingredientsTitle) {
+        LinearLayout layout = (LinearLayout) getView().findViewById(R.id.ingredients);
+        LinearLayout.LayoutParams textViewLayoutParams = new LinearLayout.LayoutParams
+                (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
+        ingredientsTitle.setText("Ingredients");
+        List<String> ingredientsList = recipe.getExtendedIngredients();
+        if(ingredientsList.size()>0){
+            for(String ingredient : ingredientsList){
+                TextView ingredientTextView= new TextView(getContext());
+                ingredientTextView.setText("\u2022 "+ingredient);
+                ingredientTextView.setLayoutParams(textViewLayoutParams);
+                layout.addView(ingredientTextView);
+                if(ingredientsList.indexOf(ingredient)<ingredientsList.size()-1)
+                {
+                    addLineDivider(layout);
                 }
-                if (activity.lastPushed == SharedData.HOME) {
-                    activity.homeFragment.enableClickable();
-                }
-            } else {
-                // if this pops out we maybe opening the recipe fragment from an unexpected activity,
-                //TODO delete before submission
-                Toast.makeText(getContext(), "app Failure, current activity is " + getActivity(),
-                        Toast.LENGTH_SHORT).show();
             }
         }
     }
-}
+
+    private void addLineDivider(LinearLayout layout) {
+        View v = new View(getContext());
+        v.setLayoutParams(new LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT,
+                1
+        ));
+        v.setBackgroundColor(Color.parseColor("#B3B3B3"));
+        layout.addView(v);
+    }
+
+    // Creates a new fragment given an int and title
+        static RecipeFragment newInstance (Recipe recipe,boolean userPressedLike, int activity){
+            RecipeFragment rec = new RecipeFragment();
+            Bundle args = new Bundle();
+            args.putSerializable("recipe", recipe);
+            args.putBoolean("userPressedLike", userPressedLike);
+            args.putInt("activity", activity);
+            rec.setArguments(args);
+            return rec;
+        }
+
+        @Override
+        public void onDestroy () {
+            super.onDestroy();
+            if (openningActivity == SharedData.BOTTOM_NAV) {
+                // only using this fragment with BottomNavigationBar
+                BottomNavigationBar activity = (BottomNavigationBar) getActivity();
+                // after we exit the recipe fragment we will enable the Home\Favorites fragment.
+                if (activity != null) {
+                    if (activity.favoritesFragment.isAdded()) {
+                        activity.favoritesFragment.enableClickable();
+                    }
+                    if (activity.lastPushed == SharedData.HOME) {
+                        activity.homeFragment.enableClickable();
+                    }
+                } else {
+                    // if this pops out we maybe opening the recipe fragment from an unexpected activity,
+                    //TODO delete before submission
+                    Toast.makeText(getContext(), "app Failure, current activity is " + getActivity(),
+                            Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
