@@ -96,6 +96,7 @@ public class NewRecipeActivity extends AppCompatActivity {
     private String finalInstructions;
     private List<String> finalIngredientsList;
     private String prepTimeHours;
+    private ImageButton uploadButton;
 
 
     @Override
@@ -112,6 +113,15 @@ public class NewRecipeActivity extends AppCompatActivity {
             ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
                     Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
         }
+        uploadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                // upload a picture from gallery intent
+                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPhoto, 1);
+            }
+        });
         setCameraButton();
         setBlurredView();
     }
@@ -130,8 +140,10 @@ public class NewRecipeActivity extends AppCompatActivity {
         ImageView background = findViewById(R.id.background);
         BlurImage.with(getApplicationContext()).load(R.id.newNoteLayout).intensity(5).Async(true).
                 into(background);
-        ImageButton button = findViewById(R.id.takePicButton);
-        BlurImage.with(getApplicationContext()).load(R.id.imageButton).intensity(25).Async(false).into(button);
+        ImageButton takePicButton = findViewById(R.id.takePicButton);
+        ImageButton uploadPicButton = findViewById(R.id.uploadPicButton);
+        BlurImage.with(getApplicationContext()).load(R.id.imageButton).intensity(25).Async(false).into(uploadPicButton);
+        BlurImage.with(getApplicationContext()).load(R.id.imageButton).intensity(25).Async(false).into(takePicButton);
     }
 
     private void setCameraButton() {
@@ -145,6 +157,7 @@ public class NewRecipeActivity extends AppCompatActivity {
                 imName = "IMG_" + timeStamp + ".jpg";
                 String filename = "/" + imName;
                 mediaPath = mediaStorageDir.getPath() + File.separator + filename;
+                //take a picture intent
                 Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 file = Uri.fromFile(getOutputMediaFile());
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
@@ -171,6 +184,7 @@ public class NewRecipeActivity extends AppCompatActivity {
         instructionsLayout = findViewById(R.id.preparationInstructions);
         userPicture = findViewById(R.id.userPicture);
         cameraButton = findViewById(R.id.takePicButton);
+        uploadButton = findViewById(R.id.uploadSign);
         //Build upon an existing VmPolicy
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
@@ -183,7 +197,7 @@ public class NewRecipeActivity extends AppCompatActivity {
             prepTimeLayout.setErrorEnabled(false);
             return false;
         }
-        int hours = time.contains(":") ? Integer.parseInt(time.substring(0,time.indexOf(":"))) * 60 : 0;
+        int hours = time.contains(":") ? Integer.parseInt(time.substring(0, time.indexOf(":"))) * 60 : 0;
         prepTimeHours = Integer.toString(hours);
         prepTimeLayout.setErrorEnabled(false);
         return true;
@@ -315,13 +329,24 @@ public class NewRecipeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 100) {
-            if (resultCode == RESULT_OK) {
-                userPicture.getLayoutParams().height = 700;
-                userPicture.getLayoutParams().width = 700;
-                userPicture.requestLayout();
-                userPicture.setImageURI(file);
-            }
+        switch (requestCode) {
+            case 100:
+                if (resultCode == RESULT_OK) {
+                    userPicture.getLayoutParams().height = 700;
+                    userPicture.getLayoutParams().width = 700;
+                    userPicture.requestLayout();
+                    userPicture.setImageURI(file);
+                }
+                break;
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    Uri selectedImage = data.getData();
+                    userPicture.getLayoutParams().height = 700;
+                    userPicture.getLayoutParams().width = 700;
+                    userPicture.requestLayout();
+                    userPicture.setImageURI(selectedImage);
+                }
+                break;
         }
     }
 

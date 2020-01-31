@@ -30,11 +30,10 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
-            android:layout_width="match_parent"
+            android:layout_width="363dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            >
+            android:layout_marginEnd="10dp">
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -121,7 +120,6 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/preparationInstructions"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
@@ -150,51 +148,100 @@
             </com.google.android.material.textfield.TextInputLayout>
 
 
-
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/ingredients"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_above="@+id/prepTime"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/description"
                 android:layout_marginStart="5dp"
+                android:layout_marginTop="20dp"
                 android:layout_marginEnd="5dp"
                 android:divider="@drawable/line_separator"
                 android:showDividers="middle"
-                android:layout_marginTop="20dp">
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/description">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/ingredientsText"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:fontFamily="@font/andika"
-                    android:hint="Enter Ingredients"
                     android:background="@color/transperent"
+                    android:fontFamily="@font/andika"
                     android:foreground="?android:attr/selectableItemBackground"
+                    android:hint="Enter Ingredients"
                     android:inputType="textMultiLine"
                     android:textAppearance="@style/TextAppearance.AppCompat.Small"
 
-                    tools:layout_editor_absoluteX="53dp"  />
+                    tools:layout_editor_absoluteX="53dp" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
+
             <ImageButton
-                android:id="@+id/takePicButton"
-                android:layout_width="230dp"
-                android:layout_height="76dp"
-                android:layout_centerHorizontal="true"
+                android:id="@+id/uploadPicButton"
+                android:layout_width="160dp"
+                android:layout_height="100dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="15dp"
                 android:background="@drawable/ripple_rounded_corners"
                 android:baselineAlignBottom="true"
                 android:scaleType="centerInside"
                 app:layout_constraintBottom_toTopOf="@+id/userPicture"
-                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/takePicText"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/preparationInstructions" />
+                app:layout_constraintTop_toBottomOf="@+id/preparationInstructions"
+                app:layout_constraintVertical_bias="0.0" />
+
+            <ImageButton
+                android:id="@+id/uploadSign"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_above="@+id/userPicture"
+                android:layout_marginTop="15dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="15dp"
+                android:background="@color/transperent"
+                android:baselineAlignBottom="true"
+                android:scaleType="fitCenter"
+                android:src="@drawable/upload"
+                app:layout_constraintBottom_toBottomOf="@+id/uploadPicButton"
+                app:layout_constraintEnd_toEndOf="@+id/uploadPicButton"
+                app:layout_constraintTop_toTopOf="@+id/uploadPicButton" />
+
+
+            <TextView
+                android:id="@+id/uploadPicText"
+                android:layout_width="85dp"
+                android:layout_height="69dp"
+                android:fontFamily="@font/andika"
+                android:text="Upload a Picture\n of your dish"
+                android:textAlignment="center"
+                android:textSize="12sp"
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/uploadPicButton"
+                app:layout_constraintEnd_toStartOf="@+id/uploadSign"
+                app:layout_constraintHorizontal_bias="1.0"
+                app:layout_constraintStart_toStartOf="@+id/uploadPicButton"
+                app:layout_constraintTop_toTopOf="@+id/uploadPicButton"
+                app:layout_constraintVertical_bias="0.515" />
+
+            <ImageButton
+                android:id="@+id/takePicButton"
+                android:layout_width="160dp"
+                android:layout_height="100dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="15dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/ripple_rounded_corners"
+                android:baselineAlignBottom="true"
+                android:scaleType="centerInside"
+                app:layout_constraintBottom_toTopOf="@+id/userPicture"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/preparationInstructions"
+                app:layout_constraintVertical_bias="0.0" />
 
             <ImageButton
                 android:id="@+id/cameraSign"
@@ -202,7 +249,7 @@
                 android:layout_height="50dp"
                 android:layout_above="@+id/userPicture"
                 android:layout_marginTop="15dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="15dp"
                 android:layout_marginBottom="15dp"
                 android:background="@color/transperent"
                 android:baselineAlignBottom="true"
@@ -215,12 +262,12 @@
 
             <TextView
                 android:id="@+id/takePicText"
-                android:layout_width="130dp"
-                android:layout_height="wrap_content"
+                android:layout_width="80dp"
+                android:layout_height="69dp"
                 android:fontFamily="@font/andika"
                 android:text="Take a Picture\n of your dish"
                 android:textAlignment="center"
-                android:textSize="16sp"
+                android:textSize="12sp"
                 android:textStyle="bold"
                 app:layout_constraintBottom_toBottomOf="@+id/takePicButton"
                 app:layout_constraintEnd_toStartOf="@+id/cameraSign"
@@ -239,8 +286,6 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent" />
-
-
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
