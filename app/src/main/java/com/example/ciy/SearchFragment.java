@@ -1,5 +1,6 @@
 package com.example.ciy;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -107,6 +108,8 @@ public class SearchFragment extends DialogFragment {
     }
 
     private void setUpSearchAdapter() {
+        final Context context = getActivity();
+        final View view = getView();
         if (SharedData.allIngredients.isEmpty()) {
             ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                 @Override
@@ -117,20 +120,20 @@ public class SearchFragment extends DialogFragment {
                         SharedData.allIngredients.add(option);
                     }
                     ingredientOptions = new ArrayList<>(SharedData.allIngredients);
-                    searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+                    searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(context),
                             android.R.layout.simple_list_item_1, ingredientOptions);
-                    setUserInput();
+                    setUserInput(view);
                 }
             });
         } else {
-            searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+            searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(context),
                     android.R.layout.simple_list_item_1, ingredientOptions);
-            setUserInput();
+            setUserInput(view);
         }
     }
 
-    private void setUserInput() {
-        userInput = Objects.requireNonNull(getView()).findViewById(R.id.enterIngredients);
+    private void setUserInput(View view) {
+        userInput = view.findViewById(R.id.enterIngredients);
         userInput.setAdapter(searchOptionsAdapter);
         userInput.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
         userInput.setTextColor(Color.DKGRAY);
