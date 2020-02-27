@@ -4,14 +4,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/fridge_background"
+    android:background="@drawable/fridge_frame"
     tools:context=".BottomNavigationBar">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
       >
-
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/fridgeDoorsOpen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/enterIngredients"
+            android:scaleType="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:lottie_autoPlay="false"
+            app:lottie_fileName="open_fridge_anim.json"
+            app:lottie_speed="0.4"
+            app:lottie_loop="false" />
 
         <AutoCompleteTextView
             android:id="@+id/enterIngredients"
@@ -33,15 +44,20 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"/>
 
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ingredientsRecyclerView"
-            android:layout_width="match_parent"
+            android:layout_width="95dp"
             android:layout_height="match_parent"
             android:layout_below="@id/enterIngredients"
             android:layout_above="@id/goToFilteredRecipes"
             android:layout_centerInParent="true"
-            android:layout_marginTop="10dp"
-            android:layout_marginBottom="10dp"/>
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="65dp">
+        </androidx.recyclerview.widget.RecyclerView>
+
+
+
         <Button
             android:id="@+id/goToFilteredRecipes"
             android:layout_width="wrap_content"
