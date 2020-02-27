@@ -228,7 +228,7 @@ public class RecipeFragment extends DialogFragment {
                     if (activity.favoritesFragment.isAdded()) {
                         activity.favoritesFragment.enableClickable();
                     }
-                    if (activity.lastPushed == SharedData.HOME) {
+                    if (activity.lastPushed == SharedData.DISCOVER) {
                         activity.discoverFragment.enableClickable();
                     }
                 } else {
