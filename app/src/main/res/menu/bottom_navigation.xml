@@ -5,6 +5,10 @@
         android:id="@+id/navHome"
         android:icon="@drawable/ic_home_black_24dp"
         android:title="Home" />
+    <item
+        android:id="@+id/navDiscover"
+        android:icon="@drawable/ic_whatshot_black_24dp"
+        android:title="Discover" />
 
     <item
         android:id="@+id/navFavorites"

@@ -7,11 +7,11 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
-import android.text.Layout;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -24,7 +24,6 @@ import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
-import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
@@ -32,11 +31,9 @@ import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import io.opencensus.resource.Resource;
-
 /**
  * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
- * HomeFragment, FavoritesFragment, and SearchFragment, and activate the corresponding fragment the
+ * DiscoverFragment, FavoritesFragment, and SearchFragment, and activate the corresponding fragment the
  * user requested- by typing at the corresponding icon in the bottom navigation bar.
  */
 public class BottomNavigationBar extends AppCompatActivity {
@@ -46,10 +43,14 @@ public class BottomNavigationBar extends AppCompatActivity {
     private static final String FAVORITES = "Favorites";
     /* the Search fragment Tag */
     private static final String SEARCH = "Search";
+    /* the Discover fragment Tag */
+    private static final String DISCOVER = "Discover";
     private static final int ADD_RECIPE_REQUEST_CODE = 2;
     private static final int ERROR = -1;
     /* the Home fragment */
     HomeFragment homeFragment;
+    /* the Discover fragment */
+    DiscoverFragment discoverFragment;
     /* the Favorites fragment */
     FavoritesFragment favoritesFragment;
     /* the Search fragment */
@@ -79,6 +80,7 @@ public class BottomNavigationBar extends AppCompatActivity {
 
         if (savedInstanceState == null) {
             homeFragment = new HomeFragment();
+            discoverFragment = new DiscoverFragment();
             favoritesFragment = new FavoritesFragment();
             searchFragment = new SearchFragment();
         }
@@ -149,6 +151,9 @@ public class BottomNavigationBar extends AppCompatActivity {
                 case R.id.navHome: //TODO LIOR, IF PRESSED INSIDE HOME, SCROLL TO TOP
                     homePressHandler();
                     break;
+                case R.id.navDiscover:
+                    discoverPressHandler();
+                    break;
                 case R.id.navFavorites:
                     showFragment(favoritesFragment, FAVORITES, lastTag);
                     lastPushed = SharedData.FAVORITES;
@@ -173,12 +178,19 @@ public class BottomNavigationBar extends AppCompatActivity {
      * handling the event we pressed the home icon in the bottom navigation bar
      */
     private void homePressHandler() {
-        if (lastPushed == SharedData.HOME) {
-            homeFragment.scrollToTop();
+
+        showFragment(homeFragment, HOME, lastTag);
+        lastPushed = SharedData.HOME;
+        lastTag = HOME;
+    }
+
+    private void discoverPressHandler() {
+        if (lastPushed == SharedData.DISCOVER) {
+            discoverFragment.scrollToTop();
         } else {
-            showFragment(homeFragment, HOME, lastTag);
-            lastPushed = SharedData.HOME;
-            lastTag = HOME;
+            showFragment(discoverFragment, DISCOVER, lastTag);
+            lastPushed = SharedData.DISCOVER;
+            lastTag = DISCOVER;
         }
     }
 
@@ -294,6 +306,8 @@ public class BottomNavigationBar extends AppCompatActivity {
         switch (lastPushed) {
             case SharedData.HOME:
                 return R.id.navHome;
+            case SharedData.DISCOVER:
+                return R.id.navDiscover;
             case SharedData.FAVORITES:
                 return R.id.navFavorites;
             case SharedData.SEARCH:

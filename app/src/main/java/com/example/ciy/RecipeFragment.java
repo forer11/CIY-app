@@ -229,7 +229,7 @@ public class RecipeFragment extends DialogFragment {
                         activity.favoritesFragment.enableClickable();
                     }
                     if (activity.lastPushed == SharedData.HOME) {
-                        activity.homeFragment.enableClickable();
+                        activity.discoverFragment.enableClickable();
                     }
                 } else {
                     // if this pops out we maybe opening the recipe fragment from an unexpected activity,

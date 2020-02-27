@@ -5,13 +5,13 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -71,14 +71,6 @@ public class HomeFragment extends Fragment {
     // TODO DECIDE IF NEEDED
     private FloatingActionButton addNoteButton;
 
-    //TODO DELETE
-    final String[] urls = new String[]{"https://boygeniusreport.files.wordpress.com/2016/11/puppy-dog.jpg?quality=98&strip=all&w=782",
-            "https://images2.minutemediacdn.com/image/upload/c_crop,h_1350,w_2400,x_0,y_136/f_auto,q_auto,w_1100/v1576859350/shape/mentalfloss/610651-gettyimages-901452436.jpg",
-            "https://cdn.psychologytoday.com/sites/default/files/styles/article-inline-half/public/field_blog_entry_images/2018-02/vicious_dog_0.png?itok=nsghKOHs",
-            "https://scx2.b-cdn.net/gfx/news/hires/2019/wolfdog.jpg",
-            "https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1687,w_3000,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1575669519/191206-weill-dogs-in-politics-tease_ko5qke",
-            "https://d.newsweek.com/en/full/1517827/coconut-rice-bear.jpg?w=1600&h=1600&q=88&f=8b37e38c82ec050dda787e009f0ef2ef",
-            "https://compote.slate.com/images/8aedcaf8-0474-4644-b1b9-6a00220dc2dd.jpeg?width=780&height=520&rect=1560x1040&offset=0x0"};
     private FirebaseUser user;
 
     @Nullable
@@ -92,278 +84,22 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         user = firebaseAuth.getCurrentUser();
-        setUpRecyclerView();
-        View b = Objects.requireNonNull(getView()).findViewById(R.id.test);
-        b.setVisibility(View.GONE);
-        setClickListeners();
-        recipeAdapter.startListening();
-//        updateIngredientsVector();
-//        updateAllRecipes();
-    }
 
-    // updates the recipes with the json file TODO delete before submission
-    public void updateAllRecipes() {
-        try {
-            JSONArray jsonRecipes = new JSONArray(loadJSONFromAsset());
-
-            for (int i = 0; i < jsonRecipes.length(); i++) {
-                JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
-                String title = jsonRecipe.getString("name");
-                String description = jsonRecipe.getString("description");
-                String instructions = jsonRecipe.getJSONArray("method").getString(0);
-
-                String imageUrl = "https:" + jsonRecipe.getString("img_url");
-                String difficulty = jsonRecipe.getJSONArray("difficulty").getString(0);
-
-                Random random = new Random();
-                int views = random.nextInt(50000);
-                JSONArray jsonIngredients = jsonRecipe.getJSONArray("new ingredients");
-                List<String> ingredients = new ArrayList<>();
-                for (int j = 0; j < jsonIngredients.length(); j++) {
-                    ingredients.add(jsonIngredients.getString(j));
-                }
-                List<String> extendedIngredients = new ArrayList<>();
-                JSONArray jsonUserIngredients = jsonRecipe.getJSONArray("ingredients");
-                for (int j = 0; j < jsonUserIngredients.length(); j++) {
-                    extendedIngredients.add(jsonUserIngredients.getString(j));
-                }
-                Recipe recipe = new Recipe(title, description, views, ingredients, imageUrl);
-                recipe.setInstructions(instructions);
-                recipe.setExtendedIngredients(extendedIngredients);
-                recipe.setDifficulty(difficulty);
-                recipe.setId(title);
-                recipesRef.document(title).set((recipe), SetOptions.merge()).addOnFailureListener(new OnFailureListener() {
-                    @Override
-                    public void onFailure(@NonNull Exception e) {
-                        Toast.makeText(getContext(), "failed", Toast.LENGTH_SHORT).show();
-                    }
-                });
-
-
-                //Add your values in your `ArrayList` as below:
-
-            }
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-    }
-    // load the json file TODO delete before submission
-
-    private String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = Objects.requireNonNull(getActivity()).getAssets().open("DB.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, StandardCharsets.UTF_8);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
-    }
-
-    // updates the ingredients vector by text file in assets TODO delete before submission
-    private void updateIngredientsVector() {
-
-        try {
-            InputStream is = Objects.requireNonNull(getContext()).getAssets().open("ingredients.txt");
-            StringBuilder text = new StringBuilder();
-
-            BufferedReader br = new BufferedReader(new InputStreamReader(is));
-            String line;
-
-            while ((line = br.readLine()) != null) {
-                Map<String, Object> data = new HashMap<>();
-                data.put("ingredient", line);
-                ingredientsRef.document(line).set(data, SetOptions.merge());
-            }
-            br.close();
-        } catch (IOException e) {
-            //You'll need to add proper error handling here
-        }
-
-    }
-
-    // important for the filtering process, TODO delete after filtering
-    private void setUpData() {
-//        usersRef.document(userId).collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//                    usersRef.document(userId).collection("Recipes").document(documentSnapshot.getId()).delete();
-//                }
-//                final ArrayList<Recipe> recipes = new ArrayList<>();
-//                recipesRef.orderBy("views", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//                            Recipe recipe = documentSnapshot.toObject(Recipe.class);
-//                            recipe.setId(documentSnapshot.getId());
-//                            recipes.add(recipe);
-//                            usersRef.document(userId).collection("Recipes").add(recipe);
-//                        }
-//                    }
-//                });
-//            }
-//        });
-
-//        addNoteButton = Objects.requireNonNull(getView()).findViewById(R.id.addButton);
-//        addNoteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(getActivity(), NewRecipeActivity.class));
-//            }
-//        });
-    }
-
-    /**
-     * set up the recyclerView configurations including the adapter and query.
-     */
-    private void setUpRecyclerView() {
-
-        // sets the query we order the data in the recyclerView by
-        Query query = recipesRef.orderBy("views", Query.Direction.DESCENDING);
-
-        FirestoreRecyclerOptions<Recipe> options = new FirestoreRecyclerOptions.Builder<Recipe>()
-                .setQuery(query, Recipe.class)
-                .build();
-
-        recipeAdapter = new RecipeAdapter(options);
-        recipeAdapter.setLayout(R.layout.recipe_item);
-        recyclerView = Objects.requireNonNull(getView())
-                .findViewById(R.id.homeRecyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-        recyclerView.setAdapter(recipeAdapter);
-
-        //TODO set touch logic if we need to, for now commented out
-//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-//                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-//            @Override
-//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView
-//                    .ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//                //recipeAdapter.deleteItem(viewHolder.getAdapterPosition());
-//            }
-//        }).attachToRecyclerView(recyclerView);
-    }
-
-
-    private void setClickListeners() {
-        recipeAdapter.setOnItemClickListener(new RecipeAdapter.OnItemClickListener() {
+        ImageButton fridge = view.findViewById(R.id.fridge);
+        fridge.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
-                recipeAdapter.isClickable = false;
-                final Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                //doggy related, keep it for now
-//                    Random random = new Random();
-//                    final int index = random.nextInt(urls.length);
-//                    recipesRef.document(documentSnapshot.getId()).update("imageUrl", urls[index]);
-                //update or create recipe fragment
-                executeTransaction(documentSnapshot.getId(), recipesRef);
-
-                setUpRecipeFragment(recipe);
+            public void onClick(View v) {
+                openFridge(v);
             }
         });
+
     }
 
-
-    private void setUpRecipeFragment(final Recipe recipe) {
-        CollectionReference favoritesRef = usersRef.
-                document(user.getUid()).collection(SharedData.Favorites);
-        final DocumentReference favoriteRecipeRef = favoritesRef.document(recipe.getId());
-        favoriteRecipeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                boolean userPressedLike = false;
-                if (!(documentSnapshot == null || !documentSnapshot.exists())) {
-                    userPressedLike = true;
-                }
-                updatesRecipeFragment(recipe, userPressedLike);
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @SuppressLint("RestrictedApi") //TODO CARMEL
-    private void updatesRecipeFragment(Recipe recipe, boolean userPressedLike) {
-//        addNoteButton.setVisibility(View.INVISIBLE);
-        RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, userPressedLike,
-                SharedData.BOTTOM_NAV);
+    private void openFridge(View view)
+    {
+        SearchFragment searchFragment = new SearchFragment();
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
                 .getSupportFragmentManager();
-        recipeFragment.show(fragmentManager, "RecipeFromHome");
+        searchFragment.show(fragmentManager, "FridgeFromHome");
     }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-        recipeAdapter.stopListening();
-    }
-
-    /**
-     * * incrementing a parameter in fireStore with synchronization
-     *
-     * @param id             the recipe id
-     * @param dataCollection the data Collection in firestore
-     */
-    private void executeTransaction(final String id, final CollectionReference dataCollection) {
-        db.runTransaction(new Transaction.Function<Long>() {
-            @Override
-            public Long apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-                DocumentReference noteRef = dataCollection.document(id);
-                DocumentSnapshot noteSnapShot = transaction.get(noteRef);
-                long newViews = noteSnapShot.getLong("views") + 1;
-                transaction.update(noteRef, "views", newViews);
-                return newViews;
-
-            }
-        }).addOnSuccessListener(new OnSuccessListener<Long>() {
-            @Override
-            public void onSuccess(Long result) {
-                //Toast.makeText(getActivity(), "Views updated to: " + result, Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    /**
-     * we call this function from the fragment we opened to enable the Recycler view
-     */
-    void enableClickable() {
-        recipeAdapter.isClickable = true;
-    }
-
-    /**
-     * scroll to the top of the recycler view when we double press home
-     */
-    void scrollToTop() {
-        int position = ((LinearLayoutManager) recyclerView.getLayoutManager())
-                .findFirstVisibleItemPosition();
-        if (position > 10) {
-            recyclerView.getLayoutManager().scrollToPosition(FAST_SCROLL_POSITION);
-        }
-        recyclerView.smoothScrollToPosition(0);
-
-    }
-
-    /**
-     * indicates if we opened a recipe
-     *
-     * @return true if a recipe is opened, false otherwise
-     */
-    boolean isRecipeCurrentlyOpen() {
-        return !recipeAdapter.isClickable;
-    }
-
 }
