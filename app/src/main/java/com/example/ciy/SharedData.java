@@ -16,6 +16,7 @@ class SharedData {
     static final int HOME =1;
     static final int FAVORITES =2;
     static final int SEARCH = 3;
+    static final int DISCOVER = 4;
 
     static final int BOTTOM_NAV = 10;
     static final int SEARCH_RECIPE = 11;

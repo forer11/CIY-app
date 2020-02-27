@@ -3,14 +3,17 @@ package com.example.ciy;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 
+import androidx.fragment.app.DialogFragment;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -34,7 +37,7 @@ import java.util.Objects;
  * home, and get ingredient suggestions from our data base while doing so. The user can add as
  * many ingredients as he wishes, and can edit them afterwards (splashscreen_background.e- delete them).
  */
-public class SearchFragment extends Fragment {
+public class SearchFragment extends DialogFragment {
 
     /* the autoComplete object for the possible ingredients */
     private AutoCompleteTextView userInput;
@@ -151,6 +154,16 @@ public class SearchFragment extends Fragment {
             }
         });
 //        blurIngredientsView();
+    }
+
+    public void onResume() {
+        super.onResume();
+        Window window = getDialog().getWindow();
+        int width = getResources().getDisplayMetrics().widthPixels;
+        int height = getResources().getDisplayMetrics().heightPixels;
+        window.setLayout(width - 250, height - 400);
+        window.setGravity(Gravity.CENTER);
+        //TODO:
     }
 
 //    private void blurIngredientsView() {
