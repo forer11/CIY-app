@@ -24,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -71,7 +72,9 @@ public class SearchFragment extends DialogFragment {
         setUpRecyclerView();
         // sets up the auto fill search adapter and data
         setUpSearchAdapter();
-
+        LottieAnimationView fridgeDoorsOpen = view.findViewById(R.id.fridgeDoorsOpen);
+        fridgeDoorsOpen.setProgress(0);
+        fridgeDoorsOpen.playAnimation();
     }
 
     private void setUpRecyclerView() {
@@ -157,7 +160,6 @@ public class SearchFragment extends DialogFragment {
                 userInput.setText("");
             }
         });
-//        blurIngredientsView();
     }
 
     public void onResume() {
@@ -173,22 +175,6 @@ public class SearchFragment extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        ((BottomNavigationBar)getActivity()).homeFragment.updateBadge();
+        ((BottomNavigationBar) getActivity()).homeFragment.updateBadge();
     }
-
-    //    private void blurIngredientsView() {
-//        float radius = 20f;
-//        View decorView = Objects.requireNonNull(getActivity()).getWindow().getDecorView();
-//        //ViewGroup we want to start blur from.
-//        ViewGroup rootView = decorView.findViewById(android.R.id.content);
-//        //Set drawable to draw in the beginning of each blurred frame.
-//        Drawable windowBackground = decorView.getBackground();
-//        BlurView blurView = decorView.findViewById(R.id.blurView);
-//        blurView.setupWith(rootView).setFrameClearDrawable(windowBackground)
-//                .setBlurAlgorithm(new RenderScriptBlur(getActivity())).setBlurRadius(radius)
-//                .setHasFixedTransformationMatrix(false);
-//        ImageView background = getView().findViewById(R.id.background);
-//        BlurImage.with(getActivity()).load(R.drawable.background_kitchen).intensity(5).
-//                Async(true).into(background);
-//    }
 }
