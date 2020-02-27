@@ -16,11 +16,6 @@
         android:title="Favorites" />
 
     <item
-        android:id="@+id/navSearch"
-        android:icon="@drawable/ic_search"
-        android:title="Search" />
-
-    <item
         android:id="@+id/navAddRecipe"
         android:icon="@drawable/ic_add_circle_black_24dp"
         android:title="Add new" />
