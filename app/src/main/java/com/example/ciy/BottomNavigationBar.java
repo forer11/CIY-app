@@ -159,11 +159,11 @@ public class BottomNavigationBar extends AppCompatActivity {
                     lastPushed = SharedData.FAVORITES;
                     lastTag = FAVORITES;
                     break;
-                case R.id.navSearch:
-                    showFragment(searchFragment, SEARCH, lastTag);
-                    lastPushed = SharedData.SEARCH;
-                    lastTag = SEARCH;
-                    break;
+//                case R.id.navSearch:
+//                    showFragment(searchFragment, SEARCH, lastTag);
+//                    lastPushed = SharedData.SEARCH;
+//                    lastTag = SEARCH;
+//                    break;
                 case R.id.navAddRecipe:
                     startActivityForResult(new Intent(BottomNavigationBar.this,
                             NewRecipeActivity.class), ADD_RECIPE_REQUEST_CODE);
@@ -310,8 +310,8 @@ public class BottomNavigationBar extends AppCompatActivity {
                 return R.id.navDiscover;
             case SharedData.FAVORITES:
                 return R.id.navFavorites;
-            case SharedData.SEARCH:
-                return R.id.navSearch;
+//            case SharedData.SEARCH:
+//                return R.id.navSearch;
             default:
                 return ERROR;
         }
