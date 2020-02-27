@@ -64,7 +64,7 @@ public class SearchFragment extends DialogFragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        ingredients = new ArrayList<>();
+        ingredients = SharedData.ingredients;
         // sets up the recyclerView adapter and swipe option
         setUpRecyclerView();
         // sets up the auto fill search adapter and data
