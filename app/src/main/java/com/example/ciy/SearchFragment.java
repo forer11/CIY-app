@@ -1,6 +1,7 @@
 package com.example.ciy;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -169,7 +170,13 @@ public class SearchFragment extends DialogFragment {
         //TODO:
     }
 
-//    private void blurIngredientsView() {
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        ((BottomNavigationBar)getActivity()).homeFragment.updateBadge();
+    }
+
+    //    private void blurIngredientsView() {
 //        float radius = 20f;
 //        View decorView = Objects.requireNonNull(getActivity()).getWindow().getDecorView();
 //        //ViewGroup we want to start blur from.
