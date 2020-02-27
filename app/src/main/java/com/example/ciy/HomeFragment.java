@@ -1,6 +1,7 @@
 package com.example.ciy;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -102,16 +103,11 @@ public class HomeFragment extends Fragment {
     private void openFridge(View view) {
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
                 .getSupportFragmentManager();
-        ((BottomNavigationBar) getActivity()).searchFragment
-                .show(fragmentManager, "FridgeFromHome");
-
-
+        SearchFragment searchFragment = ((BottomNavigationBar) getActivity()).searchFragment;
+        searchFragment.show(fragmentManager, "FridgeFromHome");
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        int x = 5;
-        System.out.println(x);
+    void updateBadge() {
+        badge.setNumber(SharedData.ingredients.size());
     }
 }
