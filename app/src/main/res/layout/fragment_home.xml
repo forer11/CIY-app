@@ -20,5 +20,13 @@
         android:src="@drawable/fridge_icon"
         android:cropToPadding="true"
         android:scaleType="fitCenter"/>
+    <com.nex3z.notificationbadge.NotificationBadge
+        android:id="@+id/badge"
+        android:layout_width="28dp"
+        android:layout_height="28dp"
+        app:badgeBackground="@drawable/badge_bg_with_shadow"
+        app:maxTextLength="2"
+        android:layout_alignTop="@+id/fridge"
+        android:layout_alignEnd="@+id/fridge"/>
 
 </RelativeLayout>

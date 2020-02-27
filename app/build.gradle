@@ -50,5 +50,7 @@ dependencies {
     implementation 'com.pkmmte.view:circularimageview:1.1'
     implementation 'de.hdodenhof:circleimageview:2.2.0'
     implementation 'com.anton46:collection-picker:1.0.2'
+    implementation 'com.nex3z:notification-badge:0.1.0'
+
 
 }

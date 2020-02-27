@@ -29,6 +29,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.firestore.Transaction;
+import com.nex3z.notificationbadge.NotificationBadge;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,6 +68,9 @@ public class HomeFragment extends Fragment {
     /* the recycler view object */
     private RecyclerView recyclerView;
 
+    private NotificationBadge badge;
+
+
     /* boolean for when we can click on the recyclerView items (when we load the data) */
     // TODO DECIDE IF NEEDED
     private FloatingActionButton addNoteButton;
@@ -84,7 +88,7 @@ public class HomeFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         user = firebaseAuth.getCurrentUser();
-
+        badge = view.findViewById(R.id.badge);
         ImageButton fridge = view.findViewById(R.id.fridge);
         fridge.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -95,11 +99,19 @@ public class HomeFragment extends Fragment {
 
     }
 
-    private void openFridge(View view)
-    {
-        SearchFragment searchFragment = new SearchFragment();
+    private void openFridge(View view) {
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
                 .getSupportFragmentManager();
-        searchFragment.show(fragmentManager, "FridgeFromHome");
+        ((BottomNavigationBar) getActivity()).searchFragment
+                .show(fragmentManager, "FridgeFromHome");
+
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        int x = 5;
+        System.out.println(x);
     }
 }
