@@ -60,7 +60,18 @@ public class LoginActivity extends BaseSignIn {
         showOptions();
     }
 
-
+    /*
+    this function starts the home activity
+     */
+    private void navToHome(){
+        Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
+        startActivity(intent);
+        finish();
+    }
+    
+    /*
+    this function shows all the sign in options
+     */
     private void showOptions(){
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder()
@@ -70,7 +81,9 @@ public class LoginActivity extends BaseSignIn {
         );
     }
 
-
+    /*
+    this method update the id of the user which was created
+     */
     private void updateUI(FirebaseUser user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference usersRef = db.collection(SharedData.USERS);
@@ -92,7 +105,9 @@ public class LoginActivity extends BaseSignIn {
         });
     }
 
-
+    /*
+    this function deals with the results of the user's sign in
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -101,9 +116,7 @@ public class LoginActivity extends BaseSignIn {
             if (resultCode == RESULT_OK){
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
                 updateUI(user);
-                Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
-                startActivity(intent);
-                finish();
+                navToHome();
             } else {
                 Toast.makeText(this, ""+response.getError().getMessage(), Toast.LENGTH_SHORT).show();
             }
