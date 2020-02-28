@@ -104,7 +104,7 @@ public class NewRecipeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         Intent intent = new Intent();
         setResult(2, intent);
-        setContentView(R.layout.activity_new_note);
+        setContentView(R.layout.activity_new_recipe);
         initializeUi();
         //Check if there's a permission to access camera and external storage
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
@@ -184,7 +184,7 @@ public class NewRecipeActivity extends AppCompatActivity {
         instructionsLayout = findViewById(R.id.preparationInstructions);
         userPicture = findViewById(R.id.userPicture);
         cameraButton = findViewById(R.id.takePicButton);
-        uploadButton = findViewById(R.id.uploadSign);
+        uploadButton = findViewById(R.id.uploadPicButton);
         //Build upon an existing VmPolicy
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
