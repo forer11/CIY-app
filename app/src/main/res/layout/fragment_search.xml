@@ -12,18 +12,7 @@
         android:layout_height="match_parent"
         android:background="@drawable/cute_fridge"
         >
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/fridgeDoorsOpen"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/enterIngredients"
-            android:scaleType="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:lottie_autoPlay="false"
-            app:lottie_fileName="open_fridge_anim.json"
-            app:lottie_speed="0.4"
-            app:lottie_loop="false" />
+
 
         <AutoCompleteTextView
             android:id="@+id/enterIngredients"
@@ -45,7 +34,6 @@
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"/>
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/ingredientsRecyclerView"
             android:layout_width="match_parent"
@@ -54,10 +42,23 @@
             android:layout_centerInParent="true"
             android:layout_marginTop="210dp"
             android:layout_marginStart="50dp"
-            android:layout_marginBottom="35dp">
+            android:layout_marginBottom="35dp"
+            android:layoutAnimation="@anim/layout_animation"
+            app:layout_behavior="appbar_scrolling_view_behavior">
         </androidx.recyclerview.widget.RecyclerView>
 
-
+        <com.airbnb.lottie.LottieAnimationView
+            android:id="@+id/fridgeDoorsOpen"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@+id/enterIngredients"
+            android:scaleType="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:lottie_autoPlay="true"
+            app:lottie_fileName="open_fridge_anim.json"
+            app:lottie_speed="0.4"
+            app:lottie_loop="false" />
 
     </RelativeLayout>
 

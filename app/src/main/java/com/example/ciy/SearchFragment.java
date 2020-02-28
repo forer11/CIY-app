@@ -56,6 +56,7 @@ public class SearchFragment extends DialogFragment {
     private IngredientsAdapter ingredientsAdapter;
     /* the search options ingredients list */
     private List<String> ingredientOptions;
+    private RecyclerView recyclerView;
 
 
     @Nullable
@@ -78,7 +79,7 @@ public class SearchFragment extends DialogFragment {
     }
 
     private void setUpRecyclerView() {
-        RecyclerView recyclerView = getView().findViewById(R.id.ingredientsRecyclerView);
+        recyclerView = getView().findViewById(R.id.ingredientsRecyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         ingredientsAdapter = new IngredientsAdapter(ingredients);
@@ -89,7 +90,7 @@ public class SearchFragment extends DialogFragment {
         setItemTouchHelpers(recyclerView);
     }
 
-    private void setItemTouchHelpers(RecyclerView recyclerView) {
+    private void setItemTouchHelpers(final RecyclerView recyclerView) {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
             @Override
@@ -104,6 +105,7 @@ public class SearchFragment extends DialogFragment {
                 ingredientOptions.add(ingredients.get(position));
                 ingredients.remove(position);
                 ingredientsAdapter.notifyItemRemoved(position);
+                recyclerView.scheduleLayoutAnimation();
                 searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
                         android.R.layout.simple_list_item_1, ingredientOptions);
                 userInput.setAdapter(searchOptionsAdapter);
@@ -151,6 +153,7 @@ public class SearchFragment extends DialogFragment {
                 //update user entered ingredient in data and ingredientName his choice on screen
                 ingredients.add(input);
                 ingredientsAdapter.notifyItemInserted(ingredients.size() - 1);
+                recyclerView.scheduleLayoutAnimation();
                 ingredientOptions.remove(input);
                 // notify data has changed don't work for android adapter, known issue online.
                 searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),

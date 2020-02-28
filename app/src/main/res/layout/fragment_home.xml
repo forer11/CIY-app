@@ -1,32 +1,72 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/home_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#72B9B6B6"
+    android:orientation="vertical"
     tools:context=".BottomNavigationBar">
 
-    <ImageButton
-        android:id="@+id/fridge"
-        android:layout_width="60dp"
-        android:layout_height="60dp"
-        android:layout_alignParentBottom="true"
-        android:layout_centerInParent="true"
-        android:layout_marginBottom="25dp"
-        android:background="@drawable/circle_background"
-        android:padding="15dp"
-        android:src="@drawable/fridge_icon"
-        android:cropToPadding="true"
-        android:scaleType="fitCenter"/>
-    <com.nex3z.notificationbadge.NotificationBadge
-        android:id="@+id/badge"
-        android:layout_width="28dp"
-        android:layout_height="28dp"
-        app:badgeBackground="@drawable/badge_bg_with_shadow"
-        app:maxTextLength="2"
-        android:layout_alignTop="@+id/fridge"
-        android:layout_alignEnd="@+id/fridge"/>
+    <LinearLayout
+        android:id="@+id/layout1"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="0.3"
+        android:background="#72B9B6B6"
+        android:gravity="center"
+        android:orientation="vertical">
 
-</RelativeLayout>
+
+        <ImageView
+            android:id="@+id/ingvw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@mipmap/ic_launcher" />
+
+    </LinearLayout>
+
+
+    <LinearLayout
+        android:id="@+id/layout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1.8"
+        android:background="#72B9B6B6"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <ImageButton
+                android:id="@+id/fridge"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerInParent="true"
+                android:background="@drawable/circle_background"
+                android:cropToPadding="true"
+                android:layout_marginBottom="15dp"
+                android:padding="15dp"
+                android:scaleType="fitCenter"
+                android:src="@drawable/fridge_icon" />
+
+            <com.nex3z.notificationbadge.NotificationBadge
+                android:id="@+id/badge"
+                android:layout_width="28dp"
+                android:layout_height="28dp"
+                android:layout_alignTop="@+id/fridge"
+                android:layout_alignEnd="@+id/fridge"
+                app:badgeBackground="@drawable/badge_bg_with_shadow"
+                app:maxTextLength="2" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+
+</LinearLayout>
