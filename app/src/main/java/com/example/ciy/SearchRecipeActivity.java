@@ -15,6 +15,9 @@ import android.widget.Toast;
 
 import androidx.appcompat.widget.SearchView;
 
+import com.anton46.collectionitempicker.CollectionPicker;
+import com.anton46.collectionitempicker.Item;
+import com.anton46.collectionitempicker.OnItemClickListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,9 +28,11 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 public class SearchRecipeActivity extends AppCompatActivity {
+
 
     /* the search recyclerView adapter */
     private SearchAdapter searchAdapter;
@@ -48,7 +53,7 @@ public class SearchRecipeActivity extends AppCompatActivity {
         user = firebaseAuth.getCurrentUser();
 
         setContentView(R.layout.activity_search_recipe);
-        final ArrayList<Recipe> searchRecipes = new ArrayList<>();
+        final ArrayList<Recipe> searchRecipes = new ArrayList<>(SharedData.searchRecipes);
 
         // define the toolbar to be used in the activity
         Toolbar toolbar = findViewById(R.id.searchToolbar);
@@ -57,6 +62,11 @@ public class SearchRecipeActivity extends AppCompatActivity {
         setUpRecyclerView(searchRecipes);
 
         setUpAdapterListeners(searchRecipes);
+
+        List<Item> items = new ArrayList<>();
+        for (int i = 0; i < 3; i++) {
+            items.add(new Item("item " + i, "Items " + i));
+        }
     }
 
     @Override
@@ -154,7 +164,12 @@ public class SearchRecipeActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.searchRecyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        searchAdapter = new SearchAdapter(searchRecipes);
+        int x = 0;
+        if (x == 1) {
+            searchAdapter = new SearchAdapter(searchRecipes, SharedData.NAME_FILTER);
+        } else {
+            searchAdapter = new SearchAdapter(searchRecipes, SharedData.INGREDIENTS_FILTER);
+        }
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(searchAdapter);
