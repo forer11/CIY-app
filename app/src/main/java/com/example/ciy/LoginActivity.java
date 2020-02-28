@@ -68,7 +68,7 @@ public class LoginActivity extends BaseSignIn {
         startActivity(intent);
         finish();
     }
-    
+
     /*
     this function shows all the sign in options
      */

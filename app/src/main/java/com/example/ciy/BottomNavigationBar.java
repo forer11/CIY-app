@@ -25,6 +25,10 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
+import com.firebase.ui.auth.AuthUI;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -226,11 +230,21 @@ public class BottomNavigationBar extends AppCompatActivity {
                 .setPositiveButton("sign out", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         Toast.makeText(BottomNavigationBar.this, "logOut", Toast.LENGTH_SHORT).show(); //TODO SHANI
-                        FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-                        firebaseAuth.signOut();
-                        Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-                        startActivity(intent);
-                        finish();
+                        AuthUI.getInstance()
+                                .signOut(BottomNavigationBar.this)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                    }
+                                }).addOnFailureListener(new OnFailureListener() {
+                            @Override
+                            public void onFailure(@NonNull Exception e) {
+                                Toast.makeText(BottomNavigationBar.this, ""+e.getMessage() , Toast.LENGTH_SHORT).show();
+                            }
+                        });
                     }
                 })
                 .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
