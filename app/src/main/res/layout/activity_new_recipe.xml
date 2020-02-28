@@ -32,8 +32,7 @@
             android:id="@+id/constraintLayout"
             android:layout_width="363dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp">
+           >
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -185,6 +184,7 @@
                 android:layout_height="100dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="15dp"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/ripple_rounded_corners"
                 android:baselineAlignBottom="true"
                 android:scaleType="centerInside"
@@ -234,7 +234,7 @@
                 android:layout_height="100dp"
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="15dp"
-                android:layout_marginEnd="20dp"
+                android:layout_marginEnd="10dp"
                 android:background="@drawable/ripple_rounded_corners"
                 android:baselineAlignBottom="true"
                 android:scaleType="centerInside"
