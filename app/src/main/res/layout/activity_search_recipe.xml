@@ -5,8 +5,8 @@
     android:id="@+id/home_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchRecipeActivity"
-    android:background="#72B9B6B6">
+    android:background="#72B9B6B6"
+    tools:context=".SearchRecipeActivity">
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -22,49 +22,65 @@
             android:background="#72B9B6B6"
             android:scrollbars="vertical" />
 
-        <LinearLayout
+        <HorizontalScrollView
             android:id="@+id/collection_item_picker"
             android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:layout_below="@+id/searchToolbar"
-            android:orientation="horizontal"
-            android:background="@color/white">
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/searchToolbar">
 
-            <Button
-                android:id="@+id/filterByAll"
+            <LinearLayout
+                android:id="@+id/filterLayout"
                 android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/animation_button"
-                android:foreground="@drawable/ripple"
-                android:text="All"
-                android:textSize="12sp"/>
+                android:layout_height="50dp"
+                android:background="@color/white"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/filterByIngredients"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/animation_button"
-                android:foreground="@drawable/ripple"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:text="with my ingredients"
-                android:textSize="12sp"/>
+                <Button
+                    android:id="@+id/filterByAll"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/animation_button"
+                    android:foreground="@drawable/ripple"
+                    android:text="All"
+                    android:textSize="12sp" />
 
-            <Button
-                android:id="@+id/filterByYay"
-                android:layout_width="wrap_content"
-                android:layout_height="35dp"
-                android:layout_marginStart="10dp"
-                android:layout_marginTop="10dp"
-                android:background="@drawable/animation_button"
-                android:foreground="@drawable/ripple"
-                android:text="By Yay"
-                android:textSize="12sp"/>
-        </LinearLayout>
+                <Button
+                    android:id="@+id/filterByIngredients"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/animation_button"
+                    android:foreground="@drawable/ripple"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:text="with my ingredients"
+                    android:textSize="12sp" />
+
+                <Button
+                    android:id="@+id/filterByYay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/animation_button"
+                    android:foreground="@drawable/ripple"
+                    android:text="By Yay"
+                    android:textSize="12sp" />
+                <Button
+                    android:id="@+id/filterByBay"
+                    android:layout_width="wrap_content"
+                    android:layout_height="35dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/animation_button"
+                    android:foreground="@drawable/ripple"
+                    android:text="By Bay"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </HorizontalScrollView>
 
         <View
             android:id="@+id/divider"
