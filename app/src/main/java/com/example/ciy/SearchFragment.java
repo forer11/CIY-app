@@ -1,5 +1,7 @@
 package com.example.ciy;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.text.InputType;
@@ -22,6 +24,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import com.airbnb.lottie.LottieAnimationView;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -34,8 +37,8 @@ import java.util.Objects;
 
 /**
  * This class represents the Search fragment, which allows the user to type ingredients he has at
- * home, and get ingredient suggestions from our data base while doing so. The user can add as
- * many ingredients as he wishes, and can edit them afterwards (splashscreen_background.e- delete them).
+ * home, and get ingredient suggestions from our data base while doing so. The user can add kitchen
+ * many ingredients kitchen he wishes, and can edit them afterwards (splashscreen_background.e- delete them).
  */
 public class SearchFragment extends DialogFragment {
 
@@ -69,7 +72,9 @@ public class SearchFragment extends DialogFragment {
         setUpRecyclerView();
         // sets up the auto fill search adapter and data
         setUpSearchAdapter();
-
+        LottieAnimationView fridgeDoorsOpen = view.findViewById(R.id.fridgeDoorsOpen);
+        fridgeDoorsOpen.setProgress(0);
+        fridgeDoorsOpen.playAnimation();
     }
 
     private void setUpRecyclerView() {
@@ -107,6 +112,8 @@ public class SearchFragment extends DialogFragment {
     }
 
     private void setUpSearchAdapter() {
+        final Context context = getActivity();
+        final View view = getView();
         if (SharedData.allIngredients.isEmpty()) {
             ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                 @Override
@@ -117,20 +124,20 @@ public class SearchFragment extends DialogFragment {
                         SharedData.allIngredients.add(option);
                     }
                     ingredientOptions = new ArrayList<>(SharedData.allIngredients);
-                    searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+                    searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(context),
                             android.R.layout.simple_list_item_1, ingredientOptions);
-                    setUserInput();
+                    setUserInput(view);
                 }
             });
         } else {
-            searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(getActivity()),
+            searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(context),
                     android.R.layout.simple_list_item_1, ingredientOptions);
-            setUserInput();
+            setUserInput(view);
         }
     }
 
-    private void setUserInput() {
-        userInput = Objects.requireNonNull(getView()).findViewById(R.id.enterIngredients);
+    private void setUserInput(View view) {
+        userInput = view.findViewById(R.id.enterIngredients);
         userInput.setAdapter(searchOptionsAdapter);
         userInput.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
         userInput.setTextColor(Color.DKGRAY);
@@ -153,7 +160,6 @@ public class SearchFragment extends DialogFragment {
                 userInput.setText("");
             }
         });
-//        blurIngredientsView();
     }
 
     public void onResume() {
@@ -166,19 +172,9 @@ public class SearchFragment extends DialogFragment {
         //TODO:
     }
 
-//    private void blurIngredientsView() {
-//        float radius = 20f;
-//        View decorView = Objects.requireNonNull(getActivity()).getWindow().getDecorView();
-//        //ViewGroup we want to start blur from.
-//        ViewGroup rootView = decorView.findViewById(android.R.id.content);
-//        //Set drawable to draw in the beginning of each blurred frame.
-//        Drawable windowBackground = decorView.getBackground();
-//        BlurView blurView = decorView.findViewById(R.id.blurView);
-//        blurView.setupWith(rootView).setFrameClearDrawable(windowBackground)
-//                .setBlurAlgorithm(new RenderScriptBlur(getActivity())).setBlurRadius(radius)
-//                .setHasFixedTransformationMatrix(false);
-//        ImageView background = getView().findViewById(R.id.background);
-//        BlurImage.with(getActivity()).load(R.drawable.background_kitchen).intensity(5).
-//                Async(true).into(background);
-//    }
+    @Override
+    public void onDismiss(@NonNull DialogInterface dialog) {
+        super.onDismiss(dialog);
+        ((BottomNavigationBar) getActivity()).homeFragment.updateBadge();
+    }
 }

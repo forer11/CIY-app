@@ -316,4 +316,5 @@ public class BottomNavigationBar extends AppCompatActivity {
                 return ERROR;
         }
     }
+
 }

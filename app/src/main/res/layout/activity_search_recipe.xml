@@ -5,27 +5,85 @@
     android:id="@+id/home_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".SearchRecipeActivity">
+    tools:context=".SearchRecipeActivity"
+    android:background="#72B9B6B6">
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/searchRecyclerView"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="#72B9B6B6"
-        android:scrollbars="vertical"
-        android:paddingTop="?attr/actionBarSize"
-        android:layout_marginTop="5dp"
-        />
+        android:layout_height="match_parent">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/searchToolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:background="?android:attr/windowBackground"
-        android:elevation="4dp"
-        app:layout_scrollFlags="scroll|enterAlways"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:title="  CIY" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_below="@id/divider"
+            android:layout_marginTop="2dp"
+            android:background="#72B9B6B6"
+            android:scrollbars="vertical" />
+
+        <LinearLayout
+            android:id="@+id/collection_item_picker"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_below="@+id/searchToolbar"
+            android:orientation="horizontal"
+            android:background="@color/white">
+
+            <Button
+                android:id="@+id/filterByAll"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/animation_button"
+                android:foreground="@drawable/ripple"
+                android:text="All"
+                android:textSize="12sp"/>
+
+            <Button
+                android:id="@+id/filterByIngredients"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/animation_button"
+                android:foreground="@drawable/ripple"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:text="with my ingredients"
+                android:textSize="12sp"/>
+
+            <Button
+                android:id="@+id/filterByYay"
+                android:layout_width="wrap_content"
+                android:layout_height="35dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/animation_button"
+                android:foreground="@drawable/ripple"
+                android:text="By Yay"
+                android:textSize="12sp"/>
+        </LinearLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_below="@id/collection_item_picker"
+            android:background="@drawable/toolbar_dropshadow" />
+
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/searchToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="?android:attr/windowBackground"
+            android:elevation="4dp"
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:title="  CIY" />
+    </RelativeLayout>
 
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

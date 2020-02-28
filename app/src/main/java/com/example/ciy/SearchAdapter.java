@@ -18,10 +18,13 @@ import java.util.ArrayList;
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> implements Filterable {
     private ArrayList<Recipe> searchRecipes;
     private OnItemClickListener searchListener;
+    /* 1 meaning by name , 2 meaning also by ingredients */
+    private int filterType;
 
 
     public interface OnItemClickListener {
         void OnItemClick(int position);
+
         void OnLikeClick(int position);
     }
 
@@ -68,8 +71,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         }
     }
 
-    public SearchAdapter(ArrayList<Recipe> searchRecipes) {
+    public SearchAdapter(ArrayList<Recipe> searchRecipes, int filterType) {
         this.searchRecipes = searchRecipes;
+        this.filterType = filterType;
     }
 
     @NonNull
@@ -103,7 +107,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
     @Override
     public Filter getFilter() {
-        return searchFilter;
+        if (filterType == SharedData.NAME_FILTER) {
+            return searchFilter;
+        } else {
+            return searchByIngredientsFilter;
+        }
     }
 
     private final Filter searchFilter = new Filter() {
@@ -120,6 +128,38 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                     if (recipe.getTitle().toLowerCase().trim().contains(filterPattern)) {
                         filteredArrayList.add(recipe);
                     }
+                }
+            }
+
+            FilterResults results = new FilterResults();
+            results.values = filteredArrayList;
+
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            searchRecipes.clear();
+            searchRecipes.addAll((ArrayList) results.values);
+            notifyDataSetChanged();
+        }
+    };
+
+    private final Filter searchByIngredientsFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            ArrayList<Recipe> filteredArrayList = new ArrayList<>();
+
+            if (constraint == null || constraint.length() == 0) {
+                filteredArrayList = new ArrayList<>(SharedData.searchRecipes);
+            } else {
+                String filterPattern = constraint.toString().toLowerCase().trim();
+
+                for (Recipe recipe : SharedData.searchRecipes) {
+                    if (recipe.getTitle().toLowerCase().trim().contains(filterPattern)) {
+                        filteredArrayList.add(recipe);
+                    }
+
                 }
             }
 
