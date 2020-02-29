@@ -5,6 +5,7 @@ import com.airbnb.lottie.LottieAnimationView;
 
 import android.graphics.Color;
 import android.os.Bundle;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -124,14 +125,32 @@ public class RecipeFragment extends DialogFragment {
     }
 
     private void setRecipeView() {
+        //recipe details
         TextView recipeTitle = getView().findViewById(R.id.recipeTitle);
         ImageView recipeImage = getView().findViewById(R.id.recipeImage);
         TextView ingredientsTitle = getView().findViewById(R.id.ingredientsTitle);
-        TextView prepareTime = getView().findViewById(R.id.prepareTime);
         TextView titleRecipeDescription = getView().findViewById(R.id.titleRecipeDescription);
         TextView recipeDescription = getView().findViewById(R.id.recipeDescription);
-        initializeUi(recipeTitle, recipeImage, prepareTime,ingredientsTitle,
-                titleRecipeDescription, recipeDescription, button_like);
+
+        //recipe metadata
+        TextView likes_and_views = getView().findViewById(R.id.likes_and_views);
+        likes_and_views.setTextSize(15);
+        likes_and_views.setGravity(Gravity.CENTER);
+        TextView protein = getView().findViewById(R.id.protein);
+        protein.setTextSize(15);
+        protein.setGravity(Gravity.CENTER);
+        TextView prepareTime = getView().findViewById(R.id.prepareTime);
+        prepareTime.setTextSize(15);
+        prepareTime.setGravity(Gravity.CENTER);
+        TextView complexity = getView().findViewById(R.id.complexity);
+        complexity.setTextSize(15);
+        complexity.setGravity(Gravity.CENTER);
+        TextView calories = getView().findViewById(R.id.calories);
+        calories.setTextSize(15);
+        calories.setGravity(Gravity.CENTER);
+        initializeUi(recipeTitle, recipeImage,ingredientsTitle,
+                titleRecipeDescription, recipeDescription,prepareTime,protein,likes_and_views,
+                complexity,calories,button_like);
     }
 
 //    private void blurBackBackground() {
@@ -158,8 +177,9 @@ public class RecipeFragment extends DialogFragment {
 //    }
 
     private void initializeUi(TextView recipeTitle, ImageView recipeImage,
-                              TextView prepareTime, TextView ingredientsTitle,
-                              TextView titleRecipeDescription, TextView recipeDescription,
+                              TextView ingredientsTitle, TextView titleRecipeDescription,
+                              TextView recipeDescription, TextView prepareTime,TextView protein,
+                              TextView likes_and_views, TextView complexity, TextView calories,
                               LottieAnimationView button_like) {
         recipeTitle.setText(recipe.getTitle());
         try {
@@ -168,9 +188,14 @@ public class RecipeFragment extends DialogFragment {
         } catch (Exception e) {
             recipeImage.setImageResource(R.drawable.icon_dog_chef);
         }
+
+
         //TODO - update to real time from db
-        prepareTime.setText("\uD83D\uDD52 30 " + "min  " + "\uD83D\uDC69\u200D\uD83C\uDF73 "
-                + recipe.getViews() + " views");
+        likes_and_views.setText(recipe.getViews()+" peoples viewed this recipe");
+        prepareTime.setText("prep time:\n"+recipe.getPreparationTime());
+        complexity.setText("complexity:\n"+recipe.getDifficulty());
+        calories.setText("calories:\n"+recipe.getCalories());
+        protein.setText("protein:\n"+recipe.getProtein());
         setIngredients(ingredientsTitle);
             titleRecipeDescription.setText("Description");
             recipeDescription.setText(recipe.getInstructions());
