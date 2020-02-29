@@ -7,7 +7,7 @@
     tools:context=".Tags">
 
     <com.anton46.collectionitempicker.CollectionPicker
-        android:id="@+id/collection_item_picker"
+        android:id="@+id/orderFilters"
         android:layout_width="match_parent"
         android:layout_height="100dp"
         android:layout_weight="1"

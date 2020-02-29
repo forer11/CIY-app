@@ -88,22 +88,14 @@ public class SearchRecipeActivity extends AppCompatActivity {
         filterOther1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currFilter != Filters.OTHER1) {
-                    v.setBackgroundResource(R.drawable.filter_button_pressed);
-                    currFilter = Filters.OTHER1;
-                    setFilterPressed(filterOther1);
-                }
+                v.setBackgroundResource(R.drawable.filter_button_pressed);
             }
         });
 
         filterOther2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (currFilter != Filters.OTHER2) {
-                    v.setBackgroundResource(R.drawable.filter_button_pressed);
-                    currFilter = Filters.OTHER2;
-                    setFilterPressed(filterOther2);
-                }
+                v.setBackgroundResource(R.drawable.filter_button_pressed);
             }
         });
     }
@@ -144,10 +136,10 @@ public class SearchRecipeActivity extends AppCompatActivity {
     private void configureFilterButtons() {
         filterAll = findViewById(R.id.filterByAll);
         filterByIngredients = findViewById(R.id.filterByIngredients);
-        filterOther1 = findViewById(R.id.filterByYay);
-        filterOther2 = findViewById(R.id.filterByBay);
+        filterOther1 = findViewById(R.id.filterByYay2);
+        filterOther2 = findViewById(R.id.filterByBay2);
         filterButtons = new ArrayList<>
-                (Arrays.asList(filterAll, filterByIngredients, filterOther1, filterOther2));
+                (Arrays.asList(filterAll, filterByIngredients));
     }
 
     @Override

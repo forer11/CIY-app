@@ -109,13 +109,46 @@ public class DiscoverFragment extends Fragment {
                 JSONObject jsonRecipe = jsonRecipes.getJSONObject(i);
                 String title = jsonRecipe.getString("name");
                 String description = jsonRecipe.getString("description");
-                String instructions = jsonRecipe.getJSONArray("method").getString(0);
+
+                StringBuilder instructions = new StringBuilder();
+                JSONArray jsonMethod = jsonRecipe.getJSONArray("method");
+                for (int j = 0; j < jsonMethod.length(); j++) {
+                    instructions.append(jsonMethod.getString(j));
+                    instructions.append("\n");
+                }
+
+                JSONArray jsonTime = jsonRecipe.getJSONArray("time");
+                JSONObject obj = jsonTime.getJSONObject(0);
+                JSONObject obj2 = obj.getJSONObject("cook");
+                String hours = obj2.getString("hrs");
+                if (!hours.equals("null")) {
+                    hours = hours.substring(0, hours.indexOf(" "));
+                } else {
+                    hours = "0";
+                }
+                int h = Integer.parseInt(hours);
+                String minutes = obj2.getString("mins");
+                if (!minutes.equals("null")) {
+                    minutes = minutes.substring(0, minutes.indexOf(" "));
+                }
+                else
+                {
+                    minutes = "0";
+                }
+                int m = Integer.parseInt(minutes);
+                int t = (h*60) + m;
+                String time = String.valueOf(t);
+
+                obj = jsonRecipe.getJSONObject("nutrition");
+                String calories = obj.getString("kcal");
+                String protein = obj.getString("protein");
+
 
                 String imageUrl = "https:" + jsonRecipe.getString("img_url");
                 String difficulty = jsonRecipe.getJSONArray("difficulty").getString(0);
 
                 Random random = new Random();
-                int views = random.nextInt(50000);
+                int views = random.nextInt(1000000);
                 JSONArray jsonIngredients = jsonRecipe.getJSONArray("new ingredients");
                 List<String> ingredients = new ArrayList<>();
                 for (int j = 0; j < jsonIngredients.length(); j++) {
@@ -127,10 +160,13 @@ public class DiscoverFragment extends Fragment {
                     extendedIngredients.add(jsonUserIngredients.getString(j));
                 }
                 Recipe recipe = new Recipe(title, description, views, ingredients, imageUrl);
-                recipe.setInstructions(instructions);
+                recipe.setInstructions(instructions.toString());
                 recipe.setExtendedIngredients(extendedIngredients);
                 recipe.setDifficulty(difficulty);
                 recipe.setId(title);
+                recipe.setPreparationTime(time);
+                recipe.setCalories(calories);
+                recipe.setProtein(protein);
                 recipesRef.document(title).set((recipe), SetOptions.merge()).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
