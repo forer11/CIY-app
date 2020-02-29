@@ -160,4 +160,12 @@ public class Recipe implements Serializable {
     public void setProtein(String protein) {
         this.protein = protein;
     }
+
+    public double getMatchFactor() {
+        return matchFactor;
+    }
+
+    public void setMatchFactor(double matchFactor) {
+        this.matchFactor = matchFactor;
+    }
 }

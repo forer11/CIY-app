@@ -31,8 +31,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+import static com.example.ciy.SharedData.searchRecipes;
+
 
 public class SearchRecipeActivity extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+    private RecyclerView.LayoutManager layoutManager;
+    private ArrayList<Recipe> searchRecipes;
 
     private enum Filters {
         ALL, INGREDIENTS;
@@ -71,15 +77,15 @@ public class SearchRecipeActivity extends AppCompatActivity {
         setupFilterListener();
         filterAll.setBackgroundResource(R.drawable.filter_button_pressed);
 
-        final ArrayList<Recipe> searchRecipes = new ArrayList<>(SharedData.searchRecipes);
+        searchRecipes = new ArrayList<>(SharedData.searchRecipes);
 
         // define the toolbar to be used in the activity
         Toolbar toolbar = findViewById(R.id.searchToolbar);
         setSupportActionBar(toolbar);
 
-        setUpRecyclerView(searchRecipes);
+        setUpRecyclerView();
 
-        setUpAdapterListeners(searchRecipes);
+        setUpAdapterListeners();
 
     }
 
@@ -140,27 +146,33 @@ public class SearchRecipeActivity extends AppCompatActivity {
     }
 
     private void handelByIngredientsFilter() {
-        filterByIngredients.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currFilter != Filters.INGREDIENTS) {
-                    v.setBackgroundResource(R.drawable.filter_button_pressed);
-                    currFilter = Filters.INGREDIENTS;
-                    setFilterPressed(filterByIngredients);
-                }
+        filterByIngredients.setOnClickListener(v -> {
+            if (currFilter != Filters.INGREDIENTS) {
+                v.setBackgroundResource(R.drawable.filter_button_pressed);
+                currFilter = Filters.INGREDIENTS;
+                setFilterPressed(filterByIngredients);
+
+                searchRecipes = SharedData.orderByIngredientsMatch(searchRecipes);
+                searchAdapter = new SearchAdapter(searchRecipes, SharedData.INGREDIENTS_FILTER);
+                setUpAdapterListeners();
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(searchAdapter);
             }
         });
     }
 
     private void handelAllFilter() {
-        filterAll.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (currFilter != Filters.ALL) {
-                    v.setBackgroundResource(R.drawable.filter_button_pressed);
-                    currFilter = Filters.ALL;
-                    setFilterPressed(filterAll);
-                }
+        filterAll.setOnClickListener(v -> {
+            if (currFilter != Filters.ALL) {
+                v.setBackgroundResource(R.drawable.filter_button_pressed);
+                currFilter = Filters.ALL;
+                setFilterPressed(filterAll);
+
+                searchRecipes = SharedData.orderAlphabetically(searchRecipes);
+                searchAdapter = new SearchAdapter(searchRecipes, SharedData.NAME_FILTER);
+                setUpAdapterListeners();
+                recyclerView.setLayoutManager(layoutManager);
+                recyclerView.setAdapter(searchAdapter);
             }
         });
     }
@@ -229,7 +241,7 @@ public class SearchRecipeActivity extends AppCompatActivity {
         });
     }
 
-    private void setUpAdapterListeners(final ArrayList<Recipe> searchRecipes) {
+    private void setUpAdapterListeners() {
         searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(int position) {
@@ -275,15 +287,13 @@ public class SearchRecipeActivity extends AppCompatActivity {
         recipeFragment.show(fragmentManager, "RecipeFromSearchRecipe");
     }
 
-    private void setUpRecyclerView(ArrayList<Recipe> searchRecipes) {
-        RecyclerView recyclerView = findViewById(R.id.searchRecyclerView);
+    private void setUpRecyclerView() {
+        recyclerView = findViewById(R.id.searchRecyclerView);
         recyclerView.setHasFixedSize(true);
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        if (currFilter == Filters.ALL) {
-            searchAdapter = new SearchAdapter(searchRecipes, SharedData.NAME_FILTER);
-        } else {
-            searchAdapter = new SearchAdapter(searchRecipes, SharedData.INGREDIENTS_FILTER);
-        }
+        layoutManager = new LinearLayoutManager(this);
+
+        searchAdapter = new SearchAdapter(searchRecipes, SharedData.NAME_FILTER);
+
 
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(searchAdapter);
