@@ -120,7 +120,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             ArrayList<Recipe> filteredArrayList = new ArrayList<>();
 
             if (constraint == null || constraint.length() == 0) {
-                filteredArrayList.clear();
+                filteredArrayList = new ArrayList<>(SharedData.searchRecipes);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 

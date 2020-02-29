@@ -31,7 +31,8 @@
         <activity android:name=".SignInActivity" />
         <activity
             android:name=".LoginActivity"
-            android:launchMode="singleTop">
+            android:launchMode="singleTop"
+            android:theme="@style/BaseAppTheme">
 
         </activity>
         <activity android:name=".Blurred" />

@@ -28,6 +28,13 @@ public class Recipe implements Serializable {
     private String difficulty;
     /* the preparation time */
     private String preparationTime;
+    /* the recipe difficulty */
+
+    /* the recipe calories */
+    private String calories;
+
+    /* the recipe proteins in grams*/
+    private String protein;
 
     public Recipe() {
         // public no-arg constructor necessary for Firestore
@@ -125,5 +132,29 @@ public class Recipe implements Serializable {
 
     public void setDifficulty(String difficulty) {
         this.difficulty = difficulty;
+    }
+
+    public String getPreparationTime() {
+        return preparationTime;
+    }
+
+    public void setPreparationTime(String preparationTime) {
+        this.preparationTime = preparationTime;
+    }
+
+    public String getCalories() {
+        return calories;
+    }
+
+    public void setCalories(String calories) {
+        this.calories = calories;
+    }
+
+    public String getProtein() {
+        return protein;
+    }
+
+    public void setProtein(String protein) {
+        this.protein = protein;
     }
 }
