@@ -72,7 +72,6 @@ curry
 bacon
 lime
 wine
-yoghurt
 paprika
 cumin
 leek
@@ -93,7 +92,6 @@ mozzarella
 raisins
 honey
 hazelnut
-mayonnaise
 celery
 pecan
 blueberries
