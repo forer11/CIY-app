@@ -48,8 +48,10 @@
                 android:layout_width="80dp"
                 android:layout_height="80dp"
                 android:layout_below="@+id/imageView5"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="23dp"
                 android:layout_marginTop="0dp"
-                android:layout_marginEnd="16dp"
+                android:layout_marginEnd="15dp"
                 android:layout_toStartOf="@+id/prepareTime"
                 android:background="@drawable/window_frame"
                 android:fontFamily="@font/average_sans"
@@ -61,7 +63,7 @@
             <ImageView
                 android:id="@+id/recipeImage"
                 android:layout_width="match_parent"
-                android:layout_height="263dp"
+                android:layout_height="210dp"
                 android:layout_alignParentTop="true"
                 android:layout_alignParentEnd="true"
                 android:layout_marginTop="0dp"
@@ -151,20 +153,20 @@
                 android:id="@+id/titleRecipeDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@id/ingredients"
+                android:layout_below="@+id/imageView8"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="0dp"
                 android:layout_marginEnd="10dp"
                 android:fontFamily="@font/average_sans"
+                android:gravity="center_horizontal"
                 android:shadowColor="@color/black"
                 android:shadowDx="1"
                 android:shadowDy="1"
                 android:shadowRadius="2"
                 android:text="titleRecipeDescription"
-                android:textAlignment="textStart"
                 android:textAllCaps="false"
                 android:textColor="#FFFFFF"
-                android:textSize="35sp" />
+                android:textSize="20sp" />
 
             <TextView
                 android:id="@+id/recipeDescription"
@@ -176,9 +178,9 @@
                 android:layout_marginBottom="10dp"
                 android:fontFamily="@font/average_sans"
                 android:text="recipeDescription"
-                android:textAlignment="textStart"
+                android:gravity="left"
                 android:textColor="@color/black"
-                android:textSize="20sp" />
+                android:textSize="15sp" />
 
             <TextView
                 android:id="@+id/prepareTime"
@@ -201,7 +203,7 @@
                 android:layout_height="60dp"
                 android:layout_below="@+id/imageView4"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="-15dp"
+                android:layout_marginTop="-16dp"
                 android:layout_marginEnd="35dp"
                 android:clickable="true"
                 app:lottie_fileName="like_heart_animation.json"
@@ -266,6 +268,29 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="0dp"
                 app:srcCompat="@drawable/divider" />
+
+            <ImageView
+                android:id="@+id/imageView8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/ingredients"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentEnd="true"
+                android:layout_marginStart="-1dp"
+                android:layout_marginTop="2dp"
+                android:layout_marginEnd="1dp"
+                app:srcCompat="@drawable/divider" />
+
+            <TextView
+                android:id="@+id/add_to_favs"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/button_like"
+                android:layout_alignParentEnd="true"
+                android:layout_marginTop="-10dp"
+                android:layout_marginEnd="38dp"
+                android:text="Add to favorites"
+                android:textSize="10dp" />
 
         </RelativeLayout>
 
