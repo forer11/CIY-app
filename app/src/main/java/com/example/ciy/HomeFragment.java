@@ -291,7 +291,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                     //update user entered ingredient in data and ingredientName his choice on screen
                     SharedData.ingredients.add(input);
                     //clears search tab for next search
-                    badge.setNumber(SharedData.ingredients.size());
+                    updateBadge();
                 } else {
                     Toast.makeText(getContext(), input + " is already in your fridge",
                             Toast.LENGTH_SHORT).show();
