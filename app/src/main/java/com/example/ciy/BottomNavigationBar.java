@@ -78,13 +78,8 @@ public class BottomNavigationBar extends AppCompatActivity {
     int lastPushed = SharedData.DEFAULT;
     /* the tag of the last fragment we showed/added */
     private String lastTag = null;
-
-    /* app's walk through tour showcase objects */
-    ShowcaseView showcaseViewHome;
-    ShowcaseView showcaseViewDiscover;
-    ShowcaseView showcaseViewFavorites;
-    ShowcaseView showcaseViewAddRecipe;
-    private Toolbar toolbar;
+    
+    /* app's Bottom navigation bar */
     private BottomNavigationView bottomNav;
 
 
@@ -173,7 +168,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         // define the toolbar to be used in the activity
-        toolbar = findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Drawable logo = ContextCompat.getDrawable(this, R.drawable.toolbar_logo);
