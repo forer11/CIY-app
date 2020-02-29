@@ -22,7 +22,7 @@ public class Tags extends AppCompatActivity {
         {
             items.add(new Item("item "+ i, "Items "+i));
         }
-        CollectionPicker picker = (CollectionPicker) findViewById(R.id.collection_item_picker);
+        CollectionPicker picker = (CollectionPicker) findViewById(R.id.orderFilters);
         picker.setItems(items);
         picker.setOnItemClickListener(new OnItemClickListener() {
             @Override
