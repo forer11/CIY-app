@@ -30,7 +30,7 @@ public class LoginActivity extends BaseSignIn {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_new_signin);
 
         // init providers
         providers = Arrays.asList(
@@ -66,7 +66,7 @@ public class LoginActivity extends BaseSignIn {
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setAvailableProviders(providers)
-                        .setIsSmartLockEnabled(true)
+                        .setIsSmartLockEnabled(false)
                         .setAuthMethodPickerLayout(customLayout)
                         .build(), MY_REQUEST_CODE
         );

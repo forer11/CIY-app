@@ -22,7 +22,7 @@
             android:layout_centerVertical="true"
             android:layout_marginStart="10dp"
             android:layout_toEndOf="@+id/circularImageViewDish"
-            android:fontFamily="@font/andika"
+            android:fontFamily="@font/average_sans"
             android:text="Title"
             android:textAppearance="@style/TextAppearance.AppCompat.Large"
             android:textSize="15dp"

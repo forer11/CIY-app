@@ -1,55 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background">
+    android:background="@drawable/background"
+    tools:context=".LoginActivity">
 
 
     <ImageView
         android:id="@+id/main_logo"
-        android:layout_width="429dp"
-        android:layout_height="239dp"
+        android:layout_width="435dp"
+        android:layout_height="291dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="50dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/logo" />
 
     <Button
         android:id="@+id/google_signIn"
-        android:layout_marginTop="100dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:text="Sign in with Google"
+        android:fontFamily="@font/average_sans"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/google_sign_in_bautton"
-        android:padding="16dp"
-        android:textColor="@android:color/white" />
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/blurred_button_shape"
+        android:drawableLeft="@drawable/googleicon"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/email_signIn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/email_signIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:text="Sign in with Email"
+        android:fontFamily="@font/average_sans"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/email_sign_in_bautton"
-        android:padding="16dp"
-        android:textColor="@android:color/white" />
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/blurred_button_shape"
+        android:drawableLeft="@drawable/emailicon"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/phone_signIn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/phone_signIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:fontFamily="@font/average_sans"
+        android:text="Sign in with Phone number"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/phone_sign_in_bautton"
-        android:padding="16dp"
-        android:textColor="@android:color/white" />
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/blurred_button_shape"
+        android:drawableLeft="@drawable/phoneicon"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toTopOf="@+id/anonymous_signIn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/anonymous_signIn"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:fontFamily="@font/average_sans"
+        android:text="Continue Anonymously"
+        android:layout_width="300dp"
+        android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:background="@drawable/anonymous_sign_in_bautton"
-        android:padding="16dp"
-        android:textColor="@android:color/white" />
+        android:layout_marginBottom="35dp"
+        android:background="@drawable/blurred_button_shape"
+        android:drawableStart="@drawable/anonymous"
+        android:padding="10dp"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
-</LinearLayout>
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
