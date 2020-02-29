@@ -1,65 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_kitchen"
+    android:background="@drawable/cute_fridge"
     tools:context=".BottomNavigationBar">
 
-    <RelativeLayout
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/ingredientsRecyclerView"
+        app:layout_behavior="appbar_scrolling_view_behavior"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/cute_fridge"
-        >
+        android:layout_marginTop="230dp"
+        android:layout_marginBottom="40dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layoutAnimation="@anim/layout_animation"/>
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/fridgeDoorsOpen"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="open_fridge_anim.json"
+        app:lottie_loop="false"
+        app:lottie_speed="0.4"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/enterIngredients"
+        android:scaleType="center" />
 
-        <AutoCompleteTextView
-            android:id="@+id/enterIngredients"
-            android:layout_width="297dp"
-            android:layout_height="50dp"
-            android:layout_centerInParent="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/search_shape"
-            android:completionThreshold="1"
-            android:drawableEnd="@drawable/ic_pencil"
-            android:ems="10"
-            android:fontFamily="@font/average_sans"
-            android:hint="Add Ingredients"
-            android:imeOptions="actionNext"
-            android:inputType="textAutoCorrect"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"/>
+</RelativeLayout>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/ingredientsRecyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/enterIngredients"
-            android:layout_centerInParent="true"
-            android:layout_marginTop="210dp"
-            android:layout_marginStart="50dp"
-            android:layout_marginBottom="35dp"
-            android:layoutAnimation="@anim/layout_animation"
-            app:layout_behavior="appbar_scrolling_view_behavior">
-        </androidx.recyclerview.widget.RecyclerView>
-
-        <com.airbnb.lottie.LottieAnimationView
-            android:id="@+id/fridgeDoorsOpen"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@+id/enterIngredients"
-            android:scaleType="center"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:lottie_autoPlay="true"
-            app:lottie_fileName="open_fridge_anim.json"
-            app:lottie_speed="0.4"
-            app:lottie_loop="false" />
-
-    </RelativeLayout>
-
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
