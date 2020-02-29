@@ -31,6 +31,12 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import com.firebase.ui.auth.AuthUI;
+import com.github.amlcurran.showcaseview.ShowcaseDrawer;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.SimpleShowcaseEventListener;
+import com.github.amlcurran.showcaseview.targets.ActionItemTarget;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
@@ -41,6 +47,8 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
+
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 
 /**
  * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
@@ -70,6 +78,14 @@ public class BottomNavigationBar extends AppCompatActivity {
     int lastPushed = SharedData.DEFAULT;
     /* the tag of the last fragment we showed/added */
     private String lastTag = null;
+
+    /* app's walk through tour showcase objects */
+    ShowcaseView showcaseViewHome;
+    ShowcaseView showcaseViewDiscover;
+    ShowcaseView showcaseViewFavorites;
+    ShowcaseView showcaseViewAddRecipe;
+    private Toolbar toolbar;
+    private BottomNavigationView bottomNav;
 
 
     /* the FireBase authenticator */
@@ -106,18 +122,58 @@ public class BottomNavigationBar extends AppCompatActivity {
         lastPushed = SharedData.HOME;
         lastTag = HOME;
 
+        showIntro("Home", "Your Fridge",
+                bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
     }
+
+
+    /**
+     * this function responsible on introduce the app for first time users
+     */
+    private void showIntro(String title, String text, int viewId, final int type) {
+
+        final int navDiscover = bottomNav.getMenu().findItem(R.id.navDiscover).getItemId();
+        final int navFavorites = bottomNav.getMenu().findItem(R.id.navFavorites).getItemId();
+        final int navAddRecipe = bottomNav.getMenu().findItem(R.id.navAddRecipe).getItemId();
+
+        new GuideView.Builder(this)
+                .setTitle(title)
+                .setContentText(text)
+                .setTargetView(findViewById(viewId))
+                .setContentTextSize(12)//optional
+                .setTitleTextSize(14)//optional
+                .setDismissType(GuideView.DismissType.anywhere) //optional - default dismissible by TargetView
+                .setGuideListener(new GuideView.GuideListener() {
+                    @Override
+                    public void onDismiss(View view) {
+                        switch (type) {
+                            case 1:
+                                showIntro("Discover", "Discover new recipes", navDiscover, 2);
+                                break;
+                            case 2:
+                                showIntro("Favorites", "Your favorites recipes", navFavorites, 3);
+                                break;
+                            case 3:
+                                showIntro("Add new recipe", "Add your own recipe", navAddRecipe, 4);
+                                break;
+                        }
+                    }
+                })
+                .build()
+                .show();
+    }
+
 
     /**
      * sets the bottom navigation bar and upper toolbar
      */
     private void setBars() {
         // define the bottom navigation bar to be used in the activity
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         // define the toolbar to be used in the activity
-        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
         Drawable logo = ContextCompat.getDrawable(this, R.drawable.toolbar_logo);
