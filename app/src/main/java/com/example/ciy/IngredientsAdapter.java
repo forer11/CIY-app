@@ -1,5 +1,6 @@
 package com.example.ciy;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -83,25 +84,31 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
     }
 
-    public IngredientsAdapter(ArrayList<String> ingredients) {
+    public IngredientsAdapter(ArrayList<String> ingredients, Context context) {
 
         this.ingredients = ingredients;
         ingresientsImages = new HashMap<>();
-        setImagesMap(ingredients);
+        setImagesMap(ingredients, context);
 
     }
 
-    private void setImagesMap(ArrayList<String> ingredients) {
-        for (String ingredient : ingredients)
-        {
-            ingresientsImages.put(ingredient,Integer.parseInt("R.drawable."+ingredient));
+    private void setImagesMap(ArrayList<String> ingredients, Context context) {
+        String curIngredient;
+        for (String ingredient : ingredients) {
+            curIngredient = ingredient;
+//            if (curIngredient.contains(" ")) {
+//                curIngredient = curIngredient.replaceAll(" ", "_");
+//            }
+            int resID = context.getResources().getIdentifier(curIngredient, "drawable", context.getPackageName());
+            ingresientsImages.put(ingredient, resID);
         }
     }
 
     @NonNull
     @Override
     public IngredientViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ingredient_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ingredient_item,
+                parent, false);
         return new IngredientViewHolder(view, searchListener);
     }
 

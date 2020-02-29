@@ -38,6 +38,8 @@ public class SearchFragment extends DialogFragment {
 
     private RecyclerView recyclerView;
 
+    private ArrayList<String> removed;
+
 
     @Nullable
     @Override
@@ -55,13 +57,14 @@ public class SearchFragment extends DialogFragment {
         LottieAnimationView fridgeDoorsOpen = view.findViewById(R.id.fridgeDoorsOpen);
         fridgeDoorsOpen.setProgress(0);
         fridgeDoorsOpen.playAnimation();
+        removed = new ArrayList<>();
     }
 
     private void setUpRecyclerView() {
         recyclerView = getView().findViewById(R.id.ingredientsRecyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        ingredientsAdapter = new IngredientsAdapter(ingredients);
+        ingredientsAdapter = new IngredientsAdapter(ingredients,getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(ingredientsAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
@@ -81,6 +84,7 @@ public class SearchFragment extends DialogFragment {
             @Override
             public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
                 int position = viewHolder.getAdapterPosition();
+                removed.add(ingredients.get(position));
                 ingredients.remove(position);
                 ingredientsAdapter.notifyItemRemoved(position);
                 recyclerView.scheduleLayoutAnimation();
@@ -102,5 +106,6 @@ public class SearchFragment extends DialogFragment {
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
         ((BottomNavigationBar) getActivity()).homeFragment.updateBadge();
+        ((BottomNavigationBar) getActivity()).homeFragment.updateBasicIngredients(removed);
     }
 }
