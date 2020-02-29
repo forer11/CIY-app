@@ -10,62 +10,183 @@
     android:orientation="vertical"
     tools:context=".BottomNavigationBar">
 
-    <LinearLayout
-        android:id="@+id/layout1"
+
+    <TextView
+        android:id="@+id/basicIngredients"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="0.3"
-        android:background="#72B9B6B6"
-        android:gravity="center"
-        android:orientation="vertical">
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Basic ingredients you may need"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
 
-        <ImageView
-            android:id="@+id/ingvw"
+    <HorizontalScrollView
+        android:layout_width="match_parent"
+        android:layout_height="110dp"
+        android:fillViewport="true">
+
+        <LinearLayout
+            android:id="@+id/layout1"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@mipmap/ic_launcher" />
+            android:layout_height="match_parent"
+            android:layout_marginTop="10dp"
+            android:background="@color/white"
+            android:orientation="horizontal">
 
-    </LinearLayout>
+            <ImageView
+                android:id="@+id/salt"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/salt" />
 
+
+            <ImageView
+                android:id="@+id/pepper"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/pepper" />
+
+
+            <ImageView
+                android:id="@+id/milk"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/milk" />
+
+            <ImageView
+                android:id="@+id/eggs"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/eggs" />
+
+            <ImageView
+                android:id="@+id/onion"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/onion" />
+
+            <ImageView
+                android:id="@+id/tomato"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/tomato" />
+
+            <ImageView
+                android:id="@+id/potato"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/potato" />
+
+            <ImageView
+                android:id="@+id/carrot"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:src="@drawable/carrot" />
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <HorizontalScrollView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp">
+
+        <LinearLayout
+            android:id="@+id/layout2"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:background="@drawable/shelf"
+            android:orientation="horizontal">
+
+        </LinearLayout>
+    </HorizontalScrollView>
 
     <LinearLayout
-        android:id="@+id/layout2"
+        android:id="@+id/layout3"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_weight="1.8"
+        android:layout_height="0dp"
+        android:layout_weight="2.6"
         android:background="#72B9B6B6"
         android:gravity="center"
         android:orientation="vertical">
+
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
+            <AutoCompleteTextView
+                android:id="@+id/enterIngredients"
+                android:layout_width="297dp"
+                android:layout_height="50dp"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:background="@drawable/search_shape"
+                android:completionThreshold="1"
+                android:drawableEnd="@drawable/ic_pencil"
+                android:ems="10"
+                android:fontFamily="casual"
+                android:hint="Add other Ingredients"
+                android:imeOptions="actionNext"
+                android:inputType="textAutoCorrect"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp" />
+
             <ImageButton
-                android:id="@+id/fridge"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
+                android:id="@+id/fridgeImage"
+                android:layout_width="50dp"
+                android:layout_height="50dp"
+                android:layout_alignTop="@+id/fridge_button"
+                android:layout_alignEnd="@+id/fridge_button"
                 android:layout_alignParentBottom="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/circle_background"
-                android:cropToPadding="true"
-                android:layout_marginBottom="15dp"
-                android:padding="15dp"
+                android:layout_marginEnd="15dp"
+                android:background="@color/transperent"
                 android:scaleType="fitCenter"
                 android:src="@drawable/fridge_icon" />
+
+            <ImageButton
+                android:id="@+id/fridge_button"
+                android:layout_width="160dp"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="15dp"
+                android:background="@drawable/ripple_rounded_corners"
+                android:baselineAlignBottom="true"
+                android:scaleType="centerInside"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintVertical_bias="0.0" />
+
 
             <com.nex3z.notificationbadge.NotificationBadge
                 android:id="@+id/badge"
                 android:layout_width="28dp"
                 android:layout_height="28dp"
-                android:layout_alignTop="@+id/fridge"
-                android:layout_alignEnd="@+id/fridge"
+                android:layout_alignTop="@+id/fridgeImage"
+                android:layout_alignEnd="@+id/fridgeImage"
                 app:badgeBackground="@drawable/badge_bg_with_shadow"
                 app:maxTextLength="2" />
 
-        </RelativeLayout>
+            <TextView
+                android:id="@+id/openFridgeText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignStart="@+id/fridge_button"
+                android:layout_alignBottom="@+id/fridge_button"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:layout_marginBottom="40dp"
+                android:text="Open Fridge"
+                android:textAlignment="center"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
+
+        </RelativeLayout>
     </LinearLayout>
 
 
