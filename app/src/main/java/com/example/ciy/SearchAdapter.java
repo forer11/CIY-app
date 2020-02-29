@@ -14,6 +14,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchViewHolder> implements Filterable {
     private ArrayList<Recipe> searchRecipes;
@@ -37,12 +39,15 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         public TextView textViewTitle;
         public TextView textViewDescription;
         public ImageView imageViewLike;
+        public TextView textViewMatch;
 
         public SearchViewHolder(@NonNull View itemView, final OnItemClickListener searchListener) {
             super(itemView);
             imageViewDish = itemView.findViewById(R.id.searchImageDish);
             textViewTitle = itemView.findViewById(R.id.searchTitle);
             textViewDescription = itemView.findViewById(R.id.searchDescription);
+            textViewMatch = itemView.findViewById(R.id.searchMatch);
+
             imageViewLike = itemView.findViewById(R.id.searchLike);
 
             itemView.setOnClickListener(new View.OnClickListener() {
@@ -87,6 +92,11 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     public void onBindViewHolder(@NonNull SearchViewHolder holder, int position) {
         Recipe recipe = searchRecipes.get(position);
 
+
+        holder.textViewMatch.setText("");
+        if (filterType == SharedData.INGREDIENTS_FILTER) {
+            holder.textViewMatch.setText(String.valueOf(recipe.getMatchFactor() * 100) + "% Match");
+        }
         holder.textViewTitle.setText(recipe.getId());
         holder.textViewDescription.setText(recipe.getDescription());
         try {
@@ -152,6 +162,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
             if (constraint == null || constraint.length() == 0) {
                 filteredArrayList = new ArrayList<>(SharedData.searchRecipes);
+                filteredArrayList = SharedData.orderByIngredientsMatch(filteredArrayList);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
@@ -161,6 +172,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                     }
 
                 }
+                filteredArrayList = SharedData.orderByIngredientsMatch(filteredArrayList);
             }
 
             FilterResults results = new FilterResults();
@@ -177,8 +189,5 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
         }
     };
 
-    private void orderByIngredientsMatch()
-    {
-        
-    }
+
 }
