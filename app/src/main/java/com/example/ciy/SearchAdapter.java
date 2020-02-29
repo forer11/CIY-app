@@ -176,4 +176,9 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             notifyDataSetChanged();
         }
     };
+
+    private void orderByIngredientsMatch()
+    {
+        
+    }
 }

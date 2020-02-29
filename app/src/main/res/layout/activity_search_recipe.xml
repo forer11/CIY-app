@@ -96,6 +96,8 @@
                         android:layout_marginTop="10dp"
                         android:background="@drawable/filter_button_unpressed"
                         android:foreground="@drawable/ripple"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:text="Low calories"
                         android:textSize="12sp" />
 
@@ -120,6 +122,8 @@
                         android:layout_marginTop="10dp"
                         android:background="@drawable/filter_button_unpressed"
                         android:foreground="@drawable/ripple"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:text="Low time"
                         android:textSize="12sp" />
 
@@ -131,6 +135,8 @@
                         android:layout_marginTop="10dp"
                         android:background="@drawable/filter_button_unpressed"
                         android:foreground="@drawable/ripple"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
                         android:text="Easy to make"
                         android:textSize="12sp" />
                 </LinearLayout>

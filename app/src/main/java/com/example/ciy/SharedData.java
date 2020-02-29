@@ -24,6 +24,10 @@ class SharedData {
     static final int NAME_FILTER = 1;
     static final int INGREDIENTS_FILTER = 2;
 
+    static final boolean[] filterClickRecord = {false, false, false, false};
+    static final int OTHER1 = 0, OTHER2 = 1, OTHER3 = 2, OTHER4 = 3;
+
+
 
     /* array list of all recipes shared by all activities*/
     static ArrayList<Recipe> searchRecipes = new ArrayList<>();
