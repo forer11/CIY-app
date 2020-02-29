@@ -2,18 +2,24 @@ package com.example.ciy;
 
 import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -22,6 +28,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -29,9 +36,13 @@ import com.google.firebase.firestore.CollectionReference;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 import com.nex3z.notificationbadge.NotificationBadge;
 
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 
@@ -56,6 +67,15 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
     /* the recycler view object */
     private RecyclerView recyclerView;
 
+    /* the search option adapter */
+    private ArrayAdapter<String> searchOptionsAdapter;
+
+    /* the search options ingredients list */
+    private List<String> ingredientOptions;
+
+    /* the autoComplete object for the possible ingredients */
+    private AutoCompleteTextView userInput;
+
     private NotificationBadge badge;
 
 
@@ -77,6 +97,9 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         user = firebaseAuth.getCurrentUser();
         badge = view.findViewById(R.id.badge);
+
+        setUpSearchAdapter();
+
         ImageButton fridge = view.findViewById(R.id.fridge_button);
         fridge.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -87,34 +110,34 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
         //Find all views and set Tag to all draggable views
         setViewsTags(view);
         //Set Drag Event Listeners for defined layouts
-        LinearLayout home_layout= view.findViewById(R.id.home_layout);
+        LinearLayout home_layout = view.findViewById(R.id.home_layout);
         home_layout.findViewById(R.id.layout1).setOnDragListener(this);
         home_layout.findViewById(R.id.layout2).setOnDragListener(this);
     }
 
     private void setViewsTags(@NonNull View view) {
-        ImageView saltImage = (ImageView) view.findViewById(R.id.salt);
+        ImageView saltImage = view.findViewById(R.id.salt);
         saltImage.setTag("salt");
         saltImage.setOnLongClickListener(this);
-        ImageView pepperImage = (ImageView) view.findViewById(R.id.pepper);
+        ImageView pepperImage = view.findViewById(R.id.pepper);
         pepperImage.setTag("pepper");
         pepperImage.setOnLongClickListener(this);
-        ImageView milkImage = (ImageView) view.findViewById(R.id.milk);
+        ImageView milkImage = view.findViewById(R.id.milk);
         milkImage.setTag("milk");
         milkImage.setOnLongClickListener(this);
-        ImageView eggsImage = (ImageView) view.findViewById(R.id.eggs);
+        ImageView eggsImage = view.findViewById(R.id.eggs);
         eggsImage.setTag("eggs");
         eggsImage.setOnLongClickListener(this);
-        ImageView onionImage = (ImageView) view.findViewById(R.id.onion);
+        ImageView onionImage = view.findViewById(R.id.onion);
         onionImage.setTag("onion");
         onionImage.setOnLongClickListener(this);
-        ImageView tomatoImage = (ImageView) view.findViewById(R.id.tomato);
+        ImageView tomatoImage = view.findViewById(R.id.tomato);
         tomatoImage.setTag("tomato");
         tomatoImage.setOnLongClickListener(this);
-        ImageView potatoImage = (ImageView) view.findViewById(R.id.potato);
+        ImageView potatoImage = view.findViewById(R.id.potato);
         potatoImage.setTag("potato");
         potatoImage.setOnLongClickListener(this);
-        ImageView carrotImage = (ImageView) view.findViewById(R.id.carrot);
+        ImageView carrotImage = view.findViewById(R.id.carrot);
         carrotImage.setTag("carrot");
         carrotImage.setOnLongClickListener(this);
     }
@@ -149,18 +172,15 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
 
             case DragEvent.ACTION_DRAG_STARTED:
                 // Determines if this View can accept the dragged data
-                if (event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN)) {
-//                    // apply color when drag started to view in order to give any color tint to
-//                    // the View to indicate that it can accept data.
-//                     view.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
-//                     //Invalidate the view to force a redraw in the new tint
-//                      view.invalidate();
-//                    // returns true to indicate that the View can accept the dragged data.
-                    return true;
-                }
-                // Returns false. During the current drag and drop operation, this View will
-                // not receive events again until ACTION_DRAG_ENDED is sent.
-                return false;
+                //                    // apply color when drag started to view in order to give any color tint to
+                //                    // the View to indicate that it can accept data.
+                //                     view.getBackground().setColorFilter(Color.RED, PorterDuff.Mode.SRC_IN);
+                //                     //Invalidate the view to force a redraw in the new tint
+                //                      view.invalidate();
+                //                    // returns true to indicate that the View can accept the dragged data.
+                return event.getClipDescription().hasMimeType(ClipDescription.MIMETYPE_TEXT_PLAIN);
+            // Returns false. During the current drag and drop operation, this View will
+            // not receive events again until ACTION_DRAG_ENDED is sent.
 
             case DragEvent.ACTION_DRAG_ENTERED:
                 // Applies a GRAY or any color tint to the View. Return true; the return value is ignored.
@@ -209,12 +229,9 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                 // Invalidates the view to force a redraw
                 view.invalidate();
                 // Does a getResult(), and displays what happened.
-                if (event.getResult())
-                {
+                if (event.getResult()) {
 
-                }
-                else
-                {
+                } else {
 
                 }
                 // returns true; the value is ignored.
@@ -231,6 +248,57 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                 .getSupportFragmentManager();
         SearchFragment searchFragment = ((BottomNavigationBar) getActivity()).searchFragment;
         searchFragment.show(fragmentManager, "FridgeFromHome");
+    }
+
+    private void setUpSearchAdapter() {
+        final Context context = getActivity();
+        final View view = getView();
+        if (SharedData.allIngredients.isEmpty()) {
+            ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                @Override
+                public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                    //we add all ingredients from our data base to 'ingredientOptions' list
+                    for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                        String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
+                        SharedData.allIngredients.add(option);
+                    }
+                    ingredientOptions = new ArrayList<>(SharedData.allIngredients);
+                    searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(context),
+                            android.R.layout.simple_list_item_1, ingredientOptions);
+                    setUserInput(view);
+                }
+            });
+        } else {
+            searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(context),
+                    android.R.layout.simple_list_item_1, ingredientOptions);
+            setUserInput(view);
+        }
+    }
+
+    private void setUserInput(View view) {
+        userInput = view.findViewById(R.id.enterIngredients);
+        userInput.setAdapter(searchOptionsAdapter);
+        userInput.setInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE);
+        userInput.setTextColor(Color.DKGRAY);
+        userInput.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            private String input;
+
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                //get the input like for a normal EditText
+                input = userInput.getText().toString();
+                if (!SharedData.ingredients.contains(input)) {
+                    //update user entered ingredient in data and ingredientName his choice on screen
+                    SharedData.ingredients.add(input);
+                    //clears search tab for next search
+                    updateBadge();
+                } else {
+                    Toast.makeText(getContext(), input + " is already in your fridge",
+                            Toast.LENGTH_SHORT).show();
+                }
+                userInput.setText("");
+            }
+        });
     }
 
     void updateBadge() {
