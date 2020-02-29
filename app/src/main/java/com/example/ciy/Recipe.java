@@ -36,6 +36,9 @@ public class Recipe implements Serializable {
     /* the recipe proteins in grams*/
     private String protein;
 
+    /* how the recipe matches with the user's ingredients*/
+    private double matchFactor = 0;
+
     public Recipe() {
         // public no-arg constructor necessary for Firestore
     }
