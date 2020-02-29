@@ -1,23 +1,23 @@
 package com.example.ciy;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
-
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.HorizontalScrollView;
+import android.widget.ScrollView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentManager;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.anton46.collectionitempicker.CollectionPicker;
-import com.anton46.collectionitempicker.Item;
-import com.anton46.collectionitempicker.OnItemClickListener;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,11 +28,15 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 import java.util.Objects;
+
 
 public class SearchRecipeActivity extends AppCompatActivity {
 
+    private enum Filters {
+        ALL, INGREDIENTS, OTHER1, OTHER2;
+    }
 
     /* the search recyclerView adapter */
     private SearchAdapter searchAdapter;
@@ -46,13 +50,24 @@ public class SearchRecipeActivity extends AppCompatActivity {
 
     private FirebaseUser user;
 
+    private Button filterAll, filterByIngredients, filterOther1, filterOther2;
+
+    private ArrayList<Button> filterButtons;
+
+    private Filters currFilter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        user = firebaseAuth.getCurrentUser();
-
         setContentView(R.layout.activity_search_recipe);
+
+        user = firebaseAuth.getCurrentUser();
+        currFilter = Filters.ALL;
+        configureFilterButtons();
+        setupFilterListener();
+        filterAll.setBackgroundResource(R.drawable.filter_button_pressed);
+
         final ArrayList<Recipe> searchRecipes = new ArrayList<>(SharedData.searchRecipes);
 
         // define the toolbar to be used in the activity
@@ -63,10 +78,68 @@ public class SearchRecipeActivity extends AppCompatActivity {
 
         setUpAdapterListeners(searchRecipes);
 
-        List<Item> items = new ArrayList<>();
-        for (int i = 0; i < 3; i++) {
-            items.add(new Item("item " + i, "Items " + i));
+    }
+
+    private void setupFilterListener() {
+        handelAllFilter();
+
+        handelByIngredientsFilter();
+
+        filterOther1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setBackgroundResource(R.drawable.filter_button_pressed);
+            }
+        });
+
+        filterOther2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                v.setBackgroundResource(R.drawable.filter_button_pressed);
+            }
+        });
+    }
+
+    private void handelByIngredientsFilter() {
+        filterByIngredients.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currFilter != Filters.INGREDIENTS) {
+                    v.setBackgroundResource(R.drawable.filter_button_pressed);
+                    currFilter = Filters.INGREDIENTS;
+                    setFilterPressed(filterByIngredients);
+                }
+            }
+        });
+    }
+
+    private void handelAllFilter() {
+        filterAll.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (currFilter != Filters.ALL) {
+                    v.setBackgroundResource(R.drawable.filter_button_pressed);
+                    currFilter = Filters.ALL;
+                    setFilterPressed(filterAll);
+                }
+            }
+        });
+    }
+
+    private void setFilterPressed(Button currentFilterPressed) {
+        for (Button filter : filterButtons) {
+            if (filter != currentFilterPressed)
+                filter.setBackgroundResource(R.drawable.filter_button_unpressed);
         }
+    }
+
+    private void configureFilterButtons() {
+        filterAll = findViewById(R.id.filterByAll);
+        filterByIngredients = findViewById(R.id.filterByIngredients);
+        filterOther1 = findViewById(R.id.filterByYay2);
+        filterOther2 = findViewById(R.id.filterByBay2);
+        filterButtons = new ArrayList<>
+                (Arrays.asList(filterAll, filterByIngredients));
     }
 
     @Override
@@ -164,8 +237,7 @@ public class SearchRecipeActivity extends AppCompatActivity {
         RecyclerView recyclerView = findViewById(R.id.searchRecyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        int x = 0;
-        if (x == 1) {
+        if (currFilter == Filters.ALL) {
             searchAdapter = new SearchAdapter(searchRecipes, SharedData.NAME_FILTER);
         } else {
             searchAdapter = new SearchAdapter(searchRecipes, SharedData.INGREDIENTS_FILTER);
