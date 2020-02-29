@@ -3,7 +3,9 @@ package com.example.ciy;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -12,6 +14,9 @@ import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -34,6 +39,8 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+
+import java.io.File;
 
 /**
  * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
@@ -69,6 +76,8 @@ public class BottomNavigationBar extends AppCompatActivity {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
     private Uri uri = null;
+
+    RoundedBitmapDrawable rounded;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,6 +137,7 @@ public class BottomNavigationBar extends AppCompatActivity {
 
         if (uri != null) // user not sign in from google, so default profile picture defined
         {
+
             setProfileImage(menu, uri);
         }
         return true;
@@ -223,38 +233,59 @@ public class BottomNavigationBar extends AppCompatActivity {
      */
     private boolean showSignOutDialog() {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(BottomNavigationBar.this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_profile_preseed,null);
 
-        mBuilder.setTitle("Hi you");
-        mBuilder.setMessage("Wer'e sorry to see you go");
-        mBuilder.setCancelable(true)
-                .setPositiveButton("sign out", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        Toast.makeText(BottomNavigationBar.this, "logOut", Toast.LENGTH_SHORT).show(); //TODO SHANI
-                        AuthUI.getInstance()
-                                .signOut(BottomNavigationBar.this)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-                                        startActivity(intent);
-                                        finish();
-                                    }
-                                }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Toast.makeText(BottomNavigationBar.this, ""+e.getMessage() , Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                    }
-                });
+        FirebaseUser currentUser = firebaseAuth.getCurrentUser();
+        if (currentUser != null) {
+            ImageView profile = (ImageView) view.findViewById(R.id.profile_image);
+            if (uri != null)
+            {
+                try
+                {
+                    Picasso.get().load(uri).into(profile);
+                } catch (Exception e) {}
+            }
+            String username = currentUser.getDisplayName();
+            if ( username != null && !username.equals("") ) {
+                TextView user_info = (TextView) view.findViewById(R.id.user_details);
+                user_info.setText(username+"\n"+currentUser.getEmail());
+            }
+        }
+        Button signout = (Button) view.findViewById(R.id.signout_button);
+        signout.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        });
+
+        Button signin = (Button) view.findViewById(R.id.signin_button);
+        signin.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                startActivity(intent);
+                finish();            }
+        });
+
+        Button addingredients = (Button) view.findViewById(R.id.add_ingredients_button);
+        addingredients.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+//                showFragment(searchFragment, SEARCH, lastTag);
+//                    lastPushed = SharedData.SEARCH;
+//                    lastTag = SEARCH;
+//                    finish();
+            }
+        });
+
+        mBuilder.setView(view);
 
         final AlertDialog alertdialog = mBuilder.create();
+        alertdialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertdialog.show();
-        alertdialog.getWindow().setGravity(Gravity.CENTER_VERTICAL);
 
         return true;
     }
@@ -270,7 +301,7 @@ public class BottomNavigationBar extends AppCompatActivity {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
                 Log.d("DEBUG", "onBitmapLoaded");
-                RoundedBitmapDrawable rounded = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                rounded = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
                 rounded.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()));
                 rounded.setBounds(0, 0, 5, 5);
                 menu.findItem(R.id.icon_status).setIcon(rounded);
