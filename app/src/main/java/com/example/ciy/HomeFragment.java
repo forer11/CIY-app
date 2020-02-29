@@ -12,6 +12,7 @@ import android.view.DragEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewParent;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -42,6 +43,7 @@ import com.nex3z.notificationbadge.NotificationBadge;
 
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
 
@@ -84,6 +86,8 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
     private FloatingActionButton addNoteButton;
 
     private FirebaseUser user;
+    private HashMap<String, ImageView> basicIngredients;
+    private LinearLayout container;
 
     @Nullable
     @Override
@@ -97,9 +101,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         user = firebaseAuth.getCurrentUser();
         badge = view.findViewById(R.id.badge);
-
         setUpSearchAdapter();
-
         ImageButton fridge = view.findViewById(R.id.fridge_button);
         fridge.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,6 +109,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                 openFridge(v);
             }
         });
+        basicIngredients = new HashMap<>();
         //Find all views and set Tag to all draggable views
         setViewsTags(view);
         //Set Drag Event Listeners for defined layouts
@@ -119,27 +122,46 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
         ImageView saltImage = view.findViewById(R.id.salt);
         saltImage.setTag("salt");
         saltImage.setOnLongClickListener(this);
+        basicIngredients.put((String) saltImage.getTag(), saltImage);
+
         ImageView pepperImage = view.findViewById(R.id.pepper);
         pepperImage.setTag("pepper");
         pepperImage.setOnLongClickListener(this);
+        basicIngredients.put((String) pepperImage.getTag(), pepperImage);
+
         ImageView milkImage = view.findViewById(R.id.milk);
         milkImage.setTag("milk");
         milkImage.setOnLongClickListener(this);
+        basicIngredients.put((String) milkImage.getTag(), milkImage);
+
         ImageView eggsImage = view.findViewById(R.id.eggs);
         eggsImage.setTag("eggs");
         eggsImage.setOnLongClickListener(this);
-        ImageView onionImage = view.findViewById(R.id.onion);
-        onionImage.setTag("onion");
+        basicIngredients.put((String) eggsImage.getTag(), eggsImage);
+
+        ImageView onionImage = view.findViewById(R.id.onions);
+        onionImage.setTag("onions");
         onionImage.setOnLongClickListener(this);
+        basicIngredients.put((String) onionImage.getTag(), onionImage);
+
+
         ImageView tomatoImage = view.findViewById(R.id.tomato);
         tomatoImage.setTag("tomato");
         tomatoImage.setOnLongClickListener(this);
+        basicIngredients.put((String) tomatoImage.getTag(), tomatoImage);
+
+
         ImageView potatoImage = view.findViewById(R.id.potato);
         potatoImage.setTag("potato");
         potatoImage.setOnLongClickListener(this);
-        ImageView carrotImage = view.findViewById(R.id.carrot);
-        carrotImage.setTag("carrot");
+        basicIngredients.put((String) potatoImage.getTag(), potatoImage);
+
+
+        ImageView carrotImage = view.findViewById(R.id.carrots);
+        carrotImage.setTag("carrots");
         carrotImage.setOnLongClickListener(this);
+        basicIngredients.put((String) carrotImage.getTag(), carrotImage);
+
     }
 
     @Override
@@ -207,8 +229,13 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                 ClipData.Item item = event.getClipData().getItemAt(0);
                 // Gets the text data from the item.
                 String draggedIngredient = item.getText().toString();
-                //here we add the dragged ingredient to the fridge
-                SharedData.ingredients.add(draggedIngredient);
+                if(view==getView().findViewById(R.id.layout2))
+                {
+                    //here we add the dragged ingredient to the fridge
+                    SharedData.ingredients.add(draggedIngredient);
+                    updateBadge();
+                }
+
                 // Turns off any color tints
                 view.getBackground().clearColorFilter();
                 // Invalidates the view to force a redraw
@@ -217,13 +244,19 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                 ViewGroup owner = (ViewGroup) vw.getParent();
                 owner.removeView(vw); //remove the dragged view
                 //caste the view into LinearLayout as our drag acceptable layout is LinearLayout
-                LinearLayout container = (LinearLayout) view;
+                container = (LinearLayout) view;
+                if(container==getView().findViewById(R.id.layout1))
+                {
+                    SharedData.ingredients.remove(draggedIngredient);
+                    updateBadge();
+                }
                 container.addView(vw);//Add the dragged view
                 vw.setVisibility(View.VISIBLE);//finally set Visibility to VISIBLE
                 // Returns true. DragEvent.getResult() will return true.
                 return true;
 
             case DragEvent.ACTION_DRAG_ENDED:
+
                 // Turns off any color tinting
                 view.getBackground().clearColorFilter();
                 // Invalidates the view to force a redraw
@@ -242,6 +275,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
         }
         return false;
     }
+
 
     private void openFridge(View view) {
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
@@ -303,5 +337,17 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
 
     void updateBadge() {
         badge.setNumber(SharedData.ingredients.size());
+    }
+
+    void updateBasicIngredients(ArrayList<String> removed) {
+        for (String item : removed) {
+            //then we need to move it back to its original location
+            if (basicIngredients.containsKey(item)) {
+                LinearLayout linearLayout2 = getView().findViewById(R.id.layout2);
+                linearLayout2.removeView(basicIngredients.get(item)); //remove the deleted view
+                LinearLayout linearLayout1 = getView().findViewById(R.id.layout1);
+                linearLayout1.addView(basicIngredients.get(item)); //Add the deleted view
+            }
+        }
     }
 }
