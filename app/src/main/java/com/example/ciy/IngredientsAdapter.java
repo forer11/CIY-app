@@ -12,6 +12,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder>
         implements Filterable {
@@ -20,6 +22,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private ArrayList<String> ingredients;
     /* useless for now */
     private OnItemClickListener searchListener;
+    private final HashMap<String, Integer> ingresientsImages;
 
 
     /**
@@ -33,6 +36,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     /**
      * setting search listener
+     *
      * @param searchListener the search listener
      */
     public void setOnItemClickListener(OnItemClickListener searchListener) {
@@ -46,12 +50,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         /* the ingredient name */
         public TextView textViewIngredientName;
         /* tbd TODO Lior */
-        public ImageView imageViewLike;
+        public ImageView imageViewIngredient;
 
         public IngredientViewHolder(@NonNull View itemView, final OnItemClickListener searchListener) {
             super(itemView);
             textViewIngredientName = itemView.findViewById(R.id.textViewIngredientName);
-            //imageViewLike = itemView.findViewById(R.id.searchLike);
+            imageViewIngredient = itemView.findViewById(R.id.imageViewIngredient);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -65,7 +69,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
                 }
             });
 
-//            imageViewLike.setOnClickListener(new View.OnClickListener() {
+//            imageViewIngredient.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
 //                    if (searchListener != null) {
@@ -80,7 +84,18 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     }
 
     public IngredientsAdapter(ArrayList<String> ingredients) {
+
         this.ingredients = ingredients;
+        ingresientsImages = new HashMap<>();
+        setImagesMap(ingredients);
+
+    }
+
+    private void setImagesMap(ArrayList<String> ingredients) {
+        for (String ingredient : ingredients)
+        {
+            ingresientsImages.put(ingredient,Integer.parseInt("R.drawable."+ingredient));
+        }
     }
 
     @NonNull
@@ -95,6 +110,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         String ingredient = ingredients.get(position);
 
         holder.textViewIngredientName.setText(ingredient);
+        holder.imageViewIngredient.setImageResource(R.drawable.salt);
     }
 
     @Override
