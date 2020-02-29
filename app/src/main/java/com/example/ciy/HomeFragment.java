@@ -1,5 +1,6 @@
 package com.example.ciy;
 
+import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipDescription;
 import android.content.Context;
@@ -13,6 +14,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewParent;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -88,6 +90,8 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
     private FirebaseUser user;
     private HashMap<String, ImageView> basicIngredients;
     private LinearLayout container;
+    private LinearLayout linearLayout2;
+    private LinearLayout linearLayout1;
 
     @Nullable
     @Override
@@ -116,6 +120,9 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
         LinearLayout home_layout = view.findViewById(R.id.home_layout);
         home_layout.findViewById(R.id.layout1).setOnDragListener(this);
         home_layout.findViewById(R.id.layout2).setOnDragListener(this);
+        linearLayout1 = getView().findViewById(R.id.layout1);
+        linearLayout2 = getView().findViewById(R.id.layout2);
+
     }
 
     private void setViewsTags(@NonNull View view) {
@@ -229,8 +236,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                 ClipData.Item item = event.getClipData().getItemAt(0);
                 // Gets the text data from the item.
                 String draggedIngredient = item.getText().toString();
-                if(view==getView().findViewById(R.id.layout2))
-                {
+                if (view == getView().findViewById(R.id.layout2)) {
                     //here we add the dragged ingredient to the fridge
                     SharedData.ingredients.add(draggedIngredient);
                     updateBadge();
@@ -245,8 +251,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                 owner.removeView(vw); //remove the dragged view
                 //caste the view into LinearLayout as our drag acceptable layout is LinearLayout
                 container = (LinearLayout) view;
-                if(container==getView().findViewById(R.id.layout1))
-                {
+                if (container == getView().findViewById(R.id.layout1)) {
                     SharedData.ingredients.remove(draggedIngredient);
                     updateBadge();
                 }
@@ -321,11 +326,17 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //get the input like for a normal EditText
                 input = userInput.getText().toString();
+                hideKeyboard(getActivity());
                 if (!SharedData.ingredients.contains(input)) {
                     //update user entered ingredient in data and ingredientName his choice on screen
                     SharedData.ingredients.add(input);
                     //clears search tab for next search
                     updateBadge();
+                    //if user search one of the basic ingredients we move it to the shelf
+                    if (basicIngredients.containsKey(input)) {
+                        linearLayout1.removeView(basicIngredients.get(input));  //remove the deleted view
+                        linearLayout2.addView(basicIngredients.get(input)); //Add the deleted view
+                    }
                 } else {
                     Toast.makeText(getContext(), input + " is already in your fridge",
                             Toast.LENGTH_SHORT).show();
@@ -333,6 +344,14 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                 userInput.setText("");
             }
         });
+    }
+
+    public static void hideKeyboard(Activity activity) {
+        View view = activity.findViewById(android.R.id.content);
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
     }
 
     void updateBadge() {
@@ -343,9 +362,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
         for (String item : removed) {
             //then we need to move it back to its original location
             if (basicIngredients.containsKey(item)) {
-                LinearLayout linearLayout2 = getView().findViewById(R.id.layout2);
                 linearLayout2.removeView(basicIngredients.get(item)); //remove the deleted view
-                LinearLayout linearLayout1 = getView().findViewById(R.id.layout1);
                 linearLayout1.addView(basicIngredients.get(item)); //Add the deleted view
             }
         }

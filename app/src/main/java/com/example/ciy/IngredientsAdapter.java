@@ -96,9 +96,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         String curIngredient;
         for (String ingredient : ingredients) {
             curIngredient = ingredient;
-//            if (curIngredient.contains(" ")) {
-//                curIngredient = curIngredient.replaceAll(" ", "_");
-//            }
+            if(curIngredient.equals("BBQ sauce"))
+            {
+                curIngredient="bbq_sauce";
+            }
+            if (curIngredient.contains(" ")) {
+                curIngredient = curIngredient.replaceAll(" ", "_");
+            }
             int resID = context.getResources().getIdentifier(curIngredient, "drawable", context.getPackageName());
             ingresientsImages.put(ingredient, resID);
         }
@@ -117,7 +121,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         String ingredient = ingredients.get(position);
 
         holder.textViewIngredientName.setText(ingredient);
-        holder.imageViewIngredient.setImageResource(R.drawable.salt);
+        holder.imageViewIngredient.setImageResource(ingresientsImages.get(ingredient));
     }
 
     @Override
