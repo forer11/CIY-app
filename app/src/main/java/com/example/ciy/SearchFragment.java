@@ -14,6 +14,7 @@ import android.view.Window;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -23,6 +24,7 @@ import com.airbnb.lottie.LottieAnimationView;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This class represents the Search fragment, which allows the user to type ingredients he has at
@@ -64,6 +66,12 @@ public class SearchFragment extends DialogFragment {
         LottieAnimationView mrCookie = view.findViewById(R.id.mr_cookie);
         mrCookie.setProgress(0);
         mrCookie.playAnimation();
+        mrCookie.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                dismiss();
+            }
+        });
         removed = new ArrayList<>();
     }
 

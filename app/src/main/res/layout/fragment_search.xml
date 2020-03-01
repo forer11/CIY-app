@@ -44,9 +44,11 @@
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
         app:lottie_autoPlay="true"
+        android:clickable="true"
         app:lottie_fileName="mr_cookie.json"
         app:lottie_loop="false"
-        app:lottie_speed="0.4" />
+        app:lottie_speed="0.4"
+        android:focusable="true" />
 
 
 </RelativeLayout>
