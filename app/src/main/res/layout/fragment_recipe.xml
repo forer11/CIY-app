@@ -46,9 +46,9 @@
                 android:id="@+id/metadata"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:fillViewport="true"
                 android:layout_below="@+id/imageView5"
-                android:layout_alignParentStart="true">
+                android:layout_alignParentStart="true"
+                android:fillViewport="true">
 
                 <LinearLayout
                     android:id="@+id/metadata_layout"
@@ -56,57 +56,58 @@
                     android:layout_height="85dp"
                     android:orientation="horizontal">
 
-            <TextView
-                android:id="@+id/calories"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_marginStart="40dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="5dp"
-                android:background="@drawable/window_frame"
-                android:fontFamily="@font/average_sans"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textColor="#615E5E"
-                android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/calories"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginStart="40dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/window_frame"
+                        android:fontFamily="@font/average_sans"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textColor="#615E5E"
+                        android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/prepareTime"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/window_frame"
-                    android:fontFamily="@font/average_sans"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="#615E5E"
-                    android:textSize="18sp" />
-                <TextView
-                    android:id="@+id/complexity"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="5dp"
-                    android:background="@drawable/window_frame"
-                    android:fontFamily="@font/average_sans"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="#615E5E"
-                    android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/prepareTime"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/window_frame"
+                        android:fontFamily="@font/average_sans"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textColor="#615E5E"
+                        android:textSize="18sp" />
 
-                <TextView
-                    android:id="@+id/protein"
-                    android:layout_width="80dp"
-                    android:layout_height="80dp"
-                    android:layout_marginTop="0dp"
-                    android:layout_marginEnd="35dp"
-                    android:background="@drawable/window_frame"
-                    android:fontFamily="@font/average_sans"
-                    android:textAlignment="center"
-                    android:textAllCaps="false"
-                    android:textColor="#615E5E"
-                    android:textSize="18sp" />
+                    <TextView
+                        android:id="@+id/complexity"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="5dp"
+                        android:background="@drawable/window_frame"
+                        android:fontFamily="@font/average_sans"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textColor="#615E5E"
+                        android:textSize="18sp" />
+
+                    <TextView
+                        android:id="@+id/protein"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_marginTop="0dp"
+                        android:layout_marginEnd="35dp"
+                        android:background="@drawable/window_frame"
+                        android:fontFamily="@font/average_sans"
+                        android:textAlignment="center"
+                        android:textAllCaps="false"
+                        android:textColor="#615E5E"
+                        android:textSize="18sp" />
                 </LinearLayout>
 
             </HorizontalScrollView>
@@ -206,8 +207,7 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/imageView8"
                 android:layout_marginStart="10dp"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="10dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/average_sans"
                 android:gravity="center_horizontal"
                 android:shadowColor="@color/black"
@@ -215,9 +215,10 @@
                 android:shadowDy="1"
                 android:shadowRadius="2"
                 android:text="titleRecipeDescription"
-                android:textAllCaps="false"
+                android:textAllCaps="true"
                 android:textColor="#FFFFFF"
-                android:textSize="20sp" />
+                android:textSize="25sp"
+                android:textStyle="bold"/>
 
             <TextView
                 android:id="@+id/recipeDescription"

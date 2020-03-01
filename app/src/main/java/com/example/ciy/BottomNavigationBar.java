@@ -212,12 +212,12 @@ public class BottomNavigationBar extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        Drawable logo = ContextCompat.getDrawable(this, R.drawable.toolbar_logo);
+        Drawable logo = ContextCompat.getDrawable(this, R.drawable.women_logo);
         Bitmap bitmap = ((BitmapDrawable) logo).getBitmap();
         // Scale it to 50 x 50
-        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80, true));
+//        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80, true));
         // Set your new, scaled drawable "d"
-        toolbar.setLogo(d);
+        toolbar.setLogo(logo);
     }
 
     @Override

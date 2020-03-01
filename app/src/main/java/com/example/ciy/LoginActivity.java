@@ -68,6 +68,7 @@ public class LoginActivity extends BaseSignIn {
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setAvailableProviders(providers)
                         .setIsSmartLockEnabled(false)
+                        .setTheme(R.style.BaseAppTheme)
                         .setAuthMethodPickerLayout(customLayout)
                         .build(), MY_REQUEST_CODE
         );
