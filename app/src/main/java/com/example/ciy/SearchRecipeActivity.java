@@ -3,11 +3,8 @@ package com.example.ciy;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
-import android.widget.HorizontalScrollView;
-import android.widget.ScrollView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -30,8 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
-
-import static com.example.ciy.SharedData.searchRecipes;
 
 
 public class SearchRecipeActivity extends AppCompatActivity {
@@ -59,11 +54,13 @@ public class SearchRecipeActivity extends AppCompatActivity {
 
     private Button filterAll, filterByIngredients;
 
-    private Button filterOther1, filterOther2, filterOther3, filterOther4;
+    private Button filterBycalories, filterByProtein, filterByTime, filterByDifficult;
 
     private ArrayList<Button> filterButtons;
 
     private Filters currFilter;
+
+    private String searchText;
 
 
     @Override
@@ -94,55 +91,58 @@ public class SearchRecipeActivity extends AppCompatActivity {
 
         handelByIngredientsFilter();
 
-        filterOther1.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!SharedData.filterClickRecord[SharedData.OTHER1]) {
-                    v.setBackgroundResource(R.drawable.filter_button_pressed);
-                } else {
-                    v.setBackgroundResource(R.drawable.filter_button_unpressed);
-                }
-                SharedData.filterClickRecord[SharedData.OTHER1] =
-                        !SharedData.filterClickRecord[SharedData.OTHER1];
+        filterBycalories.setOnClickListener(v -> {
+            if (!SharedData.filterClickRecord[SharedData.LOW_CALORIES]) {
+                v.setBackgroundResource(R.drawable.filter_button_pressed2);
+                SharedData.filterClickRecord[SharedData.LOW_CALORIES] = true;
+            } else {
+                v.setBackgroundResource(R.drawable.filter_button_unpressed);
+                SharedData.filterClickRecord[SharedData.LOW_CALORIES] = false;
+
             }
+            activateFilter();
         });
 
-        filterOther2.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!SharedData.filterClickRecord[SharedData.OTHER2]) {
-                    v.setBackgroundResource(R.drawable.filter_button_pressed);
-                } else {
-                    v.setBackgroundResource(R.drawable.filter_button_unpressed);
-                }
-                SharedData.filterClickRecord[SharedData.OTHER2] =
-                        !SharedData.filterClickRecord[SharedData.OTHER2];
+        filterByProtein.setOnClickListener(v -> {
+            if (!SharedData.filterClickRecord[SharedData.HIGH_PROTEIN]) {
+                v.setBackgroundResource(R.drawable.filter_button_pressed2);
+                SharedData.filterClickRecord[SharedData.HIGH_PROTEIN] = true;
+            } else {
+                v.setBackgroundResource(R.drawable.filter_button_unpressed);
+                SharedData.filterClickRecord[SharedData.HIGH_PROTEIN] = false;
             }
+            activateFilter();
         });
-        filterOther3.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!SharedData.filterClickRecord[SharedData.OTHER3]) {
-                    v.setBackgroundResource(R.drawable.filter_button_pressed);
-                } else {
-                    v.setBackgroundResource(R.drawable.filter_button_unpressed);
-                }
-                SharedData.filterClickRecord[SharedData.OTHER3] =
-                        !SharedData.filterClickRecord[SharedData.OTHER3];
+        filterByTime.setOnClickListener(v -> {
+            if (!SharedData.filterClickRecord[SharedData.SHORT_TIME]) {
+                v.setBackgroundResource(R.drawable.filter_button_pressed2);
+                SharedData.filterClickRecord[SharedData.SHORT_TIME] = true;
+            } else {
+                v.setBackgroundResource(R.drawable.filter_button_unpressed);
+                SharedData.filterClickRecord[SharedData.SHORT_TIME] = false;
             }
+            activateFilter();
         });
-        filterOther4.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (!SharedData.filterClickRecord[SharedData.OTHER4]) {
-                    v.setBackgroundResource(R.drawable.filter_button_pressed);
-                } else {
-                    v.setBackgroundResource(R.drawable.filter_button_unpressed);
-                }
-                SharedData.filterClickRecord[SharedData.OTHER4] =
-                        !SharedData.filterClickRecord[SharedData.OTHER4];
+        filterByDifficult.setOnClickListener(v -> {
+            if (!SharedData.filterClickRecord[SharedData.EASY_TO_MAKE]) {
+                v.setBackgroundResource(R.drawable.filter_button_pressed2);
+                SharedData.filterClickRecord[SharedData.EASY_TO_MAKE] = true;
+            } else {
+                v.setBackgroundResource(R.drawable.filter_button_unpressed);
+                SharedData.filterClickRecord[SharedData.EASY_TO_MAKE] = false;
             }
+            activateFilter();
         });
+    }
+
+    private void activateFilter() {
+        if (currFilter == Filters.INGREDIENTS) {
+            searchAdapter = new SearchAdapter(searchRecipes, SharedData.INGREDIENTS_FILTER);
+        } else if (currFilter == Filters.ALL) {
+            searchAdapter = new SearchAdapter(searchRecipes, SharedData.NAME_FILTER);
+        }
+        searchAdapter.getFilter().filter(searchText);
+        refreshAdapters();
     }
 
     private void handelByIngredientsFilter() {
@@ -151,14 +151,15 @@ public class SearchRecipeActivity extends AppCompatActivity {
                 v.setBackgroundResource(R.drawable.filter_button_pressed);
                 currFilter = Filters.INGREDIENTS;
                 setFilterPressed(filterByIngredients);
-
-                searchRecipes = SharedData.orderByIngredientsMatch(searchRecipes);
-                searchAdapter = new SearchAdapter(searchRecipes, SharedData.INGREDIENTS_FILTER);
-                setUpAdapterListeners();
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(searchAdapter);
+                activateFilter();
             }
         });
+    }
+
+    private void refreshAdapters() {
+        setUpAdapterListeners();
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(searchAdapter);
     }
 
     private void handelAllFilter() {
@@ -167,12 +168,7 @@ public class SearchRecipeActivity extends AppCompatActivity {
                 v.setBackgroundResource(R.drawable.filter_button_pressed);
                 currFilter = Filters.ALL;
                 setFilterPressed(filterAll);
-
-                searchRecipes = SharedData.orderAlphabetically(searchRecipes);
-                searchAdapter = new SearchAdapter(searchRecipes, SharedData.NAME_FILTER);
-                setUpAdapterListeners();
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(searchAdapter);
+                activateFilter();
             }
         });
     }
@@ -187,10 +183,10 @@ public class SearchRecipeActivity extends AppCompatActivity {
     private void configureFilterButtons() {
         filterAll = findViewById(R.id.filterByAll);
         filterByIngredients = findViewById(R.id.filterByIngredients);
-        filterOther1 = findViewById(R.id.filterByYay2);
-        filterOther2 = findViewById(R.id.filterByBay2);
-        filterOther3 = findViewById(R.id.filterByAll2);
-        filterOther4 = findViewById(R.id.filterByIngredients2);
+        filterBycalories = findViewById(R.id.filterLowCalories);
+        filterByProtein = findViewById(R.id.filterHighProtein);
+        filterByTime = findViewById(R.id.filterByTime);
+        filterByDifficult = findViewById(R.id.filterByDifficult);
 
         filterButtons = new ArrayList<>
                 (Arrays.asList(filterAll, filterByIngredients));
@@ -223,6 +219,7 @@ public class SearchRecipeActivity extends AppCompatActivity {
 
             @Override
             public boolean onQueryTextChange(String newText) {
+                searchText = newText;
                 searchAdapter.getFilter().filter(newText);
                 return true;
             }
@@ -293,9 +290,8 @@ public class SearchRecipeActivity extends AppCompatActivity {
         layoutManager = new LinearLayoutManager(this);
 
         searchAdapter = new SearchAdapter(searchRecipes, SharedData.NAME_FILTER);
-
-
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(searchAdapter);
     }
+
 }

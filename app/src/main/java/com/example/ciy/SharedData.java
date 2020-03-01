@@ -26,8 +26,11 @@ class SharedData {
     static final int NAME_FILTER = 1;
     static final int INGREDIENTS_FILTER = 2;
 
-    static final boolean[] filterClickRecord = {false, false, false, false};
-    static final int OTHER1 = 0, OTHER2 = 1, OTHER3 = 2, OTHER4 = 3;
+    static boolean[] filterClickRecord = {false, false, false, false};
+    static final int LOW_CALORIES = 0, HIGH_PROTEIN = 1, SHORT_TIME = 2, EASY_TO_MAKE = 3;
+
+    static final int PROTEIN_THRESH = 15, LOW_CAL_THRESH = 400, TIME_THRESH = 30;
+    static final String EASY_THRESH = " Easy ";
 
 
     /* array list of all recipes shared by all activities*/
@@ -63,6 +66,37 @@ class SharedData {
         Comparator<Recipe> compareByMatch = (Recipe recipe1, Recipe recipe2)
                 -> recipe1.getTitle().compareTo(recipe2.getTitle());
         Collections.sort(filteredArrayList, compareByMatch);
+        return filteredArrayList;
+    }
+
+    static ArrayList<Recipe> activateFilters(ArrayList<Recipe> filteredArrayList) {
+        ArrayList<Recipe> newFilteredList = new ArrayList<>();
+        for (int i = 0; i < filteredArrayList.size(); i++) {
+            Recipe recipe = filteredArrayList.get(i);
+            if (filterClickRecord[LOW_CALORIES]) {
+                int calories = Integer.parseInt(recipe.getCalories());
+                if (calories > LOW_CAL_THRESH)
+                    continue;
+            }
+            if (filterClickRecord[HIGH_PROTEIN]) {
+                double protein = Double.parseDouble(recipe.getProtein().substring(0, recipe.getProtein()
+                        .indexOf("g")));
+                if (protein < PROTEIN_THRESH)
+                    continue;
+            }
+            if (filterClickRecord[SHORT_TIME]) {
+                int time = Integer.parseInt(recipe.getPreparationTime());
+                if (time > TIME_THRESH)
+                    continue;
+            }
+            if (filterClickRecord[EASY_TO_MAKE]) {
+                if (!recipe.getDifficulty().equals(EASY_THRESH))
+                    continue;
+            }
+            newFilteredList.add(recipe);
+        }
+        filteredArrayList.clear();
+        filteredArrayList.addAll(newFilteredList);
         return filteredArrayList;
     }
 }

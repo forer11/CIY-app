@@ -131,6 +131,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
             if (constraint == null || constraint.length() == 0) {
                 filteredArrayList = new ArrayList<>(SharedData.searchRecipes);
+                filteredArrayList = SharedData.activateFilters(filteredArrayList);
+
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
@@ -139,6 +141,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
                         filteredArrayList.add(recipe);
                     }
                 }
+                filteredArrayList = SharedData.activateFilters(filteredArrayList);
             }
 
             FilterResults results = new FilterResults();
@@ -163,6 +166,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
             if (constraint == null || constraint.length() == 0) {
                 filteredArrayList = new ArrayList<>(SharedData.searchRecipes);
                 filteredArrayList = SharedData.orderByIngredientsMatch(filteredArrayList);
+                filteredArrayList = SharedData.activateFilters(filteredArrayList);
             } else {
                 String filterPattern = constraint.toString().toLowerCase().trim();
 
@@ -173,6 +177,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
                 }
                 filteredArrayList = SharedData.orderByIngredientsMatch(filteredArrayList);
+                filteredArrayList = SharedData.activateFilters(filteredArrayList);
             }
 
             FilterResults results = new FilterResults();
