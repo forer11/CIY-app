@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.ArrayAdapter;
 
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -16,6 +17,9 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+import java.util.Objects;
+
 public class SplashActivity extends AppCompatActivity {
 
     private Handler handler;
@@ -25,6 +29,9 @@ public class SplashActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     /* reference to the firestore recipes collection */
     private CollectionReference recipesRef = db.collection(SharedData.RECIPES);
+
+    /* reference to the firestore global ingredients collection */
+    private CollectionReference ingredientsRef = db.collection(SharedData.Ingredients);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -69,10 +76,19 @@ public class SplashActivity extends AppCompatActivity {
                 } else {
                     intent = new Intent(getApplicationContext(), LoginActivity.class);
                 }
-                startActivity(intent);
-                finish();
-                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-
+                ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
+                    @Override
+                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
+                        //we add all ingredients from our data base to 'ingredientOptions' list
+                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                            String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
+                            SharedData.allIngredients.add(option);
+                        }
+                        startActivity(intent);
+                        finish();
+                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+                    }
+                });
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override

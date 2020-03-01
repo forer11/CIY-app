@@ -292,6 +292,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
     private void setUpSearchAdapter() {
         final Context context = getActivity();
         final View view = getView();
+        ingredientOptions = new ArrayList<>();
         if (SharedData.allIngredients.isEmpty()) {
             ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
                 @Override
@@ -301,15 +302,18 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                         String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
                         SharedData.allIngredients.add(option);
                     }
-                    ingredientOptions = new ArrayList<>(SharedData.allIngredients);
+                    ingredientOptions.addAll(SharedData.allIngredients);
                     searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(context),
                             android.R.layout.simple_list_item_1, ingredientOptions);
                     setUserInput(view);
                 }
             });
         } else {
+            if (ingredientOptions.isEmpty()) {
+                ingredientOptions.addAll(SharedData.allIngredients);
+            }
             searchOptionsAdapter = new ArrayAdapter<>(Objects.requireNonNull(context),
-                    android.R.layout.simple_list_item_1, ingredientOptions);
+                    android.R.layout.simple_list_item_1, SharedData.allIngredients);
             setUserInput(view);
         }
     }
