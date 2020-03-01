@@ -1,6 +1,5 @@
 package com.example.ciy;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
@@ -11,14 +10,12 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
@@ -31,17 +28,12 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
-import com.firebase.ui.auth.AuthUI;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
-import java.io.File;
 import java.util.Objects;
 
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
@@ -79,8 +71,6 @@ public class BottomNavigationBar extends AppCompatActivity {
     /* app's Bottom navigation bar */
     private BottomNavigationView bottomNav;
 
-    private SharedPreferences prefs = null;
-
     /* the FireBase authenticator */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
@@ -115,45 +105,31 @@ public class BottomNavigationBar extends AppCompatActivity {
         transaction.commit();
         lastPushed = SharedData.HOME;
         lastTag = HOME;
-        prefs = getSharedPreferences("com.mycompany.myAppName", MODE_PRIVATE);
-        fromSignIn();
+        appTutorial();
     }
 
 
     /**
-     * this function checks if the user came from the loginActivity and if so, display the app
+     * this function checks if the user launch from the loginActivity and if so,
+     * display the app tutorial
      */
-    private void fromSignIn(){
+    private void appTutorial(){
         String flag = getIntent().getStringExtra("I_CAME_FROM");
         if (flag != null){
-            if(flag.equals("Login")){
-                showIntro("Your home screen where you can change and add ingredients",
+            if(flag.equals("LoginActivity")){
+                displayAppTutorial("Your home screen where you can change and add ingredients",
                         bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
             }
         }
     }
 
-//    /**
-//     * this function detect if it's a first time user and displayed the intro in such case
-//     */
-//    @Override
-//    protected void onResume() {
-//        super.onResume();
-//        // checks if the user entered the app for the first time
-//        if (prefs.getBoolean("firstrun", true)) {
-//            showIntro("Your Fridge",
-//                    bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
-//            prefs.edit().putBoolean("firstrun", false).apply();
-//        }
-//    }
-
 
     /**
      * this function responsible on introduce the app for first time users
      */
-    private void showIntro(String title, int viewId, final int type) {
+    private void displayAppTutorial(String title, int viewId, final int type) {
 
-        final int navDiscover = bottomNav.getMenu().findItem(R.id.navDiscover).getItemId();
+        final int navDiscover  = bottomNav.getMenu().findItem(R.id.navDiscover).getItemId();
         final int navFavorites = bottomNav.getMenu().findItem(R.id.navFavorites).getItemId();
         final int navAddRecipe = bottomNav.getMenu().findItem(R.id.navAddRecipe).getItemId();
 
@@ -169,28 +145,28 @@ public class BottomNavigationBar extends AppCompatActivity {
                     public void onDismiss(View view) {
                         switch (type) {
                             case 1:
-                                showIntro("Discover new recipes", navDiscover, 2);
+                                displayAppTutorial("Discover new recipes", navDiscover, 2);
                                 break;
                             case 2:
-                                showIntro("Check your favorites recipes", navFavorites, 3);
+                                displayAppTutorial("Check your favorites recipes", navFavorites, 3);
                                 break;
                             case 3:
-                                showIntro("Add your own recipe", navAddRecipe, 4);
+                                displayAppTutorial("Add your own recipe", navAddRecipe, 4);
                                 break;
                             case 4:
-                                showIntro("Here you search recipes by name, you can find which recipes ingredients match the ones you currently have and filter the search with multiple filter tags.", R.id.actionSearchNavigation, 5);
+                                displayAppTutorial("Here you search recipes by name, you can find which recipes ingredients match the ones you currently have and filter the search with multiple filter tags.", R.id.actionSearchNavigation, 5);
                                 break;
                             case 5:
-                                showIntro("Search and add more ingredients here", R.id.enterIngredients, 6);
+                                displayAppTutorial("Search and add more ingredients here", R.id.enterIngredients, 6);
                                 break;
                             case 6:
-                                showIntro("Here are all the must have basic ingredients you probably have in your kithcen", R.id.dragIngredients, 7);
+                                displayAppTutorial("Here are all the must have basic ingredients you probably have in your kithcen", R.id.dragIngredients, 7);
                                 break;
                             case 7:
-                                showIntro("Drag your basic ingredients here and add them to your fridge", R.id.basicIngredientsShelf, 8);
+                                displayAppTutorial("Drag your basic ingredients here and add them to your fridge", R.id.basicIngredientsShelf, 8);
                                 break;
                             case 8:
-                                showIntro("Tap to open your fridge Swipe right or left to remove ingredients", R.id.fridge_button, 9);
+                                displayAppTutorial("Tap to open your fridge Swipe right or left to remove ingredients", R.id.fridge_button, 9);
                                 break;
                         }
                     }
@@ -320,7 +296,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         transaction.commit();
     }
 
-    /***
+    /*
      * show the sign out dialog on screen
      */
     private boolean showSignOutDialog() {
