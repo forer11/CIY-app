@@ -143,7 +143,7 @@ public class RecipeFragment extends DialogFragment {
         prepareTime.setTextSize(15);
         prepareTime.setGravity(Gravity.CENTER);
         TextView complexity = getView().findViewById(R.id.complexity);
-        complexity.setTextSize(15);
+        complexity.setTextSize(12);
         complexity.setGravity(Gravity.CENTER);
         TextView calories = getView().findViewById(R.id.calories);
         calories.setTextSize(15);
