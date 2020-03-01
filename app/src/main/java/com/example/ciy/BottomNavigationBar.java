@@ -127,7 +127,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         String flag = getIntent().getStringExtra("I_CAME_FROM");
         if (flag != null){
             if(flag.equals("Login")){
-                showIntro("Your Fridge",
+                showIntro("Your home screen where you can change and add ingredients",
                         bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
             }
         }
