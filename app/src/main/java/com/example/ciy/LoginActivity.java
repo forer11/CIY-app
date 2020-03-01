@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -22,10 +21,14 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * This activity represents the LoginActivity of the app. It builds 4 sign in options and deals
+ * with the result according to the user choice
+ */
 public class LoginActivity extends BaseSignIn {
 
     private static final int MY_REQUEST_CODE = 7117;
-    List<AuthUI.IdpConfig> providers;
+    List<AuthUI.IdpConfig> providers;   // List of all the sign in providers
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,30 +36,41 @@ public class LoginActivity extends BaseSignIn {
         setContentView(R.layout.activity_new_signin);
 
         // init providers
+        buildProviders();
+
+        showSignInOptions();
+    }
+
+
+    /*
+     * build all the Array of all sign in options
+     */
+    private void buildProviders() {
         providers = Arrays.asList(
                 new AuthUI.IdpConfig.EmailBuilder().build(),
                 new AuthUI.IdpConfig.PhoneBuilder().build(),
                 new AuthUI.IdpConfig.GoogleBuilder().build(),
                 new AuthUI.IdpConfig.AnonymousBuilder().build()
         );
-
-        showOptions();
     }
 
     /*
-    this function continue to the home activity
+     * This function starts the intent of the app's home screen, and send a flag to indicate that
+     * the user arrived from Login Activity
      */
     private void navToHome(){
         Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
-        intent.putExtra("I_CAME_FROM", "Login");    // TODO - delete later
+        intent.putExtra("I_CAME_FROM", "LoginActivity");
         startActivity(intent);
         finish();
     }
 
     /*
-    this function shows all the sign in options
+     * This function builds all the sign in options
      */
-    private void showOptions(){
+    private void showSignInOptions(){
+
+        // A custom layout to attach to the LoginActivity screen
         AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
                 .Builder(R.layout.activity_new_signin)
                 .setGoogleButtonId(R.id.google_signIn)
@@ -64,6 +78,7 @@ public class LoginActivity extends BaseSignIn {
                 .setAnonymousButtonId(R.id.anonymous_signIn)
                 .setPhoneButtonId(R.id.phone_signIn)
                 .build();
+
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setAvailableProviders(providers)
@@ -75,7 +90,7 @@ public class LoginActivity extends BaseSignIn {
     }
 
     /*
-    this method update the id of the user which was created
+     * this method update the id of the user which was created
      */
     private void updateUI(FirebaseUser user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -98,8 +113,9 @@ public class LoginActivity extends BaseSignIn {
         });
     }
 
-    /*
-    this function deals with the results of the user's sign in
+    /**
+     * this function deals with the results of the user's sign in, and calls to the
+     * updatesUI function to update app's UI with the new user
      */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
