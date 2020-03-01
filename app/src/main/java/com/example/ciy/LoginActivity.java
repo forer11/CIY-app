@@ -47,12 +47,13 @@ public class LoginActivity extends BaseSignIn {
      */
     private void buildProviders() {
         providers = Arrays.asList(
-                new AuthUI.IdpConfig.EmailBuilder().build(),
-                new AuthUI.IdpConfig.PhoneBuilder().build(),
-                new AuthUI.IdpConfig.GoogleBuilder().build(),
-                new AuthUI.IdpConfig.AnonymousBuilder().build()
+                                  new AuthUI.IdpConfig.EmailBuilder().build(),
+                                  new AuthUI.IdpConfig.PhoneBuilder().build(),
+                                  new AuthUI.IdpConfig.GoogleBuilder().build(),
+                                  new AuthUI.IdpConfig.AnonymousBuilder().build()
         );
     }
+
 
     /*
      * This function starts the intent of the app's home screen, and send a flag to indicate that
@@ -65,26 +66,32 @@ public class LoginActivity extends BaseSignIn {
         finish();
     }
 
+
+    /*
+     * This function creates a custom layout to be used for the Login Activity
+     */
+    private AuthMethodPickerLayout createCustomLayout(){
+        // A custom layout to attach to the LoginActivity screen
+        return new AuthMethodPickerLayout
+                                    .Builder(R.layout.activity_new_signin)
+                                    .setGoogleButtonId(R.id.google_signIn)
+                                    .setEmailButtonId(R.id.email_signIn)
+                                    .setAnonymousButtonId(R.id.anonymous_signIn)
+                                    .setPhoneButtonId(R.id.phone_signIn)
+                                    .build();
+    }
+
+
     /*
      * This function builds all the sign in options
      */
     private void showSignInOptions(){
-
-        // A custom layout to attach to the LoginActivity screen
-        AuthMethodPickerLayout customLayout = new AuthMethodPickerLayout
-                .Builder(R.layout.activity_new_signin)
-                .setGoogleButtonId(R.id.google_signIn)
-                .setEmailButtonId(R.id.email_signIn)
-                .setAnonymousButtonId(R.id.anonymous_signIn)
-                .setPhoneButtonId(R.id.phone_signIn)
-                .build();
-
         startActivityForResult(
                 AuthUI.getInstance().createSignInIntentBuilder()
                         .setAvailableProviders(providers)
                         .setIsSmartLockEnabled(false)
                         .setTheme(R.style.BaseAppTheme)
-                        .setAuthMethodPickerLayout(customLayout)
+                        .setAuthMethodPickerLayout(createCustomLayout())
                         .build(), MY_REQUEST_CODE
         );
     }

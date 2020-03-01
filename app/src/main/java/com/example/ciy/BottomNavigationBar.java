@@ -128,7 +128,7 @@ public class BottomNavigationBar extends AppCompatActivity {
      * this function responsible on introduce the app for first time users
      */
     private void displayAppTutorial(String title, int viewId, final int type) {
-
+        
         final int navDiscover  = bottomNav.getMenu().findItem(R.id.navDiscover).getItemId();
         final int navFavorites = bottomNav.getMenu().findItem(R.id.navFavorites).getItemId();
         final int navAddRecipe = bottomNav.getMenu().findItem(R.id.navAddRecipe).getItemId();
