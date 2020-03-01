@@ -37,6 +37,17 @@
         app:lottie_loop="false"
         app:lottie_speed="0.4" />
 
+    <com.airbnb.lottie.LottieAnimationView
+        android:id="@+id/mr_cookie"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_alignParentBottom="true"
+        android:layout_centerHorizontal="true"
+        app:lottie_autoPlay="true"
+        app:lottie_fileName="mr_cookie.json"
+        app:lottie_loop="false"
+        app:lottie_speed="0.4" />
+
 
 </RelativeLayout>
 
