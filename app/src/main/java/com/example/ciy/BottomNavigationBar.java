@@ -2,6 +2,7 @@ package com.example.ciy;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
@@ -77,6 +78,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     /* app's Bottom navigation bar */
     private BottomNavigationView bottomNav;
 
+    private SharedPreferences prefs = null;
 
     /* the FireBase authenticator */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -112,9 +114,19 @@ public class BottomNavigationBar extends AppCompatActivity {
         transaction.commit();
         lastPushed = SharedData.HOME;
         lastTag = HOME;
+        prefs = getSharedPreferences("com.mycompany.myAppName", MODE_PRIVATE);
+    }
 
-        showIntro("Home", "Your Fridge",
-                bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // checks if the user entered the app for the first time
+        if (prefs.getBoolean("firstrun", true)) {
+            showIntro("Home", "Your Fridge",
+                    bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
+            prefs.edit().putBoolean("firstrun", false).apply();
+        }
     }
 
 
@@ -148,16 +160,16 @@ public class BottomNavigationBar extends AppCompatActivity {
                                 showIntro("Add new recipe", "Add your own recipe", navAddRecipe, 4);
                                 break;
                             case 4:
-                                showIntro("Basic Ingredients", "Drag some basic ingredients to your Basic Ingredients Shelf", R.id.dragIngredients, 5);
+                                showIntro("Search to add more ingredients", "Add other ingredients", R.id.enterIngredients, 5);
                                 break;
                             case 5:
-                                showIntro("Basic Ingredients Shelf", "Drag your basic ingredients here", R.id.basicIngredientsShelf, 6);
+                                showIntro("Basic Ingredients", "Drag some basic ingredients to your Basic Ingredients Shelf", R.id.dragIngredients, 6);
                                 break;
                             case 6:
-                                showIntro("Search to add more ingredients", "Add other ingredients", R.id.enterIngredients, 7);
+                                showIntro("Basic Ingredients Shelf", "Drag your basic ingredients here", R.id.basicIngredientsShelf, 7);
                                 break;
                             case 7:
-                                showIntro("Your Fridge", "Tap to open your fridge", R.id.fridge_button, 8);
+                                showIntro("Your Fridge", "Tap to open your fridge\nSwipe right or left to remove ingredients", R.id.fridge_button, 8);
                                 break;
                         }
                     }
