@@ -95,7 +95,8 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
         holder.textViewMatch.setText("");
         if (filterType == SharedData.INGREDIENTS_FILTER) {
-            holder.textViewMatch.setText(String.valueOf(recipe.getMatchFactor() * 100) + "% Match");
+            String format = String.format("%.1f", recipe.getMatchFactor() * 100) + "% Match";
+            holder.textViewMatch.setText(format);
         }
         holder.textViewTitle.setText(recipe.getId());
         holder.textViewDescription.setText(recipe.getDescription());
