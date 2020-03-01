@@ -382,6 +382,8 @@ public class NewRecipeActivity extends AppCompatActivity {
                 Integer.parseInt(prepTime);
         Recipe recipe = new Recipe(title, description, Integer.toString(prepTimeMinutes),
                 finalInstructions, finalIngredientsList, new URL(file.toString()).toString());
+
+        Toast.makeText(this, "Submission up for approval", Toast.LENGTH_SHORT).show();
         finish();
     }
 
