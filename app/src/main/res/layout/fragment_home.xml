@@ -34,17 +34,23 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
-        android:text="Basic ingredients you may need"
+        android:text="Basic Ingredients you may choose"
         android:textAlignment="center"
         android:textSize="20sp"
+        android:shadowColor="@android:color/black"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="100"
+        android:textColor="@color/white"
         android:textStyle="bold" />
 
 
     <HorizontalScrollView
         android:id="@+id/dragIngredients"
         android:layout_width="match_parent"
-        android:layout_height="140dp"
+        android:layout_height="110dp"
         android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
         android:fillViewport="true">
 
         <LinearLayout
@@ -56,7 +62,6 @@
 
             <ImageView
                 android:id="@+id/salt"
-                android:layout_marginTop="20dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/salt" />
@@ -64,7 +69,6 @@
 
             <ImageView
                 android:id="@+id/pepper"
-                android:layout_marginTop="20dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/pepper" />
@@ -72,42 +76,36 @@
 
             <ImageView
                 android:id="@+id/milk"
-                android:layout_marginTop="20dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/milk" />
 
             <ImageView
                 android:id="@+id/eggs"
-                android:layout_marginTop="20dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/eggs" />
 
             <ImageView
                 android:id="@+id/onions"
-                android:layout_marginTop="20dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/onions" />
 
             <ImageView
                 android:id="@+id/tomato"
-                android:layout_marginTop="20dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/tomato" />
 
             <ImageView
                 android:id="@+id/potato"
-                android:layout_marginTop="20dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/potato" />
 
             <ImageView
                 android:id="@+id/carrots"
-                android:layout_marginTop="20dp"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:src="@drawable/carrots" />
@@ -116,18 +114,33 @@
 
     </HorizontalScrollView>
 
+    <TextView
+        android:id="@+id/basicShelf"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Drag your basics here"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        android:shadowColor="@android:color/black"
+        android:shadowDx="1"
+        android:shadowDy="1"
+        android:shadowRadius="100"
+        android:textColor="@color/white"
+        android:textStyle="bold" />
+
+
     <HorizontalScrollView
         android:id="@+id/basicIngredientsShelf"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="30dp">
+        android:layout_marginTop="20dp">
 
         <LinearLayout
             android:id="@+id/layout2"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:background="@drawable/shelf"
-            android:layout_marginTop="30dp"
             android:orientation="horizontal">
 
         </LinearLayout>
@@ -168,7 +181,7 @@
                 android:layout_height="100dp"
                 android:layout_alignParentBottom="true"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="30dp"
+                android:layout_marginBottom="20dp"
                 android:background="@drawable/ripple_rounded_corners"
                 android:baselineAlignBottom="true"
                 android:scaleType="centerInside"
