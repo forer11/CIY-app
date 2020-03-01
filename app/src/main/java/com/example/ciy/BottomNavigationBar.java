@@ -42,6 +42,8 @@ import com.squareup.picasso.Target;
 
 import java.io.File;
 
+import smartdevelop.ir.eram.showcaseviewlib.GuideView;
+
 /**
  * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
  * DiscoverFragment, FavoritesFragment, and SearchFragment, and activate the corresponding fragment the
@@ -71,6 +73,9 @@ public class BottomNavigationBar extends AppCompatActivity {
     /* the tag of the last fragment we showed/added */
     private String lastTag = null;
 
+    /* app's Bottom navigation bar */
+    private BottomNavigationView bottomNav;
+
 
     /* the FireBase authenticator */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
@@ -96,6 +101,7 @@ public class BottomNavigationBar extends AppCompatActivity {
             discoverFragment = new DiscoverFragment();
             favoritesFragment = new FavoritesFragment();
             searchFragment = new SearchFragment();
+
         }
         //setting home fragment as default
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -106,14 +112,66 @@ public class BottomNavigationBar extends AppCompatActivity {
         lastPushed = SharedData.HOME;
         lastTag = HOME;
 
+        showIntro("Home", "Your Fridge",
+                bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
     }
+
+
+    /**
+     * this function responsible on introduce the app for first time users
+     */
+    private void showIntro(String title, String text, int viewId, final int type) {
+
+        final int navDiscover = bottomNav.getMenu().findItem(R.id.navDiscover).getItemId();
+        final int navFavorites = bottomNav.getMenu().findItem(R.id.navFavorites).getItemId();
+        final int navAddRecipe = bottomNav.getMenu().findItem(R.id.navAddRecipe).getItemId();
+
+        new GuideView.Builder(this)
+                .setTitle(title)
+                .setContentText(text)
+                .setTargetView(findViewById(viewId))
+                .setContentTextSize(12)//optional
+                .setTitleTextSize(14)//optional
+                .setDismissType(GuideView.DismissType.anywhere) //optional - default dismissible by TargetView
+                .setGuideListener(new GuideView.GuideListener() {
+                    @Override
+                    public void onDismiss(View view) {
+                        switch (type) {
+                            case 1:
+                                showIntro("Discover", "Discover new recipes", navDiscover, 2);
+                                break;
+                            case 2:
+                                showIntro("Favorites", "Your favorites recipes", navFavorites, 3);
+                                break;
+                            case 3:
+                                showIntro("Add new recipe", "Add your own recipe", navAddRecipe, 4);
+                                break;
+                            case 4:
+                                showIntro("Basic Ingredients", "Drag some basic ingredients to your Basic Ingredients Shelf", R.id.dragIngredients, 5);
+                                break;
+                            case 5:
+                                showIntro("Basic Ingredients Shelf", "Drag your basic ingredients here", R.id.basicIngredientsShelf, 6);
+                                break;
+                            case 6:
+                                showIntro("Search to add more ingredients", "Add other ingredients", R.id.enterIngredients, 7);
+                                break;
+                            case 7:
+                                showIntro("Your Fridge", "Tap to open your fridge", R.id.fridge_button, 8);
+                                break;
+                        }
+                    }
+                })
+                .build()
+                .show();
+    }
+
 
     /**
      * sets the bottom navigation bar and upper toolbar
      */
     private void setBars() {
         // define the bottom navigation bar to be used in the activity
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
         // define the toolbar to be used in the activity
