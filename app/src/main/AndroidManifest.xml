@@ -43,6 +43,7 @@
         <activity android:name=".Window2" />
         <activity
             android:name=".BottomNavigationBar"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/BaseAppTheme">
 
