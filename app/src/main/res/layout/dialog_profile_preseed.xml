@@ -20,7 +20,7 @@ android:orientation="vertical">
         android:layout_height="52dp"
         android:layout_gravity="center_horizontal"
         android:gravity="center"
-        android:text="Anonymous user"
+        android:text="Guest user"
         app:layout_constraintStart_toEndOf="@+id/profile_image"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -54,7 +54,7 @@ android:orientation="vertical">
         android:text="sign out" />
 
     <Button
-        android:id="@+id/add_ingredients_button"
+        android:id="@+id/what_in_my_fridge"
         android:layout_width="327dp"
         android:layout_height="42dp"
         android:layout_gravity="center_horizontal"
@@ -62,7 +62,7 @@ android:orientation="vertical">
         android:layout_marginBottom="20dp"
         android:fontFamily="@font/average_sans"
         android:background="@drawable/blurred_button_shape"
-        android:text="change ingredients" />
+        android:text="What's in my fridge ?" />
 
 
 </LinearLayout>

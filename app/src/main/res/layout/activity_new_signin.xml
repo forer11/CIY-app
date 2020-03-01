@@ -13,7 +13,7 @@
         android:layout_width="435dp"
         android:layout_height="291dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="15dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -30,7 +30,6 @@
         android:background="@drawable/blurred_button_shape"
         android:drawableLeft="@drawable/googleicon"
         android:padding="10dp"
-        android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/email_signIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -46,7 +45,6 @@
         android:background="@drawable/blurred_button_shape"
         android:drawableLeft="@drawable/emailicon"
         android:padding="10dp"
-        android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/phone_signIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -62,28 +60,25 @@
         android:background="@drawable/blurred_button_shape"
         android:drawableLeft="@drawable/phoneicon"
         android:padding="10dp"
-        android:textColor="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/anonymous_signIn"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/anonymous_signIn"
-        android:fontFamily="@font/average_sans"
-        android:text="Continue Anonymously"
         android:layout_width="300dp"
         android:layout_height="50dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginBottom="35dp"
+        android:layout_marginBottom="60dp"
         android:background="@drawable/blurred_button_shape"
         android:drawableStart="@drawable/anonymous"
+        android:fontFamily="@font/average_sans"
         android:padding="10dp"
-        android:textColor="@android:color/white"
+        android:text="Continue as Guest"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent" />
-
-
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -42,23 +42,74 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
+            <HorizontalScrollView
+                android:id="@+id/metadata"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:fillViewport="true"
+                android:layout_below="@+id/imageView5"
+                android:layout_alignParentStart="true">
+
+                <LinearLayout
+                    android:id="@+id/metadata_layout"
+                    android:layout_width="wrap_content"
+                    android:layout_height="85dp"
+                    android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/calories"
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                android:layout_below="@+id/imageView5"
-                android:layout_alignParentStart="true"
                 android:layout_marginStart="40dp"
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="5dp"
-                android:layout_toStartOf="@+id/prepareTime"
                 android:background="@drawable/window_frame"
                 android:fontFamily="@font/average_sans"
                 android:textAlignment="center"
                 android:textAllCaps="false"
                 android:textColor="#615E5E"
                 android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/prepareTime"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/window_frame"
+                    android:fontFamily="@font/average_sans"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textColor="#615E5E"
+                    android:textSize="18sp" />
+                <TextView
+                    android:id="@+id/complexity"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="5dp"
+                    android:background="@drawable/window_frame"
+                    android:fontFamily="@font/average_sans"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textColor="#615E5E"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/protein"
+                    android:layout_width="80dp"
+                    android:layout_height="80dp"
+                    android:layout_marginTop="0dp"
+                    android:layout_marginEnd="35dp"
+                    android:background="@drawable/window_frame"
+                    android:fontFamily="@font/average_sans"
+                    android:textAlignment="center"
+                    android:textAllCaps="false"
+                    android:textColor="#615E5E"
+                    android:textSize="18sp" />
+                </LinearLayout>
+
+            </HorizontalScrollView>
 
             <ImageView
                 android:id="@+id/recipeImage"
@@ -74,7 +125,7 @@
                 android:id="@+id/recipeTitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_below="@+id/complexity"
+                android:layout_below="@+id/metadata"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"
                 android:fontFamily="@font/average_sans"
@@ -182,20 +233,6 @@
                 android:textColor="@color/black"
                 android:textSize="15sp" />
 
-            <TextView
-                android:id="@+id/prepareTime"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_below="@+id/imageView5"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="5dp"
-                android:layout_toStartOf="@+id/complexity"
-                android:background="@drawable/window_frame"
-                android:fontFamily="@font/average_sans"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textColor="#615E5E"
-                android:textSize="18sp" />
 
             <com.airbnb.lottie.LottieAnimationView
                 android:id="@+id/button_like"
@@ -203,41 +240,11 @@
                 android:layout_height="60dp"
                 android:layout_below="@+id/imageView4"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="-16dp"
-                android:layout_marginEnd="35dp"
+                android:layout_marginTop="-25dp"
+                android:layout_marginEnd="34dp"
                 android:clickable="true"
                 app:lottie_fileName="like_heart_animation.json"
                 app:lottie_scale="0.15" />
-
-            <TextView
-                android:id="@+id/complexity"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_below="@+id/imageView5"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="5dp"
-                android:layout_toStartOf="@+id/protein"
-                android:background="@drawable/window_frame"
-                android:fontFamily="@font/average_sans"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textColor="#615E5E"
-                android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/protein"
-                android:layout_width="80dp"
-                android:layout_height="80dp"
-                android:layout_below="@+id/imageView5"
-                android:layout_alignParentEnd="true"
-                android:layout_marginTop="0dp"
-                android:layout_marginEnd="35dp"
-                android:background="@drawable/window_frame"
-                android:fontFamily="@font/average_sans"
-                android:textAlignment="center"
-                android:textAllCaps="false"
-                android:textColor="#615E5E"
-                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/likes_and_views"
@@ -287,8 +294,8 @@
                 android:layout_height="wrap_content"
                 android:layout_below="@+id/button_like"
                 android:layout_alignParentEnd="true"
-                android:layout_marginTop="-10dp"
-                android:layout_marginEnd="38dp"
+                android:layout_marginTop="-2dp"
+                android:layout_marginEnd="31dp"
                 android:text="Add to favorites"
                 android:textSize="10dp" />
 

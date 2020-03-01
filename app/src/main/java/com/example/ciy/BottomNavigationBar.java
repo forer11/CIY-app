@@ -341,14 +341,16 @@ public class BottomNavigationBar extends AppCompatActivity {
             }
         });
 
-        Button addingredients = (Button) view.findViewById(R.id.add_ingredients_button);
+        Button addingredients = (Button) view.findViewById(R.id.what_in_my_fridge);
         addingredients.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-//                showFragment(searchFragment, SEARCH, lastTag);
-//                    lastPushed = SharedData.SEARCH;
-//                    lastTag = SEARCH;
-//                    finish();
+                Intent intent = new Intent(getBaseContext(),BottomNavigationBar.class);
+                startActivity(intent);
+//                showFragment(homeFragment, HOME, lastTag);
+//                lastPushed = SharedData.HOME;
+//                lastTag = HOME;
+                finish();
             }
         });
 
