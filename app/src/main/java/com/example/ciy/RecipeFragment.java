@@ -134,19 +134,19 @@ public class RecipeFragment extends DialogFragment {
 
         //recipe metadata
         TextView likes_and_views = getView().findViewById(R.id.likes_and_views);
-        likes_and_views.setTextSize(15);
+        likes_and_views.setTextSize(12);
         likes_and_views.setGravity(Gravity.CENTER);
         TextView protein = getView().findViewById(R.id.protein);
-        protein.setTextSize(15);
+        protein.setTextSize(12);
         protein.setGravity(Gravity.CENTER);
         TextView prepareTime = getView().findViewById(R.id.prepareTime);
-        prepareTime.setTextSize(15);
+        prepareTime.setTextSize(12);
         prepareTime.setGravity(Gravity.CENTER);
         TextView complexity = getView().findViewById(R.id.complexity);
         complexity.setTextSize(12);
         complexity.setGravity(Gravity.CENTER);
         TextView calories = getView().findViewById(R.id.calories);
-        calories.setTextSize(15);
+        calories.setTextSize(12);
         calories.setGravity(Gravity.CENTER);
         initializeUi(recipeTitle, recipeImage,ingredientsTitle,
                 titleRecipeDescription, recipeDescription,prepareTime,protein,likes_and_views,
@@ -192,10 +192,43 @@ public class RecipeFragment extends DialogFragment {
 
         //TODO - update to real time from db
         likes_and_views.setText(recipe.getViews()+" peoples viewed this recipe");
-        prepareTime.setText("prep time:\n"+recipe.getPreparationTime());
-        complexity.setText("complexity:\n"+recipe.getDifficulty());
-        calories.setText("calories:\n"+recipe.getCalories());
-        protein.setText("protein:\n"+recipe.getProtein());
+        String prepration_str = recipe.getPreparationTime();
+        String complexity_str = recipe.getDifficulty();
+        String calories_str = recipe.getCalories();
+        String protein_str = recipe.getProtein();
+        if(prepration_str!= null && !prepration_str.equals(""))
+        {
+            prepareTime.setText("prep time:\n"+prepration_str);
+        }
+        else
+        {
+            prepareTime.setText("prep time\nnot specified");
+        }
+        if (complexity_str!=null && !complexity_str.equals(""))
+        {
+            complexity.setText("complexity:\n"+complexity_str);
+        }
+        else
+        {
+            complexity.setText("complexity\nnot specified");
+        }
+        if (calories_str!=null && !calories_str.equals(""))
+        {
+            calories.setText("calories:\n"+calories_str);
+        }
+        else
+        {
+             calories.setText("calories\nnot specified");
+        }
+        if (protein_str!=null && !protein_str.equals(""))
+        {
+            protein.setText("protein:\n"+protein_str);
+        }
+        else
+        {
+            protein.setText("protein\nnot specified");
+        }
+
         setIngredients(ingredientsTitle);
             titleRecipeDescription.setText("Instructions");
             recipeDescription.setText(recipe.getInstructions());
