@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     android:background="@drawable/background_kitchen"
     android:orientation="vertical"
+    android:fillViewport="true"
     android:padding="16dp"
     tools:context=".NewRecipeActivity">
 
@@ -31,7 +32,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayout"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
 
 
             <com.google.android.material.textfield.TextInputLayout
@@ -176,6 +177,7 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <RelativeLayout
+                android:id="@+id/picButtons"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
@@ -196,7 +198,6 @@
                     android:id="@+id/uploadSign"
                     android:layout_width="30dp"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/userPicture"
                     android:layout_alignTop="@+id/uploadPicButton"
                     android:layout_alignEnd="@+id/uploadPicButton"
                     android:layout_alignBottom="@+id/takePicButton"
@@ -241,7 +242,6 @@
                     android:id="@+id/cameraSign"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_above="@+id/userPicture"
                     android:layout_alignTop="@+id/takePicButton"
                     android:layout_alignEnd="@+id/takePicButton"
                     android:layout_alignBottom="@+id/takePicButton"
@@ -268,20 +268,22 @@
                     android:textSize="12sp"
                     android:textStyle="bold" />
 
-                <ImageView
-                    android:id="@+id/userPicture"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:baselineAlignBottom="true"
-                    android:cropToPadding="true"
-                    android:padding="12dp"
-                    android:scaleType="centerCrop"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent" />
 
             </RelativeLayout>
 
+
+            <ImageView
+                android:id="@+id/userPicture"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:baselineAlignBottom="true"
+                android:cropToPadding="true"
+                android:padding="12dp"
+                android:scaleType="centerCrop"
+                app:layout_constraintTop_toBottomOf="@+id/picButtons"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

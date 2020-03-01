@@ -115,19 +115,36 @@ public class BottomNavigationBar extends AppCompatActivity {
         lastPushed = SharedData.HOME;
         lastTag = HOME;
         prefs = getSharedPreferences("com.mycompany.myAppName", MODE_PRIVATE);
+        fromSignIn();
     }
 
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        // checks if the user entered the app for the first time
-        if (prefs.getBoolean("firstrun", true)) {
-            showIntro("Home", "Your Fridge",
-                    bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
-            prefs.edit().putBoolean("firstrun", false).apply();
+    /**
+     * this function checks if the user came from the loginActivity and if so, display the app
+     */
+    private void fromSignIn(){
+        String flag = getIntent().getStringExtra("I_CAME_FROM");
+        if (flag != null){
+            if(flag.equals("Login")){
+                showIntro("Home", "Your Fridge",
+                        bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
+            }
         }
     }
+
+//    /**
+//     * this function detect if it's a first time user and displayed the intro in such case
+//     */
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        // checks if the user entered the app for the first time
+//        if (prefs.getBoolean("firstrun", true)) {
+//            showIntro("Home", "Your Fridge",
+//                    bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
+//            prefs.edit().putBoolean("firstrun", false).apply();
+//        }
+//    }
 
 
     /**
@@ -170,6 +187,9 @@ public class BottomNavigationBar extends AppCompatActivity {
                                 break;
                             case 7:
                                 showIntro("Your Fridge", "Tap to open your fridge\nSwipe right or left to remove ingredients", R.id.fridge_button, 8);
+                                break;
+                            case 8:
+                                showIntro("Search", "Search", R.id.actionSearchNavigation, 9);
                                 break;
                         }
                     }
