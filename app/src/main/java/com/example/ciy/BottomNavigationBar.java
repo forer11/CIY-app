@@ -59,6 +59,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     /* the Discover fragment Tag */
     private static final String DISCOVER = "Discover";
     private static final int ADD_RECIPE_REQUEST_CODE = 2;
+    private static final int SEARCH_RECIPE_REQUEST_CODE = 22;
     private static final int ERROR = -1;
     /* the Home fragment */
     HomeFragment homeFragment;
@@ -208,7 +209,7 @@ public class BottomNavigationBar extends AppCompatActivity {
                 return showSignOutDialog();
             case R.id.actionSearchNavigation:
                 Intent intent = new Intent(getBaseContext(), SearchRecipeActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, SEARCH_RECIPE_REQUEST_CODE);
                 return true;
 
             default:
@@ -291,26 +292,25 @@ public class BottomNavigationBar extends AppCompatActivity {
      */
     private boolean showSignOutDialog() {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(BottomNavigationBar.this);
-        View view = getLayoutInflater().inflate(R.layout.dialog_profile_preseed,null);
+        View view = getLayoutInflater().inflate(R.layout.dialog_profile_preseed, null);
 
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             ImageView profile = (ImageView) view.findViewById(R.id.profile_image);
-            if (uri != null)
-            {
-                try
-                {
+            if (uri != null) {
+                try {
                     Picasso.get().load(uri).into(profile);
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
             String username = currentUser.getDisplayName();
-            if ( username != null && !username.equals("") ) {
+            if (username != null && !username.equals("")) {
                 TextView user_info = (TextView) view.findViewById(R.id.user_details);
-                user_info.setText(username+"\n"+currentUser.getEmail());
+                user_info.setText(username + "\n" + currentUser.getEmail());
             }
         }
         Button signout = (Button) view.findViewById(R.id.signout_button);
-        signout.setOnClickListener(new View.OnClickListener(){
+        signout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), LoginActivity.class);
@@ -320,16 +320,17 @@ public class BottomNavigationBar extends AppCompatActivity {
         });
 
         Button signin = (Button) view.findViewById(R.id.signin_button);
-        signin.setOnClickListener(new View.OnClickListener(){
+        signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), LoginActivity.class);
                 startActivity(intent);
-                finish();            }
+                finish();
+            }
         });
 
         Button addingredients = (Button) view.findViewById(R.id.add_ingredients_button);
-        addingredients.setOnClickListener(new View.OnClickListener(){
+        addingredients.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
 //                showFragment(searchFragment, SEARCH, lastTag);
@@ -402,6 +403,9 @@ public class BottomNavigationBar extends AppCompatActivity {
             if (navIcon != ERROR) {
                 bottomNavigationView.getMenu().findItem(navIcon).setChecked(true);
             }
+        }
+        if (requestCode == SEARCH_RECIPE_REQUEST_CODE) {
+            SharedData.filterClickRecord = new boolean[]{false, false, false, false};
         }
     }
 
