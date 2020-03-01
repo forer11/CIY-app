@@ -127,7 +127,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         String flag = getIntent().getStringExtra("I_CAME_FROM");
         if (flag != null){
             if(flag.equals("Login")){
-                showIntro("Home", "Your Fridge",
+                showIntro("Your Fridge",
                         bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
             }
         }
@@ -141,7 +141,7 @@ public class BottomNavigationBar extends AppCompatActivity {
 //        super.onResume();
 //        // checks if the user entered the app for the first time
 //        if (prefs.getBoolean("firstrun", true)) {
-//            showIntro("Home", "Your Fridge",
+//            showIntro("Your Fridge",
 //                    bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
 //            prefs.edit().putBoolean("firstrun", false).apply();
 //        }
@@ -151,7 +151,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     /**
      * this function responsible on introduce the app for first time users
      */
-    private void showIntro(String title, String text, int viewId, final int type) {
+    private void showIntro(String title, int viewId, final int type) {
 
         final int navDiscover = bottomNav.getMenu().findItem(R.id.navDiscover).getItemId();
         final int navFavorites = bottomNav.getMenu().findItem(R.id.navFavorites).getItemId();
@@ -159,38 +159,38 @@ public class BottomNavigationBar extends AppCompatActivity {
 
         new GuideView.Builder(this)
                 .setTitle(title)
-                .setContentText(text)
                 .setTargetView(findViewById(viewId))
-                .setContentTextSize(12)//optional
-                .setTitleTextSize(14)//optional
+                .setContentTextSize(10)//optional
+                .setTitleTextSize(16)//optional
+                .setGravity(GuideView.Gravity.center)
                 .setDismissType(GuideView.DismissType.anywhere) //optional - default dismissible by TargetView
                 .setGuideListener(new GuideView.GuideListener() {
                     @Override
                     public void onDismiss(View view) {
                         switch (type) {
                             case 1:
-                                showIntro("Discover", "Discover new recipes", navDiscover, 2);
+                                showIntro("Discover new recipes", navDiscover, 2);
                                 break;
                             case 2:
-                                showIntro("Favorites", "Your favorites recipes", navFavorites, 3);
+                                showIntro("Check your favorites recipes", navFavorites, 3);
                                 break;
                             case 3:
-                                showIntro("Add new recipe", "Add your own recipe", navAddRecipe, 4);
+                                showIntro("Add your own recipe", navAddRecipe, 4);
                                 break;
                             case 4:
-                                showIntro("Search to add more ingredients", "Add other ingredients", R.id.enterIngredients, 5);
+                                showIntro("Here you search recipes by name, you can find which recipes ingredients match the ones you currently have and filter the search with multiple filter tags.", R.id.actionSearchNavigation, 5);
                                 break;
                             case 5:
-                                showIntro("Basic Ingredients", "Drag some basic ingredients to your Basic Ingredients Shelf", R.id.dragIngredients, 6);
+                                showIntro("Search and add more ingredients here", R.id.enterIngredients, 6);
                                 break;
                             case 6:
-                                showIntro("Basic Ingredients Shelf", "Drag your basic ingredients here", R.id.basicIngredientsShelf, 7);
+                                showIntro("Here are all the must have basic ingredients you probably have in your kithcen", R.id.dragIngredients, 7);
                                 break;
                             case 7:
-                                showIntro("Your Fridge", "Tap to open your fridge\nSwipe right or left to remove ingredients", R.id.fridge_button, 8);
+                                showIntro("Drag your basic ingredients here and add them to your fridge", R.id.basicIngredientsShelf, 8);
                                 break;
                             case 8:
-                                showIntro("Search", "Search", R.id.actionSearchNavigation, 9);
+                                showIntro("Tap to open your fridge Swipe right or left to remove ingredients", R.id.fridge_button, 9);
                                 break;
                         }
                     }
