@@ -197,7 +197,7 @@ public class RecipeFragment extends DialogFragment {
         calories.setText("calories:\n"+recipe.getCalories());
         protein.setText("protein:\n"+recipe.getProtein());
         setIngredients(ingredientsTitle);
-            titleRecipeDescription.setText("Description");
+            titleRecipeDescription.setText("Instructions");
             recipeDescription.setText(recipe.getInstructions());
     }
 
