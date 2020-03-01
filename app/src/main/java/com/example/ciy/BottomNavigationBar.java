@@ -42,6 +42,7 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
+import java.util.Objects;
 
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 
@@ -341,6 +342,10 @@ public class BottomNavigationBar extends AppCompatActivity {
                 user_info.setText(username + "\n" + currentUser.getEmail());
             }
         }
+
+        mBuilder.setView(view);
+
+        final AlertDialog alertdialog = mBuilder.create();
         Button signout = (Button) view.findViewById(R.id.signout_button);
         signout.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -365,18 +370,14 @@ public class BottomNavigationBar extends AppCompatActivity {
         addingredients.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(),BottomNavigationBar.class);
-                startActivity(intent);
-//                showFragment(homeFragment, HOME, lastTag);
-//                lastPushed = SharedData.HOME;
-//                lastTag = HOME;
-                finish();
+                alertdialog.cancel();
+                FragmentManager fragmentManager = Objects.requireNonNull(BottomNavigationBar.this)
+                        .getSupportFragmentManager();
+                SearchFragment searchFragment = ((BottomNavigationBar) BottomNavigationBar.this).searchFragment;
+                searchFragment.show(fragmentManager, "FridgeFromHome");
+
             }
         });
-
-        mBuilder.setView(view);
-
-        final AlertDialog alertdialog = mBuilder.create();
         alertdialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertdialog.show();
 
