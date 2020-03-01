@@ -1,5 +1,6 @@
 package com.example.ciy;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +13,8 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder>
         implements Filterable {
@@ -20,6 +23,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private ArrayList<String> ingredients;
     /* useless for now */
     private OnItemClickListener searchListener;
+    private final HashMap<String, Integer> ingresientsImages;
 
 
     /**
@@ -33,6 +37,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     /**
      * setting search listener
+     *
      * @param searchListener the search listener
      */
     public void setOnItemClickListener(OnItemClickListener searchListener) {
@@ -46,12 +51,12 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         /* the ingredient name */
         public TextView textViewIngredientName;
         /* tbd TODO Lior */
-        public ImageView imageViewLike;
+        public ImageView imageViewIngredient;
 
         public IngredientViewHolder(@NonNull View itemView, final OnItemClickListener searchListener) {
             super(itemView);
             textViewIngredientName = itemView.findViewById(R.id.textViewIngredientName);
-            //imageViewLike = itemView.findViewById(R.id.searchLike);
+            imageViewIngredient = itemView.findViewById(R.id.imageViewIngredient);
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -65,7 +70,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
                 }
             });
 
-//            imageViewLike.setOnClickListener(new View.OnClickListener() {
+//            imageViewIngredient.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View v) {
 //                    if (searchListener != null) {
@@ -79,14 +84,35 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         }
     }
 
-    public IngredientsAdapter(ArrayList<String> ingredients) {
+    public IngredientsAdapter(ArrayList<String> ingredients, Context context) {
+
         this.ingredients = ingredients;
+        ingresientsImages = new HashMap<>();
+        setImagesMap(ingredients, context);
+
+    }
+
+    private void setImagesMap(ArrayList<String> ingredients, Context context) {
+        String curIngredient;
+        for (String ingredient : ingredients) {
+            curIngredient = ingredient;
+            if(curIngredient.equals("BBQ sauce"))
+            {
+                curIngredient="bbq_sauce";
+            }
+            if (curIngredient.contains(" ")) {
+                curIngredient = curIngredient.replaceAll(" ", "_");
+            }
+            int resID = context.getResources().getIdentifier(curIngredient, "drawable", context.getPackageName());
+            ingresientsImages.put(ingredient, resID);
+        }
     }
 
     @NonNull
     @Override
     public IngredientViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ingredient_item, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ingredient_item,
+                parent, false);
         return new IngredientViewHolder(view, searchListener);
     }
 
@@ -95,6 +121,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         String ingredient = ingredients.get(position);
 
         holder.textViewIngredientName.setText(ingredient);
+        holder.imageViewIngredient.setImageResource(ingresientsImages.get(ingredient));
     }
 
     @Override

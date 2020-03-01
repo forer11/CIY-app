@@ -63,10 +63,10 @@
                 android:src="@drawable/eggs" />
 
             <ImageView
-                android:id="@+id/onion"
+                android:id="@+id/onions"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/onion" />
+                android:src="@drawable/onions" />
 
             <ImageView
                 android:id="@+id/tomato"
@@ -81,10 +81,10 @@
                 android:src="@drawable/potato" />
 
             <ImageView
-                android:id="@+id/carrot"
+                android:id="@+id/carrots"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:src="@drawable/carrot" />
+                android:src="@drawable/carrots" />
 
         </LinearLayout>
 
