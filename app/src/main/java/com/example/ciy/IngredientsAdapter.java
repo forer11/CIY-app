@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 
 public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder>
         implements Filterable {
@@ -23,7 +22,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     private ArrayList<String> ingredients;
     /* useless for now */
     private OnItemClickListener searchListener;
-    private final HashMap<String, Integer> ingresientsImages;
+    private final HashMap<String, Integer> ingredientsImages;
 
 
     /**
@@ -87,7 +86,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     public IngredientsAdapter(ArrayList<String> ingredients, Context context) {
 
         this.ingredients = ingredients;
-        ingresientsImages = new HashMap<>();
+        ingredientsImages = new HashMap<>();
         setImagesMap(ingredients, context);
 
     }
@@ -104,7 +103,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
                 curIngredient = curIngredient.replaceAll(" ", "_");
             }
             int resID = context.getResources().getIdentifier(curIngredient, "drawable", context.getPackageName());
-            ingresientsImages.put(ingredient, resID);
+            ingredientsImages.put(ingredient, resID);
         }
     }
 
@@ -121,7 +120,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         String ingredient = ingredients.get(position);
 
         holder.textViewIngredientName.setText(ingredient);
-        holder.imageViewIngredient.setImageResource(ingresientsImages.get(ingredient));
+        holder.imageViewIngredient.setImageResource(ingredientsImages.get(ingredient));
     }
 
     @Override
