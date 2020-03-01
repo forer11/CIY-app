@@ -44,10 +44,11 @@ public class LoginActivity extends BaseSignIn {
     }
 
     /*
-    this function starts the home activity
+    this function continue to the home activity
      */
     private void navToHome(){
         Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
+        intent.putExtra("I_CAME_FROM", "Login");    // TODO - delete later
         startActivity(intent);
         finish();
     }
