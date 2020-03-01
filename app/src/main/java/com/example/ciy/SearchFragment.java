@@ -61,6 +61,9 @@ public class SearchFragment extends DialogFragment {
         LottieAnimationView fridgeDoorsOpen = view.findViewById(R.id.fridgeDoorsOpen);
         fridgeDoorsOpen.setProgress(0);
         fridgeDoorsOpen.playAnimation();
+        LottieAnimationView mrCookie = view.findViewById(R.id.mr_cookie);
+        mrCookie.setProgress(0);
+        mrCookie.playAnimation();
         removed = new ArrayList<>();
     }
 
