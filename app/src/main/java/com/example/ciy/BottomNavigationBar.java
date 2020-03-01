@@ -101,6 +101,7 @@ public class BottomNavigationBar extends AppCompatActivity {
             discoverFragment = new DiscoverFragment();
             favoritesFragment = new FavoritesFragment();
             searchFragment = new SearchFragment();
+
         }
         //setting home fragment as default
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -144,6 +145,18 @@ public class BottomNavigationBar extends AppCompatActivity {
                                 break;
                             case 3:
                                 showIntro("Add new recipe", "Add your own recipe", navAddRecipe, 4);
+                                break;
+                            case 4:
+                                showIntro("Basic Ingredients", "Drag some basic ingredients to your Basic Ingredients Shelf", R.id.dragIngredients, 5);
+                                break;
+                            case 5:
+                                showIntro("Basic Ingredients Shelf", "Drag your basic ingredients here", R.id.basicIngredientsShelf, 6);
+                                break;
+                            case 6:
+                                showIntro("Search to add more ingredients", "Add other ingredients", R.id.enterIngredients, 7);
+                                break;
+                            case 7:
+                                showIntro("Your Fridge", "Tap to open your fridge", R.id.fridge_button, 8);
                                 break;
                         }
                     }
