@@ -188,6 +188,9 @@ public class BottomNavigationBar extends AppCompatActivity {
                             case 7:
                                 showIntro("Your Fridge", "Tap to open your fridge\nSwipe right or left to remove ingredients", R.id.fridge_button, 8);
                                 break;
+                            case 8:
+                                showIntro("Search", "Search", R.id.actionSearchNavigation, 9);
+                                break;
                         }
                     }
                 })
