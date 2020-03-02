@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.airbnb.lottie.LottieAnimationView;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * This class represents the Fridge fragment, which allows the user to see the ingredients he added
@@ -28,6 +29,8 @@ import java.util.ArrayList;
  */
 public class FridgeFragment extends DialogFragment {
 
+    private static final int WIDTH_DIFF = 250;
+    private static final int HEIGHT_DIFF = 400;
     /* the user's current ingredients */
     private ArrayList<String> ingredients;
 
@@ -67,19 +70,22 @@ public class FridgeFragment extends DialogFragment {
      * sets the recycler view that represents the ingredients that is in the fridge
      */
     private void setUpRecyclerView() {
-        RecyclerView recyclerView = getView().findViewById(R.id.ingredientsRecyclerView);
+        RecyclerView recyclerView = Objects.requireNonNull(getView())
+                .findViewById(R.id.ingredientsRecyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         ingredientsAdapter = new IngredientsAdapter(ingredients, getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(ingredientsAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
-                DividerItemDecoration.VERTICAL));
+        recyclerView
+                .addItemDecoration(new DividerItemDecoration(Objects.requireNonNull(getContext()),
+                        DividerItemDecoration.VERTICAL));
         setItemTouchHelpers(recyclerView);
     }
 
     /**
      * handles the recycle view elements in cases of move or swipe
+     *
      * @param recyclerView the recycler view to handle
      */
     private void setItemTouchHelpers(final RecyclerView recyclerView) {
@@ -104,18 +110,19 @@ public class FridgeFragment extends DialogFragment {
 
     public void onResume() {
         super.onResume();
-        Window window = getDialog().getWindow();
-        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Window window = Objects.requireNonNull(getDialog()).getWindow();
+        Objects.requireNonNull(window).setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         int width = getResources().getDisplayMetrics().widthPixels;
         int height = getResources().getDisplayMetrics().heightPixels;
-        window.setLayout(width - 250, height - 400);
+        window.setLayout(width - WIDTH_DIFF, height - HEIGHT_DIFF);
         window.setGravity(Gravity.CENTER);
     }
 
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        ((BottomNavigationBarActivity) getActivity()).homeFragment.updateBadge();
+        ((BottomNavigationBarActivity) Objects.requireNonNull(getActivity()))
+                .homeFragment.updateBadge();
         ((BottomNavigationBarActivity) getActivity()).homeFragment.updateBasicIngredients(removed);
     }
 }

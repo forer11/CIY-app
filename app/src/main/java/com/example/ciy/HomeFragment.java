@@ -46,9 +46,12 @@ import java.util.Objects;
  * home and add them to the fridge
  */
 public class HomeFragment extends Fragment implements View.OnDragListener, View.OnLongClickListener {
+    /* constants */
+
     /* array of all basic ingredients names*/
     private static final String[] BASIC_INGREDIENTS = {"salt", "pepper", "milk", "eggs", "onions",
             "tomato", "potato", "carrots"};
+    private static final String FROM_HOME_TAG = "FridgeFromHome";
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     /* reference to the firestore global ingredients collection */
@@ -95,7 +98,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
      * from and the basic ingredients shelf that the user can put his basics in
      */
     private void setLayoutListeners() {
-        basicIngToChoose = getView().findViewById(R.id.layout1);
+        basicIngToChoose = Objects.requireNonNull(getView()).findViewById(R.id.layout1);
         basicIngShelf = getView().findViewById(R.id.layout2);
         basicIngToChoose.setOnDragListener(this);
         basicIngShelf.setOnDragListener(this);
@@ -223,14 +226,14 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
         String draggedIngredient = item.getText().toString();
         addBasicToFridge(view, draggedIngredient);
         invalidateView(view);
-        View vw = (View) event.getLocalState();
-        ViewGroup owner = (ViewGroup) vw.getParent();
-        owner.removeView(vw); //remove the dragged view
+        View draggedView = (View) event.getLocalState();
+        ViewGroup owner = (ViewGroup) draggedView.getParent();
+        owner.removeView(draggedView); //remove the dragged view
         //caste the view into LinearLayout as our drag acceptable layout is LinearLayout
         LinearLayout container = (LinearLayout) view;
         removeBasicFromFridge(draggedIngredient, container);
-        container.addView(vw);//Add the dragged view
-        vw.setVisibility(View.VISIBLE);//finally set Visibility to VISIBLE
+        container.addView(draggedView);//Add the dragged view
+        draggedView.setVisibility(View.VISIBLE);//finally set Visibility to VISIBLE
         // Returns true. DragEvent.getResult() will return true.
     }
 
@@ -242,7 +245,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
      * @param container         the layout were the event occurs
      */
     private void removeBasicFromFridge(String draggedIngredient, LinearLayout container) {
-        if (container == getView().findViewById(R.id.layout1)) {
+        if (container == Objects.requireNonNull(getView()).findViewById(R.id.layout1)) {
             SharedData.ingredients.remove(draggedIngredient);
             updateBadge();
         }
@@ -256,7 +259,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
      * @param draggedIngredient the dragged ingredient
      */
     private void addBasicToFridge(View view, String draggedIngredient) {
-        if (view == getView().findViewById(R.id.layout2)) {
+        if (view == Objects.requireNonNull(getView()).findViewById(R.id.layout2)) {
             //here we add the dragged ingredient to the fridge
             SharedData.ingredients.add(draggedIngredient);
             updateBadge();
@@ -283,8 +286,9 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
     private void openFridge() {
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
                 .getSupportFragmentManager();
-        FridgeFragment fridgeFragment = ((BottomNavigationBarActivity) getActivity()).fridgeFragment;
-        fridgeFragment.show(fragmentManager, "FridgeFromHome");
+        FridgeFragment fridgeFragment = ((BottomNavigationBarActivity) getActivity())
+                .fridgeFragment;
+        fridgeFragment.show(fragmentManager, FROM_HOME_TAG);
     }
 
     /**
@@ -299,7 +303,8 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
             ingredientsRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
                 //we add all ingredients from our data base to 'ingredientOptions' list
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    String option = documentSnapshot.get("ingredient").toString();
+                    String option = Objects.requireNonNull(documentSnapshot.get("ingredient"))
+                            .toString();
                     SharedData.allIngredients.add(option);
                 }
                 ingredientOptions.addAll(SharedData.allIngredients);
@@ -331,7 +336,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 //get the input like for a normal EditText
                 input = userInput.getText().toString();
-                hideKeyboard(getActivity());
+                hideKeyboard(Objects.requireNonNull(getActivity()));
                 if (!SharedData.ingredients.contains(input)) {
                     addIngredient();
                 } else {
@@ -380,7 +385,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
         if (view != null) {
             InputMethodManager imm = (InputMethodManager) activity.getSystemService(
                     Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            Objects.requireNonNull(imm).hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }
 
