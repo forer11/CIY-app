@@ -27,14 +27,11 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.nex3z.notificationbadge.NotificationBadge;
 
 
@@ -286,8 +283,8 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
     private void openFridge() {
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
                 .getSupportFragmentManager();
-        SearchFragment searchFragment = ((BottomNavigationBar) getActivity()).searchFragment;
-        searchFragment.show(fragmentManager, "FridgeFromHome");
+        FridgeFragment fridgeFragment = ((BottomNavigationBar) getActivity()).fridgeFragment;
+        fridgeFragment.show(fragmentManager, "FridgeFromHome");
     }
 
 

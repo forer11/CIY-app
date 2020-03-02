@@ -31,7 +31,7 @@ import java.util.Objects;
  * home, and get ingredient suggestions from our data base while doing so. The user can add kitchen
  * many ingredients kitchen he wishes, and can edit them afterwards (splashscreen_background.e- delete them).
  */
-public class SearchFragment extends DialogFragment {
+public class FridgeFragment extends DialogFragment {
 
     /* the user's current ingredients */
     private ArrayList<String> ingredients;
