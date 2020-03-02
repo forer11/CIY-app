@@ -2,16 +2,9 @@ package com.example.ciy;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
-import android.Manifest;
-import android.annotation.SuppressLint;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -25,29 +18,20 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageButton;
 
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 import com.jackandphantom.blurimage.BlurImage;
 
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
-
-import android.os.Environment;
 
 import android.widget.ImageView;
 import android.widget.Toast;
@@ -57,12 +41,6 @@ import eightbitlab.com.blurview.RenderScriptBlur;
 
 
 public class NewRecipeActivity extends AppCompatActivity {
-    public static final String INSTRUCTIONS_NEW_LINE = "\uD83D\uDCCC";
-    public static final String INGREDIENT_NEW_LINE = "\uD83D\uDCCD";
-    public static final String PREPERATION_TIME_NEW_LINE = "⏰";
-    public static final int HOURS_IDX = 0;
-    public static final int MINUTES_IDX = 1;
-    public static final String INVALID_PREP_TIME_MSG = "Invalid Time, please set legal time";
 
     private TextInputEditText titleText;
     private TextInputEditText descriptionText;
@@ -70,33 +48,27 @@ public class NewRecipeActivity extends AppCompatActivity {
     private TextInputEditText prepTimeText;
     private TextInputEditText ingredientsText;
 
-    private TextInputLayout titleLayout;
-    private TextInputLayout descriptionLayout;
     private TextInputLayout instructionsLayout;
     private TextInputLayout prepTimeLayout;
     private TextInputLayout ingredientsLayout;
 
+    /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    /* reference to the firestore recipes collection that waits for approval */
     private CollectionReference tempDb = db.collection(SharedData.TEMP_RECIPE_DB);
 
-    public static final String PRESS_TO_START_OVER_MSG = "Press again to return to the Start Page";
-    /* Represents the media file type(image/video) that were gonna share using the instegram intent */
-    String typeOfMedia = "image/*";
+
     /* The image view which contains the photo that the user took in this screen */
     private ImageView userPicture;
-    private android.net.Uri file;
-    /* The file which contains the photo the user took*/
-    File mediaStorageDir = new File(Environment.getExternalStoragePublicDirectory(
-            Environment.DIRECTORY_PICTURES), "CameraDemo");
-    /* indicates weather the user has pressed 2 times on the default "return" button in his phone*/
-    ImageButton cameraButton;
-    /* mediaPath is the path of the file which contains the photo the user took, and imName is the
-     *  unique name we give to each image the user take */
-    String mediaPath, imName;
+    /* the instruction the user has entered after edit*/
     private String finalInstructions;
+    /* the ingredients list the user has entered after edit*/
     private List<String> finalIngredientsList;
+    /* the preparation time the user has entered*/
     private String prepTimeHours;
-    private ImageButton uploadButton;
+    /* the upload an image from your gallery button */
+    private ImageButton uploadImageButton;
+    private Uri selectedImageUri;
 
 
     @Override
@@ -106,30 +78,23 @@ public class NewRecipeActivity extends AppCompatActivity {
         setResult(2, intent);
         setContentView(R.layout.activity_new_recipe);
         initializeUi();
-        //Check if there's a permission to access camera and external storage
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.CAMERA)
-                != PackageManager.PERMISSION_GRANTED) {
-            cameraButton.setEnabled(false);
-            ActivityCompat.requestPermissions(this, new String[]{Manifest.permission.CAMERA,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
-        }
-        uploadButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                // upload a picture from gallery intent
-                Intent pickPhoto = new Intent(Intent.ACTION_PICK,
-                        android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPhoto, 1);
-            }
+        uploadImageButton.setOnClickListener(view -> {
+            // upload a picture from gallery intent
+            Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(pickPhoto, 1);
         });
-        setCameraButton();
         setBlurredView();
     }
 
+    /**
+     * sets the blurred background of the activity, and the blurred effect on the -upload a picture
+     * from gallery button
+     */
     private void setBlurredView() {
         float radius = 20f;
         View decorView = getWindow().getDecorView();
-        ViewGroup rootView = (ViewGroup) decorView.findViewById(android.R.id.content);
+        ViewGroup rootView = decorView.findViewById(android.R.id.content);
         Drawable windowBackground = decorView.getBackground();
         BlurView blurView = decorView.findViewById(R.id.blurView);
         blurView.setupWith(rootView)
@@ -140,37 +105,18 @@ public class NewRecipeActivity extends AppCompatActivity {
         ImageView background = findViewById(R.id.background);
         BlurImage.with(getApplicationContext()).load(R.id.newNoteLayout).intensity(5).Async(true).
                 into(background);
-        ImageButton takePicButton = findViewById(R.id.takePicButton);
         ImageButton uploadPicButton = findViewById(R.id.uploadPicButton);
-        BlurImage.with(getApplicationContext()).load(R.id.imageButton).intensity(25).Async(false).into(uploadPicButton);
-        BlurImage.with(getApplicationContext()).load(R.id.imageButton).intensity(25).Async(false).into(takePicButton);
+        BlurImage.with(getApplicationContext()).load(R.id.imageButton).intensity(25).
+                Async(false).into(uploadPicButton);
     }
 
-    private void setCameraButton() {
-        cameraButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                //generates a unique name and path for the each file which gonna contain the image
-                // the user took
-                @SuppressLint("SimpleDateFormat") String timeStamp = new SimpleDateFormat(
-                        "yyyyMMdd_HHmmss").format(new Date());
-                imName = "IMG_" + timeStamp + ".jpg";
-                String filename = "/" + imName;
-                mediaPath = mediaStorageDir.getPath() + File.separator + filename;
-                //take a picture intent
-                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                file = Uri.fromFile(getOutputMediaFile());
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
-                startActivityForResult(intent, 100);
-            }
-        });
-    }
-
+    /**
+     * This method initializes all UI elements of the activity
+     */
     private void initializeUi() {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Add Recipe");
         titleText = findViewById(R.id.titleText);
-        titleLayout = findViewById(R.id.title);
         descriptionText = findViewById(R.id.descriptionText);
         prepTimeLayout = findViewById(R.id.description);
         ingredientsText = findViewById(R.id.ingredientsText);
@@ -183,27 +129,36 @@ public class NewRecipeActivity extends AppCompatActivity {
         instructionsText.addTextChangedListener(new ValidationTextWatcher(instructionsText));
         instructionsLayout = findViewById(R.id.preparationInstructions);
         userPicture = findViewById(R.id.userPicture);
-        cameraButton = findViewById(R.id.takePicButton);
-        uploadButton = findViewById(R.id.uploadPicButton);
+        uploadImageButton = findViewById(R.id.uploadPicButton);
         //Build upon an existing VmPolicy
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
     }
 
-
-    private boolean getPrepTimeHours() {
+    /**
+     * This method converts the given preparation time from hours to minutes in case the user has
+     * chosen to fill it by hours
+     *
+     * @return false if the user haven't filled the preparation time field, and true otherwise
+     */
+    private boolean convertsPrepTimeToMin() {
         String time = prepTimeText.getText().toString();
         if (time.trim().isEmpty()) {
             prepTimeLayout.setErrorEnabled(false);
             return false;
         }
+        //if the user entered ":" it means he chose to enter the preparation time in hours
         int hours = time.contains(":") ? Integer.parseInt(time.substring(0, time.indexOf(":"))) * 60 : 0;
         prepTimeHours = Integer.toString(hours);
         prepTimeLayout.setErrorEnabled(false);
         return true;
     }
 
-
+    /**
+     * This method validates the input ingredients that the user has filled
+     *
+     * @return true if the ingredients input is'nt empty, false otherwise
+     */
     private boolean validateIngredientsInput() {
         if (ingredientsText.getText().toString().trim().isEmpty()) {
             ingredientsLayout.setErrorEnabled(false);
@@ -221,6 +176,11 @@ public class NewRecipeActivity extends AppCompatActivity {
         return true;
     }
 
+    /**
+     * This method validates the input instructions the user has filled
+     *
+     * @return true if the instructions input is'nt empty, false otherwise
+     */
     private boolean validateInstructionsInput() {
         if (instructionsText.getText().toString().trim().isEmpty()) {
             instructionsLayout.setErrorEnabled(false);
@@ -238,12 +198,10 @@ public class NewRecipeActivity extends AppCompatActivity {
         return true;
     }
 
-    private void requestFocus(View view) {
-        if (view.requestFocus()) {
-            getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
-        }
-    }
-
+    /***
+     * A validation text watcher class that we use to validate each input
+     * (preparation time, ingredients and recipe instructions) we get from the user.
+     */
     private class ValidationTextWatcher implements TextWatcher {
 
         private View view;
@@ -262,7 +220,7 @@ public class NewRecipeActivity extends AppCompatActivity {
         public void afterTextChanged(Editable editable) {
             switch (view.getId()) {
                 case R.id.preparationTimeText:
-                    getPrepTimeHours();
+                    convertsPrepTimeToMin();
                     break;
                 case R.id.ingredientsText:
                     validateIngredientsInput();
@@ -284,43 +242,21 @@ public class NewRecipeActivity extends AppCompatActivity {
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        switch (item.getItemId()) {
-            case R.id.save_note:
-                try {
-                    saveNote();
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                return true;
-            default:
-                return super.onOptionsItemSelected(item);
-        }
-    }
-
-
-    /**
-     * Callback for the result from requesting permissions.
-     *
-     * @param requestCode  The request code passed in requestPermissions
-     * @param permissions  The requested permissions. Never null.
-     * @param grantResults The grant results for the corresponding permissions which is either
-     *                     PERMISSION_GRANTED or PERMISSION_DENIED. Never null.
-     */
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
-                                           @NonNull int[] grantResults) {
-        if (requestCode == 0) {
-            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
-                    && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+        if (item.getItemId() == R.id.save_note) {
+            try {
+                saveNote();
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
             }
+            return true;
         }
+        return super.onOptionsItemSelected(item);
     }
 
 
     /**
      * This function is called When the user is done with the subsequent activity and returns. if
-     * everything went well we would like to set the taken image on screen and show the publish to
-     * instegram button
+     * everything went well we would like to set the chosen image from gallery on screen and show
      *
      * @param requestCode identifies from which Intent we came back.
      * @param resultCode  indicates weather the request was successful.
@@ -329,73 +265,68 @@ public class NewRecipeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 100:
-                if (resultCode == RESULT_OK) {
-                    userPicture.getLayoutParams().height = 700;
-                    userPicture.getLayoutParams().width = 700;
-                    userPicture.requestLayout();
-                    userPicture.setImageURI(file);
-                }
-                break;
-            case 1:
-                if (resultCode == RESULT_OK) {
-                    Uri selectedImage = data.getData();
-                    userPicture.getLayoutParams().height = 700;
-                    userPicture.getLayoutParams().width = 700;
-                    userPicture.requestLayout();
-                    userPicture.setImageURI(selectedImage);
-                }
-                break;
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                selectedImageUri = data.getData();
+                userPicture.getLayoutParams().height = 700;
+                userPicture.getLayoutParams().width = 700;
+                userPicture.requestLayout();
+                userPicture.setImageURI(selectedImageUri);
+            }
         }
     }
 
-    /**
-     * This function creates a new file with given path (if the mediaStorageDir exists)
-     *
-     * @return the new file which is the photo the user took
-     */
-    private File getOutputMediaFile() {
-        if (!mediaStorageDir.exists()) {
-            if (!mediaStorageDir.mkdirs()) {
-                return null;
-            }
-        }
-        return new File(mediaStorageDir.getPath() + File.separator +
-                imName);
-    }
 
     /**
      * upload the new recipe to a temporary database, for now it will not upload it to the main
      * recipe database as it needs approval.
      *
-     * @throws MalformedURLException if the photo url is invalid. //todo Carmel
+     * @throws MalformedURLException thrown if the photo url is invalid.
      */
     private void saveNote() throws MalformedURLException {
         String title = titleText.toString();
         String description = descriptionText.getText().toString();
         String prepTime = prepTimeText.getText().toString();
-        if (!validateIngredientsInput() || !getPrepTimeHours() || !validateInstructionsInput()) {
-            Toast.makeText(this, "Please fill legal values in all the fields above", Toast.LENGTH_SHORT).show();
-            return;
-        } else if (title.trim().isEmpty() || description.trim().isEmpty() || prepTime.trim().isEmpty()
-                || finalInstructions.trim().isEmpty() || finalIngredientsList.isEmpty() || file.getPath().equals("")) {
-            Toast.makeText(this, "Please fill in all the fields above", Toast.LENGTH_SHORT).show();
+        if (validatesUserInput(title, description, prepTime)) {
             return;
         }
+        //if the user has entered preparation time in hours we take the hours converted to minutes
+        //(which we converted before in convertsPrepTimeToMin method) and add the minutes part
+        //(after the ":" in the input)
         int prepTimeMinutes = prepTime.contains(":") ? Integer.parseInt(prepTimeHours) +
                 Integer.parseInt(prepTime.substring(prepTime.indexOf(":") + 1)) :
                 Integer.parseInt(prepTime);
+        //we create the final recipe object from all the given input
         Recipe recipe = new Recipe(title, description, Integer.toString(prepTimeMinutes),
-                finalInstructions, finalIngredientsList, new URL(file.toString()).toString());
+                finalInstructions, finalIngredientsList,
+                new URL(selectedImageUri.toString()).toString());
         recipe.setId(recipe.getTitle());
-
+        //we save it to a temporary database for approval
         tempDb.document(recipe.getId()).set(recipe, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> Toast
                         .makeText(NewRecipeActivity.this, "recipe.getTitle()" +
-                        " Submission is up for approval", Toast.LENGTH_SHORT).show());
+                                " Submission is up for approval", Toast.LENGTH_SHORT).show());
         finish();
     }
 
-
+    /**
+     * This method validates the user input
+     *
+     * @param title       the input title the user has entered
+     * @param description the input description the user has entered
+     * @param prepTime    the input preparation time the user has entered
+     * @return true
+     */
+    private boolean validatesUserInput(String title, String description, String prepTime) {
+        if (!validateIngredientsInput() || !convertsPrepTimeToMin() || !validateInstructionsInput()) {
+            Toast.makeText(this, "Please fill legal values in all the fields above",
+                    Toast.LENGTH_SHORT).show();
+        } else if (title.trim().isEmpty() || description.trim().isEmpty() || prepTime.trim().isEmpty()
+                || finalInstructions.trim().isEmpty() || finalIngredientsList.isEmpty() ||
+                selectedImageUri.getPath().equals("")) {
+            Toast.makeText(this, "Please fill in all the fields above",
+                    Toast.LENGTH_SHORT).show();
+        }
+        return true;
+    }
 }
