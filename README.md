@@ -4,8 +4,7 @@ Our app Offers variety of recipes based on the ingredient the user insert into t
 
 
 # DBGenerator
-this component of our application project responsible for generating a json file that contains our
-data base - data set of recipes. it using Scrapy ,xpath libs.
+this component responsible for generating a json file that contains our data base - data set of recipes. it using Scrapy ,xpath libs.
 
 usage:
 run main.py this will generate the json on data/output.
