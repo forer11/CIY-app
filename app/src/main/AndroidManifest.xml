@@ -35,7 +35,6 @@
             android:theme="@style/BaseAppTheme">
 
         </activity>
-        <activity android:name=".Blurred" />
         <activity
             android:name=".NewRecipeActivity"
             android:parentActivityName=".BottomNavigationBar"
