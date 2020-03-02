@@ -22,85 +22,54 @@ import java.util.Objects;
 
 public class SplashActivity extends AppCompatActivity {
 
-    private Handler handler;
-    private Runnable callback;
-
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     /* reference to the firestore recipes collection */
     private CollectionReference recipesRef = db.collection(SharedData.RECIPES);
-
     /* reference to the firestore global ingredients collection */
     private CollectionReference ingredientsRef = db.collection(SharedData.Ingredients);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_splash);
-
         // make a copy of our recipes asynchronously
         loadRecipeCopy();
-
-        //launch the next screen after delay
-        //appStartHandler();
     }
 
-    private void appStartHandler() {
-        handler = new Handler();
-        callback = new Runnable() {
-            @Override
-            public void run() {
-
-
-            }
-        };
-        handler.postDelayed(callback, 1000);
-    }
-
+    //TODO lior
     private void loadRecipeCopy() {
-        recipesRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-            @Override
-            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                // sometimes having duplicates, didn't figure why, for now i will try this.
-                SharedData.searchRecipes.clear();
-                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                    Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                    SharedData.searchRecipes.add(recipe);
-                }
-                // Check if user is signed in (non-null) and update UI accordingly.
-                FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
-                Intent intent;
-                if (currentUser != null) {
-                    intent = new Intent(getBaseContext(), BottomNavigationBar.class);
-                } else {
-                    intent = new Intent(getApplicationContext(), LoginActivity.class);
-                }
-                ingredientsRef.get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-                    @Override
-                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-                        //we add all ingredients from our data base to 'ingredientOptions' list
-                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-                            String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
-                            SharedData.allIngredients.add(option);
-                        }
-                        startActivity(intent);
-                        finish();
-                        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
-                    }
-                });
+        recipesRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
+            // sometimes having duplicates, didn't figure why, for now i will try this.
+            SharedData.searchRecipes.clear();
+            for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
+                Recipe recipe = documentSnapshot.toObject(Recipe.class);
+                SharedData.searchRecipes.add(recipe);
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-
+            // Check if user is signed in (non-null) and update UI accordingly.
+            FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+            Intent intent;
+            if (currentUser != null) {
+                intent = new Intent(getBaseContext(), BottomNavigationBar.class);
+            } else {
+                intent = new Intent(getApplicationContext(), LoginActivity.class);
             }
+            ingredientsRef.get().addOnSuccessListener(queryDocumentSnapshots1 -> {
+                //we add all ingredients from our data base to 'ingredientOptions' list
+                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots1) {
+                    String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
+                    SharedData.allIngredients.add(option);
+                }
+                startActivity(intent);
+                finish();
+                overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out);
+            });
+        }).addOnFailureListener(e -> {
         });
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        // handler.removeCallbacks(callback);
     }
 }
