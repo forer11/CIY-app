@@ -75,7 +75,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     private static final String DISCOVER_EXPLANATION = "Discover new recipes";
     private static final String FAVORITES_EXPLANATION = "Check your favorites recipes";
     private static final String ADD_RECIPE_EXPLANATION = "Add your own recipe";
-    private static final String SEARCH_EXPLANATION = "Here you search recipes by name, you can " +
+    private static final String SEARCH_RECIPES_EXPLANATION = "Here you search recipes by name, you can " +
             "find which recipes ingredients match the ones you currently have and filter the " +
             "search with multiple filter tags.";
     private static final String SEARCH_INGREDIENTS_EXPLANATION = "Search and add more ingredients here";
@@ -88,6 +88,16 @@ public class BottomNavigationBar extends AppCompatActivity {
     private static final int INTRO_TEXT_SIZE = 16;
     private static final String LOGIN_ACTIVITY_FLAG_VALUE = "LoginActivity";
     private static final String LOGIN_ACTIVITY_FLAG_KEY = "I_CAME_FROM";
+    private static final int DISCOVER_INTRO_IDX = 1;
+    private static final int FAVORITES_INTRO_IDX = 2;
+    private static final int ADD_RECIPE_INTRO_IDX = 3;
+    private static final int SEARCH_RECIPES_INTRO_IDX = 4;
+    private static final int SEARCH_INGREDIENTS_INTRO_IDX = 5;
+    private static final int BASIC_INGREDIENTS_INTRO_IDX = 6;
+    private static final int SHELF_INTRO_IDX = 7;
+    private static final int FRIDGE_INTRO_IDX = 8;
+
+
 
     /* app's Bottom navigation bar */
     private BottomNavigationView bottomNav;
@@ -146,18 +156,19 @@ public class BottomNavigationBar extends AppCompatActivity {
         if (flag != null) {
             if (flag.equals(LOGIN_ACTIVITY_FLAG_VALUE)) {
                 displayAppTutorial(HOME_EXPLANATION,
-                        bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
+                        bottomNav.getMenu().findItem(R.id.navHome).getItemId(), DISCOVER_INTRO_IDX);
             }
         }
     }
 
-    //TODO - hagai : case incidents means nothing - should have informative names,
-    // try to short the method and the documentation doesn't  include the parameters
 
     /**
      * this function responsible on introduce the app for first time users
+     * @param title - the title of the current element to display
+     * @param viewId - the current element id
+     * @param elementId - indicates on the next element to display
      */
-    private void displayAppTutorial(String title, int viewId, final int type) {
+    private void displayAppTutorial(String title, int viewId, final int elementId) {
 
         final int navDiscover = bottomNav.getMenu().findItem(R.id.navDiscover).getItemId();
         final int navFavorites = bottomNav.getMenu().findItem(R.id.navFavorites).getItemId();
@@ -170,29 +181,29 @@ public class BottomNavigationBar extends AppCompatActivity {
                 .setGravity(GuideView.Gravity.center)
                 .setDismissType(GuideView.DismissType.anywhere)
                 .setGuideListener(view -> {
-                    switch (type) {
-                        case 1:
-                            displayAppTutorial(DISCOVER_EXPLANATION, navDiscover, 2);
+                    switch (elementId) {
+                        case DISCOVER_INTRO_IDX:
+                            displayAppTutorial(DISCOVER_EXPLANATION, navDiscover, FAVORITES_INTRO_IDX);
                             break;
-                        case 2:
-                            displayAppTutorial(FAVORITES_EXPLANATION, navFavorites, 3);
+                        case FAVORITES_INTRO_IDX:
+                            displayAppTutorial(FAVORITES_EXPLANATION, navFavorites, ADD_RECIPE_INTRO_IDX);
                             break;
-                        case 3:
-                            displayAppTutorial(ADD_RECIPE_EXPLANATION, navAddRecipe, 4);
+                        case ADD_RECIPE_INTRO_IDX:
+                            displayAppTutorial(ADD_RECIPE_EXPLANATION, navAddRecipe, SEARCH_RECIPES_INTRO_IDX);
                             break;
-                        case 4:
-                            displayAppTutorial(SEARCH_EXPLANATION, R.id.actionSearchNavigation, 5);
+                        case SEARCH_RECIPES_INTRO_IDX:
+                            displayAppTutorial(SEARCH_RECIPES_EXPLANATION, R.id.actionSearchNavigation, SEARCH_INGREDIENTS_INTRO_IDX);
                             break;
-                        case 5:
-                            displayAppTutorial(SEARCH_INGREDIENTS_EXPLANATION, R.id.enterIngredients, 6);
+                        case SEARCH_INGREDIENTS_INTRO_IDX:
+                            displayAppTutorial(SEARCH_INGREDIENTS_EXPLANATION, R.id.enterIngredients, BASIC_INGREDIENTS_INTRO_IDX);
                             break;
-                        case 6:
-                            displayAppTutorial(BASIC_INGREDIENTS_EXPLANATION, R.id.dragIngredients, 7);
+                        case BASIC_INGREDIENTS_INTRO_IDX:
+                            displayAppTutorial(BASIC_INGREDIENTS_EXPLANATION, R.id.dragIngredients, SHELF_INTRO_IDX);
                             break;
-                        case 7:
-                            displayAppTutorial(SHELF_EXPLANATION, R.id.basicIngredientsShelf, 8);
+                        case SHELF_INTRO_IDX:
+                            displayAppTutorial(SHELF_EXPLANATION, R.id.basicIngredientsShelf, FRIDGE_INTRO_IDX);
                             break;
-                        case 8:
+                        case FRIDGE_INTRO_IDX:
                             displayAppTutorial(FRIDGE_EXPLANATION, R.id.fridge_button, 9);
                             break;
                     }
