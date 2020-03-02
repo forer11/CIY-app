@@ -63,22 +63,19 @@ class SharedData {
      * orders the recipes by how they match the user's ingredients
      *
      * @param filteredArrayList the list of current filtered recipes.
-     * @return the ordered recipes list.
      */
-    static ArrayList<Recipe> orderByIngredientsMatch(ArrayList<Recipe> filteredArrayList) {
+    static void orderByIngredientsMatch(ArrayList<Recipe> filteredArrayList) {
         SharedData.setMatchForIngredients();
         Comparator<Recipe> compareByMatch = (Recipe recipe1, Recipe recipe2)
                 -> Double.compare(recipe1.getMatchFactor(), recipe2.getMatchFactor());
         Collections.sort(filteredArrayList, compareByMatch.reversed());
-        return filteredArrayList;
     }
 
     /**
      * applies the filters if they are activated.
      * @param filteredArrayList the list of filtered recipes
-     * @return the recipes list after applying the filters
      */
-    static ArrayList<Recipe> applyFilters(ArrayList<Recipe> filteredArrayList) {
+    static void applyFilters(ArrayList<Recipe> filteredArrayList) {
         ArrayList<Recipe> newFilteredList = new ArrayList<>();
         for (int i = 0; i < filteredArrayList.size(); i++) {
             Recipe recipe = filteredArrayList.get(i);
@@ -106,6 +103,5 @@ class SharedData {
         }
         filteredArrayList.clear();
         filteredArrayList.addAll(newFilteredList);
-        return filteredArrayList;
     }
 }

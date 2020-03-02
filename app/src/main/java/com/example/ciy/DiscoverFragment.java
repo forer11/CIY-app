@@ -17,7 +17,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
@@ -49,7 +48,11 @@ import java.util.Random;
  * fragment representing our user home screen where he can see the top viewed recipes
  */
 public class DiscoverFragment extends Fragment {
+
+    /* when user press the discover button (when already there) if scrolls up fast to the 10'th
+     * view, then activate animation */
     private static final int FAST_SCROLL_POSITION = 10;
+
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     /* reference to the firestore recipes collection */
@@ -65,19 +68,7 @@ public class DiscoverFragment extends Fragment {
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
     /* the recycler view object */
     private RecyclerView recyclerView;
-
-    /* boolean for when we can click on the recyclerView items (when we load the data) */
-    // TODO DECIDE IF NEEDED
-    private FloatingActionButton addNoteButton;
-
-    //TODO DELETE
-    final String[] urls = new String[]{"https://boygeniusreport.files.wordpress.com/2016/11/puppy-dog.jpg?quality=98&strip=all&w=782",
-            "https://images2.minutemediacdn.com/image/upload/c_crop,h_1350,w_2400,x_0,y_136/f_auto,q_auto,w_1100/v1576859350/shape/mentalfloss/610651-gettyimages-901452436.jpg",
-            "https://cdn.psychologytoday.com/sites/default/files/styles/article-inline-half/public/field_blog_entry_images/2018-02/vicious_dog_0.png?itok=nsghKOHs",
-            "https://scx2.b-cdn.net/gfx/news/hires/2019/wolfdog.jpg",
-            "https://img.thedailybeast.com/image/upload/c_crop,d_placeholder_euli9k,h_1687,w_3000,x_0,y_0/dpr_1.5/c_limit,w_1044/fl_lossy,q_auto/v1575669519/191206-weill-dogs-in-politics-tease_ko5qke",
-            "https://d.newsweek.com/en/full/1517827/coconut-rice-bear.jpg?w=1600&h=1600&q=88&f=8b37e38c82ec050dda787e009f0ef2ef",
-            "https://compote.slate.com/images/8aedcaf8-0474-4644-b1b9-6a00220dc2dd.jpeg?width=780&height=520&rect=1560x1040&offset=0x0"};
+    /* the current user registered to our database */
     private FirebaseUser user;
 
     @Nullable
@@ -92,8 +83,6 @@ public class DiscoverFragment extends Fragment {
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
         user = firebaseAuth.getCurrentUser();
         setUpRecyclerView();
-        View b = Objects.requireNonNull(getView()).findViewById(R.id.test);
-        b.setVisibility(View.GONE);
         setClickListeners();
         recipeAdapter.startListening();
 //        updateIngredientsVector();
@@ -220,39 +209,6 @@ public class DiscoverFragment extends Fragment {
         } catch (IOException e) {
             //You'll need to add proper error handling here
         }
-
-    }
-
-    // important for the filtering process, TODO delete after filtering
-    private void setUpData() {
-//        usersRef.document(userId).collection("Recipes").get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//            @Override
-//            public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//                    usersRef.document(userId).collection("Recipes").document(documentSnapshot.getId()).delete();
-//                }
-//                final ArrayList<Recipe> recipes = new ArrayList<>();
-//                recipesRef.orderBy("views", Query.Direction.DESCENDING).get().addOnSuccessListener(new OnSuccessListener<QuerySnapshot>() {
-//                    @Override
-//                    public void onSuccess(QuerySnapshot queryDocumentSnapshots) {
-//                        for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
-//                            Recipe recipe = documentSnapshot.toObject(Recipe.class);
-//                            recipe.setId(documentSnapshot.getId());
-//                            recipes.add(recipe);
-//                            usersRef.document(userId).collection("Recipes").add(recipe);
-//                        }
-//                    }
-//                });
-//            }
-//        });
-
-//        addNoteButton = Objects.requireNonNull(getView()).findViewById(R.id.addButton);
-//        addNoteButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                startActivity(new Intent(getActivity(), NewRecipeActivity.class));
-//            }
-//        });
     }
 
     /**
@@ -274,21 +230,6 @@ public class DiscoverFragment extends Fragment {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recipeAdapter);
-
-        //TODO set touch logic if we need to, for now commented out
-//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-//                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-//            @Override
-//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView
-//                    .ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//                //recipeAdapter.deleteItem(viewHolder.getAdapterPosition());
-//            }
-//        }).attachToRecyclerView(recyclerView);
     }
 
 
@@ -298,19 +239,19 @@ public class DiscoverFragment extends Fragment {
             public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
                 recipeAdapter.isClickable = false;
                 final Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                //doggy related, keep it for now
-//                    Random random = new Random();
-//                    final int index = random.nextInt(urls.length);
-//                    recipesRef.document(documentSnapshot.getId()).update("imageUrl", urls[index]);
-                //update or create recipe fragment
+                // increments the views for a recipe if entered.
                 executeTransaction(documentSnapshot.getId(), recipesRef);
-
-                setUpRecipeFragment(recipe);
+                // sets up the recipe page and open it
+                setUpRecipeFragment(Objects.requireNonNull(recipe));
             }
         });
     }
 
-
+    /**
+     * sets the data needed to open the recipe page
+     *
+     * @param recipe the clicked recipe
+     */
     private void setUpRecipeFragment(final Recipe recipe) {
         CollectionReference favoritesRef = usersRef.
                 document(user.getUid()).collection(SharedData.Favorites);
@@ -318,11 +259,12 @@ public class DiscoverFragment extends Fragment {
         favoriteRecipeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
+                // checks if the recipe is one of the user's favorites
                 boolean userPressedLike = false;
                 if (!(documentSnapshot == null || !documentSnapshot.exists())) {
                     userPressedLike = true;
                 }
-                updatesRecipeFragment(recipe, userPressedLike);
+                openRecipeFragment(recipe, userPressedLike);
             }
         }).addOnFailureListener(new OnFailureListener() {
             @Override
@@ -332,9 +274,13 @@ public class DiscoverFragment extends Fragment {
         });
     }
 
-    @SuppressLint("RestrictedApi") //TODO CARMEL
-    private void updatesRecipeFragment(Recipe recipe, boolean userPressedLike) {
-//        addNoteButton.setVisibility(View.INVISIBLE);
+    /**
+     * opens the recipe page for the recipe the user clicked on
+     *
+     * @param recipe          the clicked recipe
+     * @param userPressedLike if the recipe is in the user's favorites: true, otherwise: false.
+     */
+    private void openRecipeFragment(Recipe recipe, boolean userPressedLike) {
         RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, userPressedLike,
                 SharedData.BOTTOM_NAV);
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
@@ -365,10 +311,11 @@ public class DiscoverFragment extends Fragment {
                 return newViews;
 
             }
-        }).addOnSuccessListener(new OnSuccessListener<Long>() {
+        }).addOnFailureListener(new OnFailureListener() {
             @Override
-            public void onSuccess(Long result) {
-                //Toast.makeText(getActivity(), "Views updated to: " + result, Toast.LENGTH_SHORT).show();
+            public void onFailure(@NonNull Exception e) {
+                Toast.makeText(getContext(), "Failed to update Views",
+                        Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -384,22 +331,12 @@ public class DiscoverFragment extends Fragment {
      * scroll to the top of the recycler view when we double press home
      */
     void scrollToTop() {
-        int position = ((LinearLayoutManager) recyclerView.getLayoutManager())
-                .findFirstVisibleItemPosition();
-        if (position > 10) {
+        int position = ((LinearLayoutManager) Objects.
+                requireNonNull(recyclerView.getLayoutManager())).findFirstVisibleItemPosition();
+        if (position > FAST_SCROLL_POSITION) {
             recyclerView.getLayoutManager().scrollToPosition(FAST_SCROLL_POSITION);
         }
         recyclerView.smoothScrollToPosition(0);
 
     }
-
-    /**
-     * indicates if we opened a recipe
-     *
-     * @return true if a recipe is opened, false otherwise
-     */
-    boolean isRecipeCurrentlyOpen() {
-        return !recipeAdapter.isClickable;
-    }
-
 }
