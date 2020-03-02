@@ -38,7 +38,7 @@ import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 
 /**
  * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
- * DiscoverFragment, FavoritesFragment, and SearchFragment, and activate the corresponding fragment the
+ * DiscoverFragment, FavoritesFragment, and FridgeFragment, and activate the corresponding fragment the
  * user requested- by typing at the corresponding icon in the bottom navigation bar.
  */
 public class BottomNavigationBar extends AppCompatActivity {
@@ -60,7 +60,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     /* the Favorites fragment */
     FavoritesFragment favoritesFragment;
     /* the Search fragment */
-    SearchFragment searchFragment;
+    FridgeFragment fridgeFragment;
     /* the indicator of the last fragment we showed/added */
     int lastPushed = SharedData.DEFAULT;
     /* the tag of the last fragment we showed/added */
@@ -92,7 +92,7 @@ public class BottomNavigationBar extends AppCompatActivity {
             homeFragment = new HomeFragment();
             discoverFragment = new DiscoverFragment();
             favoritesFragment = new FavoritesFragment();
-            searchFragment = new SearchFragment();
+            fridgeFragment = new FridgeFragment();
 
         }
         //setting home fragment as default
@@ -241,7 +241,7 @@ public class BottomNavigationBar extends AppCompatActivity {
                     lastTag = FAVORITES;
                     break;
 //                case R.id.navSearch:
-//                    showFragment(searchFragment, SEARCH, lastTag);
+//                    showFragment(fridgeFragment, SEARCH, lastTag);
 //                    lastPushed = SharedData.SEARCH;
 //                    lastTag = SEARCH;
 //                    break;
@@ -348,9 +348,9 @@ public class BottomNavigationBar extends AppCompatActivity {
                 alertDialog.cancel();
                 FragmentManager fragmentManager = Objects.requireNonNull
                                 (BottomNavigationBar.this).getSupportFragmentManager();
-                SearchFragment searchFragment = ((BottomNavigationBar)
-                                BottomNavigationBar.this).searchFragment;
-                searchFragment.show(fragmentManager, "FridgeFromHome");
+                FridgeFragment fridgeFragment = ((BottomNavigationBar)
+                                BottomNavigationBar.this).fridgeFragment;
+                fridgeFragment.show(fragmentManager, "FridgeFromHome");
 
             }
         });
