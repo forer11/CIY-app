@@ -34,7 +34,7 @@
 
         </activity>
         <activity
-            android:name=".NewRecipeActivity"
+            android:name=".AddRecipeActivity"
             android:parentActivityName=".BottomNavigationBar"
             android:theme="@style/NewRecipeAppTheme" />
         <activity

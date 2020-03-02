@@ -62,26 +62,20 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
 
             imageViewLike = itemView.findViewById(R.id.searchLike);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (searchListener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            searchListener.OnItemClick(position);
-                        }
+            itemView.setOnClickListener(v -> {
+                if (searchListener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        searchListener.OnItemClick(position);
                     }
                 }
             });
 
-            imageViewLike.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (searchListener != null) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION) {
-                            searchListener.OnLikeClick(position);
-                        }
+            imageViewLike.setOnClickListener(v -> {
+                if (searchListener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        searchListener.OnLikeClick(position);
                     }
                 }
             });

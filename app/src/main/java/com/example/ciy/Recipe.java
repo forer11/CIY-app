@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * class representing a recipe
+ * This class represents a recipe object and contains all the necessary data about it
  */
 public class Recipe implements Serializable {
     /* the id (sometimes we will need the global collection id)*/

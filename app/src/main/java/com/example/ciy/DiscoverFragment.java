@@ -1,6 +1,5 @@
 package com.example.ciy;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -45,14 +44,13 @@ import java.util.Objects;
 import java.util.Random;
 
 /**
- * fragment representing our user home screen where he can see the top viewed recipes
+ * This fragment represents the discover screen were the user can see the top viewed recipes
  */
 public class DiscoverFragment extends Fragment {
 
     /* when user press the discover button (when already there) if scrolls up fast to the 10'th
      * view, then activate animation */
     private static final int FAST_SCROLL_POSITION = 10;
-
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     /* reference to the firestore recipes collection */
@@ -234,16 +232,13 @@ public class DiscoverFragment extends Fragment {
 
 
     private void setClickListeners() {
-        recipeAdapter.setOnItemClickListener(new RecipeAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
-                recipeAdapter.isClickable = false;
-                final Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                // increments the views for a recipe if entered.
-                executeTransaction(documentSnapshot.getId(), recipesRef);
-                // sets up the recipe page and open it
-                setUpRecipeFragment(Objects.requireNonNull(recipe));
-            }
+        recipeAdapter.setOnItemClickListener((documentSnapshot, position) -> {
+            recipeAdapter.isClickable = false;
+            final Recipe recipe = documentSnapshot.toObject(Recipe.class);
+            // increments the views for a recipe if entered.
+            executeTransaction(documentSnapshot.getId(), recipesRef);
+            // sets up the recipe page and open it
+            setUpRecipeFragment(Objects.requireNonNull(recipe));
         });
     }
 
@@ -256,22 +251,15 @@ public class DiscoverFragment extends Fragment {
         CollectionReference favoritesRef = usersRef.
                 document(user.getUid()).collection(SharedData.Favorites);
         final DocumentReference favoriteRecipeRef = favoritesRef.document(recipe.getId());
-        favoriteRecipeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                // checks if the recipe is one of the user's favorites
-                boolean userPressedLike = false;
-                if (!(documentSnapshot == null || !documentSnapshot.exists())) {
-                    userPressedLike = true;
-                }
-                openRecipeFragment(recipe, userPressedLike);
+        favoriteRecipeRef.get().addOnSuccessListener(documentSnapshot -> {
+            // checks if the recipe is one of the user's favorites
+            boolean userPressedLike = false;
+            if (!(documentSnapshot == null || !documentSnapshot.exists())) {
+                userPressedLike = true;
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Failed to load data", Toast.LENGTH_SHORT).show();
-            }
-        });
+            openRecipeFragment(recipe, userPressedLike);
+        }).addOnFailureListener(e -> Toast.makeText(getContext(),
+                "Failed to load data", Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -301,23 +289,15 @@ public class DiscoverFragment extends Fragment {
      * @param dataCollection the data Collection in firestore
      */
     private void executeTransaction(final String id, final CollectionReference dataCollection) {
-        db.runTransaction(new Transaction.Function<Long>() {
-            @Override
-            public Long apply(@NonNull Transaction transaction) throws FirebaseFirestoreException {
-                DocumentReference noteRef = dataCollection.document(id);
-                DocumentSnapshot noteSnapShot = transaction.get(noteRef);
-                long newViews = noteSnapShot.getLong("views") + 1;
-                transaction.update(noteRef, "views", newViews);
-                return newViews;
+        db.runTransaction(transaction -> {
+            DocumentReference noteRef = dataCollection.document(id);
+            DocumentSnapshot noteSnapShot = transaction.get(noteRef);
+            long newViews = noteSnapShot.getLong("views") + 1;
+            transaction.update(noteRef, "views", newViews);
+            return newViews;
 
-            }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(getContext(), "Failed to update Views",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
+        }).addOnFailureListener(e -> Toast.makeText(getContext(), "Failed to update Views",
+                Toast.LENGTH_SHORT).show());
     }
 
     /**
