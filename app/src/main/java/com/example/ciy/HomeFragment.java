@@ -287,7 +287,10 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
         fridgeFragment.show(fragmentManager, "FridgeFromHome");
     }
 
-    //TODO lior
+    /**
+     * checks if the ingredients were loaded successfully, if so set the adapter, otherwise
+     * load them again and set the adapter.
+     */
     private void setUpSearchAdapter() {
         final Context context = getActivity();
         final View view = getView();

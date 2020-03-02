@@ -1,24 +1,15 @@
 package com.example.ciy;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.widget.ArrayAdapter;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
-import java.util.Objects;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -37,7 +28,9 @@ public class SplashActivity extends AppCompatActivity {
         loadRecipeCopy();
     }
 
-    //TODO lior
+    /**
+     * loads the recipes and ingredients from the firestore database
+     */
     private void loadRecipeCopy() {
         recipesRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
             // sometimes having duplicates, didn't figure why, for now i will try this.
@@ -57,7 +50,7 @@ public class SplashActivity extends AppCompatActivity {
             ingredientsRef.get().addOnSuccessListener(queryDocumentSnapshots1 -> {
                 //we add all ingredients from our data base to 'ingredientOptions' list
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots1) {
-                    String option = documentSnapshot.get("ingredient").toString(); //TODO CHECK VALIDITY
+                    String option = documentSnapshot.get("ingredient").toString();
                     SharedData.allIngredients.add(option);
                 }
                 startActivity(intent);
