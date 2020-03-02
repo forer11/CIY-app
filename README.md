@@ -12,7 +12,7 @@ run main.py this will generate the json on data/output.
 currently it scans - http://allrecipes.co.uk, https://www.bbcgoodfood.com for generating the recipes
 samples.
 
-# Auhtors
+# Authors
 Aviram Itzhak, Lior Forer, Carmel Levi, Hauffman Hagai, Shani Shapp
 
 
