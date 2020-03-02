@@ -24,7 +24,9 @@ import java.util.List;
  */
 public class LoginActivity extends AppCompatActivity {
 
-    private static final int MY_REQUEST_CODE = 7117;
+    private static final String LOGIN_ACTIVITY_FLAG_VALUE = "LoginActivity";
+    private static final String LOGIN_ACTIVITY_FLAG_KEY = "I_CAME_FROM";
+    private static final int MY_REQUEST_CODE = 7117;    // can choose every number
     List<AuthUI.IdpConfig> providers;   // List of all the sign in providers
 
     @Override
@@ -57,7 +59,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void navToHome() {
         Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
-        intent.putExtra("I_CAME_FROM", "LoginActivity");
+        intent.putExtra(LOGIN_ACTIVITY_FLAG_KEY, LOGIN_ACTIVITY_FLAG_VALUE);
         startActivity(intent);
         finish();
     }
