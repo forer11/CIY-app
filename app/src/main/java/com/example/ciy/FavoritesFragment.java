@@ -1,6 +1,5 @@
 package com.example.ciy;
 
-import android.annotation.SuppressLint;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -18,7 +17,6 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
@@ -45,13 +43,19 @@ public class FavoritesFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
+        // the current user in the firestore database
         FirebaseUser user = firebaseAuth.getCurrentUser();
+        // the favorites reference to the firestore favorites collection
         favoritesRef = usersRef.document(user.getUid()).collection(SharedData.Favorites);
+
         setUpRecyclerView();
         setClickListeners();
     }
 
 
+    /**
+     * sets the RecyclerView for the Favorites Fragment, where we define the recipe Adapter.
+     */
     private void setUpRecyclerView() {
 
         // sets the query we order the data with in the recyclerView
@@ -72,6 +76,11 @@ public class FavoritesFragment extends Fragment {
         setTouchLogic(recyclerView);
     }
 
+    /**
+     * configure the touch and swipe events, swiping will remove the recipe from the favorites
+     *
+     * @param recyclerView the recyclerView object
+     */
     private void setTouchLogic(RecyclerView recyclerView) {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -88,16 +97,23 @@ public class FavoritesFragment extends Fragment {
         }).attachToRecyclerView(recyclerView);
     }
 
+    /**
+     * configure the click event, when clicked we will open the recipe page.
+     */
     private void setClickListeners() {
         recipeAdapter.setOnItemClickListener((documentSnapshot, position) -> {
             recipeAdapter.isClickable = false;
             final Recipe recipe = documentSnapshot.toObject(Recipe.class);
-            updatesRecipeFragment(recipe);
+            showRecipeFragment(recipe);
         });
     }
 
-
-    private void updatesRecipeFragment(Recipe recipe) {
+    /**
+     * opens the recipe page for the recipe we clicked on
+     *
+     * @param recipe the clicked recipe
+     */
+    private void showRecipeFragment(Recipe recipe) {
         RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, true,
                 SharedData.BOTTOM_NAV);
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
@@ -108,9 +124,13 @@ public class FavoritesFragment extends Fragment {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        // stops the listener.
         recipeAdapter.stopListening();
     }
 
+    /**
+     * enable click events after returning from the recipe page.
+     */
     void enableClickable() {
         recipeAdapter.isClickable = true;
     }
