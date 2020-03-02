@@ -15,13 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder>
-        implements Filterable {
+public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder> {
 
     /* the current user's ingredients */
     private ArrayList<String> ingredients;
     /* useless for now */
     private OnItemClickListener searchListener;
+    /* matching an ingredient with it corresponding photo*/
     private final HashMap<String, Integer> ingredientsImages;
 
 
@@ -46,13 +46,13 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     /**
      * the ingredient items view holder
      */
-    public static class IngredientViewHolder extends RecyclerView.ViewHolder {
+    static class IngredientViewHolder extends RecyclerView.ViewHolder {
         /* the ingredient name */
-        public TextView textViewIngredientName;
-        /* tbd TODO Lior */
-        public ImageView imageViewIngredient;
+        TextView textViewIngredientName;
+        /* the ingredient photo */
+        ImageView imageViewIngredient;
 
-        public IngredientViewHolder(@NonNull View itemView, final OnItemClickListener searchListener) {
+        IngredientViewHolder(@NonNull View itemView, final OnItemClickListener searchListener) {
             super(itemView);
             textViewIngredientName = itemView.findViewById(R.id.textViewIngredientName);
             imageViewIngredient = itemView.findViewById(R.id.imageViewIngredient);
@@ -60,30 +60,17 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-//                    if (searchListener != null) {
-//                        int position = getAdapterPosition();
-//                        if (position != RecyclerView.NO_POSITION) {
-//                            searchListener.OnItemClick(position);
-//                        }
-//                    }
                 }
             });
-
-//            imageViewIngredient.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View v) {
-//                    if (searchListener != null) {
-//                        int position = getAdapterPosition();
-//                        if (position != RecyclerView.NO_POSITION) {
-//                            searchListener.OnLikeClick(position);
-//                        }
-//                    }
-//                }
-//            });
         }
     }
 
-    public IngredientsAdapter(ArrayList<String> ingredients, Context context) {
+    /**
+     * constructor for the Ingredients Adapter
+     * @param ingredients the ingredients list
+     * @param context the context of the activity we are using this adapter from
+     */
+    IngredientsAdapter(ArrayList<String> ingredients, Context context) {
 
         this.ingredients = ingredients;
         ingredientsImages = new HashMap<>();
@@ -91,13 +78,18 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
 
     }
 
+    /**
+     * constructs a map of ingredients as keys with their photos as values.
+     * @param ingredients the ingredients list
+     * @param context the context of the activity we are using this adapter from
+     */
     private void setImagesMap(ArrayList<String> ingredients, Context context) {
         String curIngredient;
         for (String ingredient : ingredients) {
             curIngredient = ingredient;
-            if(curIngredient.equals("BBQ sauce"))
-            {
-                curIngredient="bbq_sauce";
+            // BBQ sauce is a 2 words image with capitals so it needs a spacial case.
+            if (curIngredient.equals("BBQ sauce")) {
+                curIngredient = "bbq_sauce";
             }
             if (curIngredient.contains(" ")) {
                 curIngredient = curIngredient.replaceAll(" ", "_");
@@ -128,39 +120,4 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         return ingredients.size();
     }
 
-    @Override
-    public Filter getFilter() {
-        return searchFilter;
-    }
-
-    private final Filter searchFilter = new Filter() {
-        @Override
-        protected FilterResults performFiltering(CharSequence constraint) {
-            ArrayList<String> filteredArrayList = new ArrayList<>();
-
-            if (constraint == null || constraint.length() == 0) {
-                filteredArrayList.clear();
-            } else {
-                String filterPattern = constraint.toString().toLowerCase().trim();
-
-                for (String ingredient : SharedData.allIngredients) {
-                    if (ingredient.toLowerCase().trim().contains(filterPattern)) {
-                        filteredArrayList.add(ingredient);
-                    }
-                }
-            }
-
-            FilterResults results = new FilterResults();
-            results.values = filteredArrayList;
-
-            return results;
-        }
-
-        @Override
-        protected void publishResults(CharSequence constraint, FilterResults results) {
-            ingredients.clear();
-            ingredients.addAll((ArrayList) results.values);
-            notifyDataSetChanged();
-        }
-    };
 }
