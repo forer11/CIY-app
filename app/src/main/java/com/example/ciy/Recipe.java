@@ -2,6 +2,7 @@ package com.example.ciy;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,6 +26,7 @@ public class Recipe implements Serializable {
     /* instructions for how to make the dish */
     private String instructions;
     /* the difficulty of said recipe */
+    private List<String> instructionsParts;
     private String difficulty;
     /* the preparation time */
     private String preparationTime;
@@ -167,5 +169,13 @@ public class Recipe implements Serializable {
 
     public void setMatchFactor(double matchFactor) {
         this.matchFactor = matchFactor;
+    }
+
+    public List<String> getInstructionsParts() {
+        return instructionsParts;
+    }
+
+    public void setInstructionsParts(List<String> instructionsParts) {
+        this.instructionsParts = instructionsParts;
     }
 }
