@@ -10,7 +10,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,15 +25,10 @@ import com.google.firebase.firestore.Query;
 import java.util.Objects;
 
 public class FavoritesFragment extends Fragment {
-    private static final int FAST_SCROLL_POSITION = 10;
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    /* reference to the firestore recipes collection */
-    private CollectionReference recipesRef = db.collection(SharedData.RECIPES);
     /* reference to the firestore users collection */
     private CollectionReference usersRef = db.collection(SharedData.USERS);
-    /* reference to the firestore global ingredients collection */
-    private CollectionReference ingredientsRef = db.collection(SharedData.Ingredients);
     /* reference to the individual user favorites collection */
     private CollectionReference favoritesRef;
 
@@ -41,10 +36,6 @@ public class FavoritesFragment extends Fragment {
     private RecipeAdapter recipeAdapter;
     /* Firestore authentication reference */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-    /* the recycler view object */
-    private RecyclerView recyclerView;
-
-    private FirebaseUser user;
 
     @Nullable
     @Override
@@ -54,7 +45,6 @@ public class FavoritesFragment extends Fragment {
 
     @Override
     public void onViewCreated(@NonNull View view, Bundle savedInstanceState) {
-        user = firebaseAuth.getCurrentUser();
         FirebaseUser user = firebaseAuth.getCurrentUser();
         favoritesRef = usersRef.document(user.getUid()).collection(SharedData.Favorites);
         setUpRecyclerView();
@@ -64,9 +54,7 @@ public class FavoritesFragment extends Fragment {
 
     private void setUpRecyclerView() {
 
-        //TODO get the recipes with the id from favorites
-        // sets the query we order the data in the recyclerView by
-
+        // sets the query we order the data with in the recyclerView
         Query queryStore = favoritesRef;
         FirestoreRecyclerOptions<Recipe> options = new FirestoreRecyclerOptions.Builder<Recipe>()
                 .setQuery(queryStore, Recipe.class)
@@ -74,41 +62,41 @@ public class FavoritesFragment extends Fragment {
 
         recipeAdapter = new RecipeAdapter(options);
         recipeAdapter.setLayout(R.layout.favorite_item);
-        recyclerView = Objects.requireNonNull(getView())
+        /* the recycler view object */
+        RecyclerView recyclerView = Objects.requireNonNull(getView())
                 .findViewById(R.id.favoritesRecyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(recipeAdapter);
         recipeAdapter.startListening();
-        //TODO set touch logic if we need to, for now commented out
-//        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
-//                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-//            @Override
-//            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView
-//                    .ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-//                return false;
-//            }
-//
-//            @Override
-//            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-//                //recipeAdapter.deleteItem(viewHolder.getAdapterPosition());
-//            }
-//        }).attachToRecyclerView(recyclerView);
+        setTouchLogic(recyclerView);
+    }
+
+    private void setTouchLogic(RecyclerView recyclerView) {
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView
+                    .ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
+
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                recipeAdapter.deleteItem(viewHolder.getAdapterPosition());
+            }
+        }).attachToRecyclerView(recyclerView);
     }
 
     private void setClickListeners() {
-        recipeAdapter.setOnItemClickListener(new RecipeAdapter.OnItemClickListener() {
-            @Override
-            public void OnItemClick(DocumentSnapshot documentSnapshot, int position) {
-                recipeAdapter.isClickable = false;
-                final Recipe recipe = documentSnapshot.toObject(Recipe.class);
-                updatesRecipeFragment(recipe);
-            }
+        recipeAdapter.setOnItemClickListener((documentSnapshot, position) -> {
+            recipeAdapter.isClickable = false;
+            final Recipe recipe = documentSnapshot.toObject(Recipe.class);
+            updatesRecipeFragment(recipe);
         });
     }
 
 
-    @SuppressLint("RestrictedApi") //TODO CARMEL
     private void updatesRecipeFragment(Recipe recipe) {
         RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, true,
                 SharedData.BOTTOM_NAV);
@@ -121,23 +109,6 @@ public class FavoritesFragment extends Fragment {
     public void onDestroy() {
         super.onDestroy();
         recipeAdapter.stopListening();
-    }
-
-    /**
-     * indicates if we opened a recipe
-     *
-     * @return true if a recipe is opened, false otherwise
-     */
-    boolean isRecipeCurrentlyOpen() {
-        return !recipeAdapter.isClickable;
-    }
-
-    // Currently have no use, do we want same behavior as Home? TODO Lior
-    public void refreshData() {
-        if (recipeAdapter != null) {
-            recipeAdapter.stopListening();
-        }
-        setUpRecyclerView();
     }
 
     void enableClickable() {
