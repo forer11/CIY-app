@@ -10,6 +10,7 @@ import java.util.Comparator;
 class SharedData {
     /* Shared constant Strings */
     static final String RECIPES = "Recipes";
+    static final String TEMP_RECIPE_DB = "tempRecipe";
     static final String USERS = "Users";
     static final String Ingredients = "Ingredients";
     static final String Favorites = "Favorites";
