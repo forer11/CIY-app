@@ -295,7 +295,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         transaction.commit();
     }
 
-    /*
+    /**
      * set the layout of the dialog
      */
     private void setDialogView(AlertDialog.Builder mBuilder,View view)
@@ -326,7 +326,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         mBuilder.setView(view);
     }
 
-    /*
+    /**
     * set the actions on every user selection on the dialog
      */
     private void onClickDialog(View view, AlertDialog alertDialog)
@@ -356,7 +356,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         });
     }
 
-    /*
+    /**
      * show the sign out dialog on screen
      */
     private boolean showSignOutDialog() {
@@ -376,7 +376,7 @@ public class BottomNavigationBar extends AppCompatActivity {
         return true;
     }
 
-    /***
+    /**
      * get menu resource and url for user profile photo, and shows the image on the menu
      * @param menu the menu bar object of the app or activity
      * @param uri the url for the user's profile photo
@@ -391,7 +391,6 @@ public class BottomNavigationBar extends AppCompatActivity {
                 rounded.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()));
                 rounded.setBounds(0, 0, 5, 5);
                 menu.findItem(R.id.icon_status).setIcon(rounded);
-//                menu.getItem(0).setIcon(rounded);
             }
 
             @Override

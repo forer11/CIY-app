@@ -41,8 +41,7 @@ public class LoginActivity extends BaseSignIn {
         showSignInOptions();
     }
 
-
-    /*
+    /**
      * build all the Array of all sign in options
      */
     private void buildProviders() {
@@ -55,8 +54,8 @@ public class LoginActivity extends BaseSignIn {
     }
 
 
-    /*
-     * This function starts the intent of the app's home screen, and send a flag to indicate that
+    /**
+     * starts the intent of the app's home screen, and send a flag to indicate that
      * the user arrived from Login Activity
      */
     private void navToHome(){
@@ -67,8 +66,8 @@ public class LoginActivity extends BaseSignIn {
     }
 
 
-    /*
-     * This function creates a custom layout to be used for the Login Activity
+    /**
+     * creates a custom layout to be used for the Login Activity
      */
     private AuthMethodPickerLayout createCustomLayout(){
         // A custom layout to attach to the LoginActivity screen
@@ -82,7 +81,7 @@ public class LoginActivity extends BaseSignIn {
     }
 
 
-    /*
+    /**
      * This function builds all the sign in options
      */
     private void showSignInOptions(){
@@ -96,8 +95,9 @@ public class LoginActivity extends BaseSignIn {
         );
     }
 
-    /*
-     * this method update the id of the user which was created
+    /**
+     *this method update the id of the user which was created
+     * @param user the firebase user
      */
     private void updateUI(FirebaseUser user) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -134,7 +134,8 @@ public class LoginActivity extends BaseSignIn {
                 updateUI(user);
                 navToHome();
             } else {
-                Toast.makeText(this, ""+response.getError().getMessage(), Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, ""+response.getError().getMessage(),
+                                                                    Toast.LENGTH_SHORT).show();
             }
         }
     }

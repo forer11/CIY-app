@@ -17,7 +17,6 @@ class SharedData {
     static final int DEFAULT = 0;
     static final int HOME = 1;
     static final int FAVORITES = 2;
-    static final int SEARCH = 3;
     static final int DISCOVER = 4;
 
     static final int BOTTOM_NAV = 10;
@@ -26,22 +25,28 @@ class SharedData {
     static final int NAME_FILTER = 1;
     static final int INGREDIENTS_FILTER = 2;
 
+    /* indicating which filter is activated */
     static boolean[] filterClickRecord = {false, false, false, false};
+    /* filter indices*/
     static final int LOW_CALORIES = 0, HIGH_PROTEIN = 1, SHORT_TIME = 2, EASY_TO_MAKE = 3;
 
-    static final int PROTEIN_THRESH = 15, LOW_CAL_THRESH = 400, TIME_THRESH = 30;
-    static final String EASY_THRESH = " Easy ";
+    /* Filter thresholds */
+    private static final int PROTEIN_THRESH = 15, LOW_CAL_THRESH = 400, TIME_THRESH = 30;
+    private static final String EASY_THRESH = " Easy ";
 
 
     /* array list of all recipes shared by all activities*/
     static ArrayList<Recipe> searchRecipes = new ArrayList<>();
     /* array list of all ingredients shared by all activities */
     static ArrayList<String> allIngredients = new ArrayList<>();
-
+    /* the user's ingredients */
     static ArrayList<String> ingredients = new ArrayList<>();
 
-
-    static void setMatchForIngredients() {
+    /**
+     * sets a match percentage for the user's recipe. (we have to do it like that because of
+     * firestore limitations)
+     */
+    private static void setMatchForIngredients() {
         for (Recipe recipe : searchRecipes) {
             ArrayList<String> recipeIngredients = new ArrayList<>(recipe.getIngredients());
             ArrayList<String> myIngredients = new ArrayList<>(ingredients);
@@ -54,6 +59,12 @@ class SharedData {
         }
     }
 
+    /**
+     * orders the recipes by how they match the user's ingredients
+     *
+     * @param filteredArrayList the list of current filtered recipes.
+     * @return the ordered recipes list.
+     */
     static ArrayList<Recipe> orderByIngredientsMatch(ArrayList<Recipe> filteredArrayList) {
         SharedData.setMatchForIngredients();
         Comparator<Recipe> compareByMatch = (Recipe recipe1, Recipe recipe2)
@@ -62,14 +73,12 @@ class SharedData {
         return filteredArrayList;
     }
 
-    static ArrayList<Recipe> orderAlphabetically(ArrayList<Recipe> filteredArrayList) {
-        Comparator<Recipe> compareByMatch = (Recipe recipe1, Recipe recipe2)
-                -> recipe1.getTitle().compareTo(recipe2.getTitle());
-        Collections.sort(filteredArrayList, compareByMatch);
-        return filteredArrayList;
-    }
-
-    static ArrayList<Recipe> activateFilters(ArrayList<Recipe> filteredArrayList) {
+    /**
+     * applies the filters if they are activated.
+     * @param filteredArrayList the list of filtered recipes
+     * @return the recipes list after applying the filters
+     */
+    static ArrayList<Recipe> applyFilters(ArrayList<Recipe> filteredArrayList) {
         ArrayList<Recipe> newFilteredList = new ArrayList<>();
         for (int i = 0; i < filteredArrayList.size(); i++) {
             Recipe recipe = filteredArrayList.get(i);
