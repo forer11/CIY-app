@@ -105,9 +105,11 @@ public class BottomNavigationBar extends AppCompatActivity {
     /* the FireBase authenticator */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-    private Uri uri = null; //TODO shani set better name and document
+    /* the url to the user's profile */
+    private Uri profileUri = null;
 
-    RoundedBitmapDrawable rounded; //TODO shani set better name and document
+    /* rounded frame for the user's profile */
+    RoundedBitmapDrawable roundedFrame;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +118,7 @@ public class BottomNavigationBar extends AppCompatActivity {
 
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            uri = currentUser.getPhotoUrl();
+            profileUri = currentUser.getPhotoUrl();
         }
         // set bottom and top bars
         setBars();
@@ -231,7 +233,7 @@ public class BottomNavigationBar extends AppCompatActivity {
 
 
     /**
-     * create to design of the toolbar //TODO - shani or hagai - unclear
+     * create the layout of the toolbar
      */
     @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
@@ -240,9 +242,9 @@ public class BottomNavigationBar extends AppCompatActivity {
         // user not sign in, so default profile picture defined
         menu.findItem(R.id.icon_status).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
 
-        if (uri != null) // user got profile photo, set it as icon
+        if (profileUri != null) // user got profile photo, set it as icon
         {
-            setProfileImage(menu, uri);
+            setProfileImage(menu, profileUri);
         }
         return true;
     }
@@ -342,15 +344,17 @@ public class BottomNavigationBar extends AppCompatActivity {
     }
 
     /**
-     * set the layout of the dialog //TODO - hagai or shani - documentation of args is missing
+     * set the layout of the dialog
+     * @param mBuilder the builder of the dialog
+     * @param view the view of the layout to be set in the dialog
      */
     private void setDialogView(AlertDialog.Builder mBuilder, View view) {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             ImageView profile = view.findViewById(R.id.profile_image);
-            if (uri != null) {
+            if (profileUri != null) {
                 try {
-                    Picasso.get().load(uri).into(profile);
+                    Picasso.get().load(profileUri).into(profile);
                 } catch (Exception e) {
                 }
             }
@@ -369,7 +373,9 @@ public class BottomNavigationBar extends AppCompatActivity {
     }
 
     /**
-     * set the actions on every user selection on the dialog //TODO - hagai or shani - documentation of args is missing
+     * set the actions on every user selection on the dialog
+     * @param view the view of the dialog
+     * @param alertDialog the dialog
      */
     private void onClickDialog(View view, AlertDialog alertDialog) {
         Button signOut = view.findViewById(R.id.signout_button);
@@ -416,10 +422,10 @@ public class BottomNavigationBar extends AppCompatActivity {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
                 Log.d("DEBUG", "onBitmapLoaded");
-                rounded = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
-                rounded.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()));
-                rounded.setBounds(0, 0, 5, 5);
-                menu.findItem(R.id.icon_status).setIcon(rounded);
+                roundedFrame = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
+                roundedFrame.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()));
+                roundedFrame.setBounds(0, 0, 5, 5);
+                menu.findItem(R.id.icon_status).setIcon(roundedFrame);
             }
 
             @Override
