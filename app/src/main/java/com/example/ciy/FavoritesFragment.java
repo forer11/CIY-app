@@ -27,6 +27,9 @@ import java.util.Objects;
  * (i.e - pressed like)
  */
 public class FavoritesFragment extends Fragment {
+    /* constants */
+    private static final String FROM_FAVORITES_TAG = "RecipeFromFavorites";
+
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     /* reference to the firestore users collection */
@@ -51,6 +54,7 @@ public class FavoritesFragment extends Fragment {
         // the current user in the firestore database
         FirebaseUser user = firebaseAuth.getCurrentUser();
         // the favorites reference to the firestore favorites collection
+        assert user != null;
         favoritesRef = usersRef.document(user.getUid()).collection(SharedData.Favorites);
 
         setUpRecyclerView();
@@ -123,7 +127,7 @@ public class FavoritesFragment extends Fragment {
                 SharedData.BOTTOM_NAV);
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
                 .getSupportFragmentManager();
-        recipeFragment.show(fragmentManager, "RecipeFromFavorites");
+        recipeFragment.show(fragmentManager, FROM_FAVORITES_TAG);
     }
 
     @Override
