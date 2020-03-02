@@ -38,21 +38,24 @@ import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 
 /**
  * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
- * DiscoverFragment, FavoritesFragment, and FridgeFragment, and activate the corresponding fragment the
- * user requested- by typing at the corresponding icon in the bottom navigation bar.
+ * DiscoverFragment, FavoritesFragment, and FridgeFragment, and activate the corresponding
+ * fragment the user requested- by typing at the corresponding icon in the bottom navigation bar.
  */
 public class BottomNavigationBar extends AppCompatActivity {
+
+    //constants
+
     /* the Home fragment Tag */
     private static final String HOME = "Home";
     /* the Favorites fragment Tag */
     private static final String FAVORITES = "Favorites";
-    /* the Search fragment Tag */
-    private static final String SEARCH = "Search";
     /* the Discover fragment Tag */
     private static final String DISCOVER = "Discover";
+
     private static final int ADD_RECIPE_REQUEST_CODE = 2;
     private static final int SEARCH_RECIPE_REQUEST_CODE = 22;
     private static final int ERROR = -1;
+
     /* the Home fragment */
     HomeFragment homeFragment;
     /* the Discover fragment */
@@ -65,7 +68,8 @@ public class BottomNavigationBar extends AppCompatActivity {
     int lastPushed = SharedData.DEFAULT;
     /* the tag of the last fragment we showed/added */
     private String lastTag = null;
-    /* the string of the elements displayed in the intro */
+
+    /* the constants of the elements that displayed in the intro */
     private static final String HOME_EXPLANATION = "Your home screen where you can change and " +
             "add ingredients";
     private static final String DISCOVER_EXPLANATION = "Discover new recipes";
@@ -76,7 +80,7 @@ public class BottomNavigationBar extends AppCompatActivity {
             "search with multiple filter tags.";
     private static final String SEARCH_INGREDIENTS_EXPLANATION = "Search and add more ingredients here";
     private static final String BASIC_INGREDIENTS_EXPLANATION = "Here are all the must have " +
-            "basic ingredients you probably have in your kithcen";
+            "basic ingredients you probably have in your kitchen";
     private static final String SHELF_EXPLANATION = "Drag your basic ingredients here and add " +
             "them to your fridge";
     private static final String FRIDGE_EXPLANATION = "Tap to open your fridge Swipe right or " +
@@ -84,15 +88,16 @@ public class BottomNavigationBar extends AppCompatActivity {
     private static final int INTRO_TEXT_SIZE = 16;
     private static final String LOGIN_ACTIVITY_FLAG_VALUE = "LoginActivity";
     private static final String LOGIN_ACTIVITY_FLAG_KEY = "I_CAME_FROM";
+
     /* app's Bottom navigation bar */
     private BottomNavigationView bottomNav;
 
     /* the FireBase authenticator */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
 
-    private Uri uri = null;
+    private Uri uri = null; //TODO shani set better name and document
 
-    RoundedBitmapDrawable rounded;
+    RoundedBitmapDrawable rounded; //TODO shani set better name and document
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,6 +119,14 @@ public class BottomNavigationBar extends AppCompatActivity {
 
         }
         //setting home fragment as default
+        setsDefaultFragment();
+        appTutorial();
+    }
+
+    /**
+     * sets the default fragment to be the home fragment
+     */
+    private void setsDefaultFragment() {
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
         transaction
                 .add(R.id.fragment_container, homeFragment, HOME)
@@ -121,7 +134,6 @@ public class BottomNavigationBar extends AppCompatActivity {
         transaction.commit();
         lastPushed = SharedData.HOME;
         lastTag = HOME;
-        appTutorial();
     }
 
 
@@ -129,23 +141,25 @@ public class BottomNavigationBar extends AppCompatActivity {
      * this function checks if the user launch from the loginActivity and if so,
      * display the app tutorial
      */
-    private void appTutorial(){
+    private void appTutorial() {
         String flag = getIntent().getStringExtra(LOGIN_ACTIVITY_FLAG_KEY);
-        if (flag != null){
-            if(flag.equals(LOGIN_ACTIVITY_FLAG_VALUE)){
+        if (flag != null) {
+            if (flag.equals(LOGIN_ACTIVITY_FLAG_VALUE)) {
                 displayAppTutorial(HOME_EXPLANATION,
                         bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
             }
         }
     }
 
+    //TODO - hagai : case incidents means nothing - should have informative names,
+    // try to short the method and the documentation doesn't  include the parameters
 
     /**
      * this function responsible on introduce the app for first time users
      */
     private void displayAppTutorial(String title, int viewId, final int type) {
-        
-        final int navDiscover  = bottomNav.getMenu().findItem(R.id.navDiscover).getItemId();
+
+        final int navDiscover = bottomNav.getMenu().findItem(R.id.navDiscover).getItemId();
         final int navFavorites = bottomNav.getMenu().findItem(R.id.navFavorites).getItemId();
         final int navAddRecipe = bottomNav.getMenu().findItem(R.id.navAddRecipe).getItemId();
 
@@ -155,35 +169,32 @@ public class BottomNavigationBar extends AppCompatActivity {
                 .setTitleTextSize(INTRO_TEXT_SIZE)
                 .setGravity(GuideView.Gravity.center)
                 .setDismissType(GuideView.DismissType.anywhere)
-                .setGuideListener(new GuideView.GuideListener() {
-                    @Override
-                    public void onDismiss(View view) {
-                        switch (type) {
-                            case 1:
-                                displayAppTutorial(DISCOVER_EXPLANATION, navDiscover, 2);
-                                break;
-                            case 2:
-                                displayAppTutorial(FAVORITES_EXPLANATION, navFavorites, 3);
-                                break;
-                            case 3:
-                                displayAppTutorial(ADD_RECIPE_EXPLANATION, navAddRecipe, 4);
-                                break;
-                            case 4:
-                                displayAppTutorial(SEARCH_EXPLANATION, R.id.actionSearchNavigation, 5);
-                                break;
-                            case 5:
-                                displayAppTutorial(SEARCH_INGREDIENTS_EXPLANATION, R.id.enterIngredients, 6);
-                                break;
-                            case 6:
-                                displayAppTutorial(BASIC_INGREDIENTS_EXPLANATION, R.id.dragIngredients, 7);
-                                break;
-                            case 7:
-                                displayAppTutorial(SHELF_EXPLANATION, R.id.basicIngredientsShelf, 8);
-                                break;
-                            case 8:
-                                displayAppTutorial(FRIDGE_EXPLANATION, R.id.fridge_button, 9);
-                                break;
-                        }
+                .setGuideListener(view -> {
+                    switch (type) {
+                        case 1:
+                            displayAppTutorial(DISCOVER_EXPLANATION, navDiscover, 2);
+                            break;
+                        case 2:
+                            displayAppTutorial(FAVORITES_EXPLANATION, navFavorites, 3);
+                            break;
+                        case 3:
+                            displayAppTutorial(ADD_RECIPE_EXPLANATION, navAddRecipe, 4);
+                            break;
+                        case 4:
+                            displayAppTutorial(SEARCH_EXPLANATION, R.id.actionSearchNavigation, 5);
+                            break;
+                        case 5:
+                            displayAppTutorial(SEARCH_INGREDIENTS_EXPLANATION, R.id.enterIngredients, 6);
+                            break;
+                        case 6:
+                            displayAppTutorial(BASIC_INGREDIENTS_EXPLANATION, R.id.dragIngredients, 7);
+                            break;
+                        case 7:
+                            displayAppTutorial(SHELF_EXPLANATION, R.id.basicIngredientsShelf, 8);
+                            break;
+                        case 8:
+                            displayAppTutorial(FRIDGE_EXPLANATION, R.id.fridge_button, 9);
+                            break;
                     }
                 })
                 .build()
@@ -207,10 +218,11 @@ public class BottomNavigationBar extends AppCompatActivity {
         toolbar.setLogo(logo);
     }
 
-    @Override
+
     /**
-     * create to design of the toolbar
+     * create to design of the toolbar //TODO - shani or hagai - unclear
      */
+    @Override
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.tool_bar_buttons, menu);
 
@@ -224,10 +236,11 @@ public class BottomNavigationBar extends AppCompatActivity {
         return true;
     }
 
-    @Override
+
     /**
      * act in response to user selection
      */
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.icon_status:
@@ -242,38 +255,36 @@ public class BottomNavigationBar extends AppCompatActivity {
         }
     }
 
-    private BottomNavigationView.OnNavigationItemSelectedListener navListener = new BottomNavigationView.OnNavigationItemSelectedListener() {
-        @Override
-        public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-            switch (menuItem.getItemId()) {
-                case R.id.navHome: //TODO LIOR, IF PRESSED INSIDE HOME, SCROLL TO TOP
-                    homePressHandler();
-                    break;
-                case R.id.navDiscover:
-                    discoverPressHandler();
-                    break;
-                case R.id.navFavorites:
-                    showFragment(favoritesFragment, FAVORITES, lastTag);
-                    lastPushed = SharedData.FAVORITES;
-                    lastTag = FAVORITES;
-                    break;
-//                case R.id.navSearch:
-//                    showFragment(fridgeFragment, SEARCH, lastTag);
-//                    lastPushed = SharedData.SEARCH;
-//                    lastTag = SEARCH;
-//                    break;
-                case R.id.navAddRecipe:
-                    startActivityForResult(new Intent(BottomNavigationBar.this,
-                            NewRecipeActivity.class), ADD_RECIPE_REQUEST_CODE);
-
-                    break;
-            }
-            return true;
-        }
-    };
+    /**
+     * moves to the corresponding fragment according to user's choise
+     */
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener = new
+            BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
+                    switch (menuItem.getItemId()) {
+                        case R.id.navHome:
+                            homePressHandler();
+                            break;
+                        case R.id.navDiscover:
+                            discoverPressHandler();
+                            break;
+                        case R.id.navFavorites:
+                            showFragment(favoritesFragment, FAVORITES, lastTag);
+                            lastPushed = SharedData.FAVORITES;
+                            lastTag = FAVORITES;
+                            break;
+                        case R.id.navAddRecipe:
+                            startActivityForResult(new Intent(BottomNavigationBar.this,
+                                    NewRecipeActivity.class), ADD_RECIPE_REQUEST_CODE);
+                            break;
+                    }
+                    return true;
+                }
+            };
 
     /**
-     * handling the event we pressed the home icon in the bottom navigation bar
+     * handles the event were we pressed at the home icon in the bottom navigation bar
      */
     private void homePressHandler() {
 
@@ -282,6 +293,9 @@ public class BottomNavigationBar extends AppCompatActivity {
         lastTag = HOME;
     }
 
+    /**
+     * handles the event were we pressed at the discover icon in the bottom navigation bar
+     */
     private void discoverPressHandler() {
         if (lastPushed == SharedData.DISCOVER) {
             discoverFragment.scrollToTop();
@@ -292,18 +306,22 @@ public class BottomNavigationBar extends AppCompatActivity {
         }
     }
 
+    /**
+     * This method shows the wanted fragment and hides the previous one
+     *
+     * @param fragment the wanted fragment that we want to show
+     * @param tag      the tag of the wanted fragment
+     * @param lastTag  the tag of the previous fragment that we want to hide
+     */
     private void showFragment(Fragment fragment, String tag, String lastTag) {
-
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction transaction = fragmentManager.beginTransaction();
-
         if (lastTag != null) {
             Fragment lastFragment = fragmentManager.findFragmentByTag(lastTag);
             if (lastFragment != null) {
                 transaction.hide(lastFragment);
             }
         }
-
         if (fragment.isAdded()) {
             transaction.show(fragment);
         } else {
@@ -313,13 +331,12 @@ public class BottomNavigationBar extends AppCompatActivity {
     }
 
     /**
-     * set the layout of the dialog
+     * set the layout of the dialog //TODO - hagai or shani - documentation of args is missing
      */
-    private void setDialogView(AlertDialog.Builder mBuilder,View view)
-    {
+    private void setDialogView(AlertDialog.Builder mBuilder, View view) {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
-            ImageView profile = (ImageView) view.findViewById(R.id.profile_image);
+            ImageView profile = view.findViewById(R.id.profile_image);
             if (uri != null) {
                 try {
                     Picasso.get().load(uri).into(profile);
@@ -327,14 +344,11 @@ public class BottomNavigationBar extends AppCompatActivity {
                 }
             }
             String username = currentUser.getDisplayName();
-            if (username != null ) {
-                TextView user_info = (TextView) view.findViewById(R.id.user_details);
-                if(!username.equals(""))
-                {
+            if (username != null) {
+                TextView user_info = view.findViewById(R.id.user_details);
+                if (!username.equals("")) {
                     user_info.setText(username + "\n" + currentUser.getEmail());
-                }
-                else
-                {
+                } else {
                     String number = currentUser.getPhoneNumber();
                     user_info.setText(number);
                 }
@@ -344,32 +358,23 @@ public class BottomNavigationBar extends AppCompatActivity {
     }
 
     /**
-    * set the actions on every user selection on the dialog
+     * set the actions on every user selection on the dialog //TODO - hagai or shani - documentation of args is missing
      */
-    private void onClickDialog(View view, AlertDialog alertDialog)
-    {
-        Button signout = (Button) view.findViewById(R.id.signout_button);
-        signout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
+    private void onClickDialog(View view, AlertDialog alertDialog) {
+        Button signOut = view.findViewById(R.id.signout_button);
+        signOut.setOnClickListener(view1 -> {
+            Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+            startActivity(intent);
+            finish();
         });
 
-        Button addingredients = (Button) view.findViewById(R.id.what_in_my_fridge);
-        addingredients.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                alertDialog.cancel();
-                FragmentManager fragmentManager = Objects.requireNonNull
-                                (BottomNavigationBar.this).getSupportFragmentManager();
-                FridgeFragment fridgeFragment = ((BottomNavigationBar)
-                                BottomNavigationBar.this).fridgeFragment;
-                fridgeFragment.show(fragmentManager, "FridgeFromHome");
-
-            }
+        Button addingredients = view.findViewById(R.id.what_in_my_fridge);
+        addingredients.setOnClickListener(view12 -> {
+            alertDialog.cancel();
+            FragmentManager fragmentManager = Objects.requireNonNull
+                    (BottomNavigationBar.this).getSupportFragmentManager();
+            FridgeFragment fridgeFragment = (BottomNavigationBar.this).fridgeFragment;
+            fridgeFragment.show(fragmentManager, "FridgeFromHome");
         });
     }
 
@@ -377,16 +382,11 @@ public class BottomNavigationBar extends AppCompatActivity {
      * show the sign out dialog on screen
      */
     private boolean showSignOutDialog() {
-
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(BottomNavigationBar.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_user_status, null);
-
-        setDialogView(mBuilder,view);
-
+        setDialogView(mBuilder, view);
         final AlertDialog alertdialog = mBuilder.create();
-
-        onClickDialog(view,alertdialog);
-
+        onClickDialog(view, alertdialog);
         alertdialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertdialog.show();
 
@@ -395,8 +395,9 @@ public class BottomNavigationBar extends AppCompatActivity {
 
     /**
      * get menu resource and url for user profile photo, and shows the image on the menu
+     *
      * @param menu the menu bar object of the app or activity
-     * @param uri the url for the user's profile photo
+     * @param uri  the url for the user's profile photo
      */
     private void setProfileImage(final Menu menu, Uri uri) {
         //create a new target to be used with picasso
@@ -424,6 +425,10 @@ public class BottomNavigationBar extends AppCompatActivity {
         Picasso.get().load(uri).into(mTarget);
     }
 
+
+    /**
+     * handles the case when the user presses the back button
+     */
     @Override
     public void onBackPressed() {
         if (lastPushed == SharedData.HOME) {
@@ -452,6 +457,11 @@ public class BottomNavigationBar extends AppCompatActivity {
         }
     }
 
+    /**
+     * mark the icon of the current fragment were at in the bottom navigation bar
+     *
+     * @return the id of that icon, error otherwise
+     */
     private int returnNavIcon() {
         switch (lastPushed) {
             case SharedData.HOME:
@@ -460,8 +470,6 @@ public class BottomNavigationBar extends AppCompatActivity {
                 return R.id.navDiscover;
             case SharedData.FAVORITES:
                 return R.id.navFavorites;
-//            case SharedData.SEARCH:
-//                return R.id.navSearch;
             default:
                 return ERROR;
         }
