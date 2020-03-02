@@ -65,7 +65,25 @@ public class BottomNavigationBar extends AppCompatActivity {
     int lastPushed = SharedData.DEFAULT;
     /* the tag of the last fragment we showed/added */
     private String lastTag = null;
-
+    /* the string of the elements displayed in the intro */
+    private static final String HOME_EXPLANATION = "Your home screen where you can change and " +
+            "add ingredients";
+    private static final String DISCOVER_EXPLANATION = "Discover new recipes";
+    private static final String FAVORITES_EXPLANATION = "Check your favorites recipes";
+    private static final String ADD_RECIPE_EXPLANATION = "Add your own recipe";
+    private static final String SEARCH_EXPLANATION = "Here you search recipes by name, you can " +
+            "find which recipes ingredients match the ones you currently have and filter the " +
+            "search with multiple filter tags.";
+    private static final String SEARCH_INGREDIENTS_EXPLANATION = "Search and add more ingredients here";
+    private static final String BASIC_INGREDIENTS_EXPLANATION = "Here are all the must have " +
+            "basic ingredients you probably have in your kithcen";
+    private static final String SHELF_EXPLANATION = "Drag your basic ingredients here and add " +
+            "them to your fridge";
+    private static final String FRIDGE_EXPLANATION = "Tap to open your fridge Swipe right or " +
+            "left to remove ingredients";
+    private static final int INTRO_TEXT_SIZE = 16;
+    private static final String LOGIN_ACTIVITY_FLAG_VALUE = "LoginActivity";
+    private static final String LOGIN_ACTIVITY_FLAG_KEY = "I_CAME_FROM";
     /* app's Bottom navigation bar */
     private BottomNavigationView bottomNav;
 
@@ -112,10 +130,10 @@ public class BottomNavigationBar extends AppCompatActivity {
      * display the app tutorial
      */
     private void appTutorial(){
-        String flag = getIntent().getStringExtra("I_CAME_FROM");
+        String flag = getIntent().getStringExtra(LOGIN_ACTIVITY_FLAG_KEY);
         if (flag != null){
-            if(flag.equals("LoginActivity")){
-                displayAppTutorial("Your home screen where you can change and add ingredients",
+            if(flag.equals(LOGIN_ACTIVITY_FLAG_VALUE)){
+                displayAppTutorial(HOME_EXPLANATION,
                         bottomNav.getMenu().findItem(R.id.navHome).getItemId(), 1);
             }
         }
@@ -134,37 +152,36 @@ public class BottomNavigationBar extends AppCompatActivity {
         new GuideView.Builder(this)
                 .setTitle(title)
                 .setTargetView(findViewById(viewId))
-                .setContentTextSize(10)//optional
-                .setTitleTextSize(16)//optional
+                .setTitleTextSize(INTRO_TEXT_SIZE)
                 .setGravity(GuideView.Gravity.center)
-                .setDismissType(GuideView.DismissType.anywhere) //optional - default dismissible by TargetView
+                .setDismissType(GuideView.DismissType.anywhere)
                 .setGuideListener(new GuideView.GuideListener() {
                     @Override
                     public void onDismiss(View view) {
                         switch (type) {
                             case 1:
-                                displayAppTutorial("Discover new recipes", navDiscover, 2);
+                                displayAppTutorial(DISCOVER_EXPLANATION, navDiscover, 2);
                                 break;
                             case 2:
-                                displayAppTutorial("Check your favorites recipes", navFavorites, 3);
+                                displayAppTutorial(FAVORITES_EXPLANATION, navFavorites, 3);
                                 break;
                             case 3:
-                                displayAppTutorial("Add your own recipe", navAddRecipe, 4);
+                                displayAppTutorial(ADD_RECIPE_EXPLANATION, navAddRecipe, 4);
                                 break;
                             case 4:
-                                displayAppTutorial("Here you search recipes by name, you can find which recipes ingredients match the ones you currently have and filter the search with multiple filter tags.", R.id.actionSearchNavigation, 5);
+                                displayAppTutorial(SEARCH_EXPLANATION, R.id.actionSearchNavigation, 5);
                                 break;
                             case 5:
-                                displayAppTutorial("Search and add more ingredients here", R.id.enterIngredients, 6);
+                                displayAppTutorial(SEARCH_INGREDIENTS_EXPLANATION, R.id.enterIngredients, 6);
                                 break;
                             case 6:
-                                displayAppTutorial("Here are all the must have basic ingredients you probably have in your kithcen", R.id.dragIngredients, 7);
+                                displayAppTutorial(BASIC_INGREDIENTS_EXPLANATION, R.id.dragIngredients, 7);
                                 break;
                             case 7:
-                                displayAppTutorial("Drag your basic ingredients here and add them to your fridge", R.id.basicIngredientsShelf, 8);
+                                displayAppTutorial(SHELF_EXPLANATION, R.id.basicIngredientsShelf, 8);
                                 break;
                             case 8:
-                                displayAppTutorial("Tap to open your fridge Swipe right or left to remove ingredients", R.id.fridge_button, 9);
+                                displayAppTutorial(FRIDGE_EXPLANATION, R.id.fridge_button, 9);
                                 break;
                         }
                     }
