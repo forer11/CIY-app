@@ -16,10 +16,13 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
-
+/**
+ * adapter for the Discover and Favorites RecyclerView, this adapter syncs directly with the fireStore data base
+ */
 public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapter.RecipeHolder> {
     private OnItemClickListener listener;
 
+    /* represents the layout of the Favorites Fragment or the Discover Fragment */
     private int layout;
 
     /* indicates if we can click the Recycler view */
@@ -32,11 +35,14 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
 
     @SuppressLint("SetTextI18n")
     @Override
-    protected void onBindViewHolder(RecipeHolder recipeHolder, int i, Recipe recipe) {
+    protected void onBindViewHolder(@NonNull RecipeHolder recipeHolder,
+                                    int i,
+                                    @NonNull Recipe recipe) {
         if (layout == R.layout.recipe_item) {
             setRecipeItemLayout(recipeHolder, recipe);
         } else if (layout == R.layout.favorite_item) {
             recipeHolder.textViewTitle.setText(recipe.getTitle());
+            // tries to upload the image url, else sets a default one
             try {
                 Picasso.get()
                         .load(recipe.getImageUrl())
@@ -50,10 +56,17 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
         }
     }
 
+    /**
+     * sets the layout for a recipe in the DiscoverFragment
+     * @param recipeHolder represents a lone in the recyclerView
+     * @param recipe the current recipe
+     */
     private void setRecipeItemLayout(RecipeHolder recipeHolder, Recipe recipe) {
         recipeHolder.textViewTitle.setText(recipe.getTitle());
         recipeHolder.textViewDescription.setText(recipe.getDescription());
-        recipeHolder.textViewViews.setText(recipe.getViews() + " Views");
+        String viewsText = (recipe.getViews() + " Views");
+        recipeHolder.textViewViews.setText(viewsText);
+        // tries to upload the image url, else sets a default one
         try {
             Picasso.get()
                     .load(recipe.getImageUrl())
@@ -74,10 +87,17 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
         return new RecipeHolder(v);
     }
 
+    /**
+     * if needed we can delete items with this method
+     * @param position the position of the item we want to delete
+     */
     void deleteItem(int position) {
         getSnapshots().getSnapshot(position).getReference().delete();
     }
 
+    /**
+     * class representing a line of the recyclerView
+     */
     class RecipeHolder extends RecyclerView.ViewHolder {
         TextView textViewTitle;
         TextView textViewDescription;
@@ -94,17 +114,14 @@ public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapte
             imageViewDish = itemView.findViewById(R.id.dishImage);
             circularImageViewDish = itemView.findViewById(R.id.circularImageViewDish);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (isClickable) {
-                        int position = getAdapterPosition();
-                        if (position != RecyclerView.NO_POSITION && listener != null) {
-                            listener.OnItemClick(getSnapshots().getSnapshot(position), position);
-                        }
+            itemView.setOnClickListener(v -> {
+                if (isClickable) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION && listener != null) {
+                        listener.OnItemClick(getSnapshots().getSnapshot(position), position);
                     }
-
                 }
+
             });
         }
     }
