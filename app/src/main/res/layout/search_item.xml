@@ -64,7 +64,6 @@
             android:layout_height="30dp"
             android:layout_alignParentEnd="true"
             android:layout_below="@id/searchImageDish"/>
-        <!-- android:src="@drawable/ic_like" TODO RETURN THE IMAGE-->
 
 
     </RelativeLayout>
