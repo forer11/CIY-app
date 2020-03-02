@@ -287,7 +287,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
         fridgeFragment.show(fragmentManager, "FridgeFromHome");
     }
 
-
+    //TODO lior
     private void setUpSearchAdapter() {
         final Context context = getActivity();
         final View view = getView();
@@ -330,20 +330,27 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
                 input = userInput.getText().toString();
                 hideKeyboard(getActivity());
                 if (!SharedData.ingredients.contains(input)) {
-                    //update user entered ingredient in data and ingredientName his choice on screen
-                    SharedData.ingredients.add(input);
-                    //clears search tab for next search
-                    updateBadge();
-                    //if user search one of the basic ingredients we move it to the shelf
-                    if (basicIngredients.containsKey(input)) {
-                        basicIngToChoose.removeView(basicIngredients.get(input));  //remove the deleted view
-                        basicIngShelf.addView(basicIngredients.get(input)); //Add the deleted view
-                    }
+                    addIngredient();
                 } else {
                     Toast.makeText(getContext(), input + " is already in your fridge",
                             Toast.LENGTH_SHORT).show();
                 }
                 userInput.setText("");
+            }
+
+            /**
+             * adds the specified ingredient to the user's ingredients list (add it to his fridge)
+             */
+            private void addIngredient() {
+                //update user entered ingredient in data and ingredientName his choice on screen
+                SharedData.ingredients.add(input);
+                //clears search tab for next search
+                updateBadge();
+                //if user search one of the basic ingredients we move it to the shelf
+                if (basicIngredients.containsKey(input)) {
+                    basicIngToChoose.removeView(basicIngredients.get(input));  //remove the deleted view
+                    basicIngShelf.addView(basicIngredients.get(input)); //Add the deleted view
+                }
             }
         });
     }
@@ -368,7 +375,8 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
     private static void hideKeyboard(Activity activity) {
         View view = activity.findViewById(android.R.id.content);
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager) activity.getSystemService(Context.INPUT_METHOD_SERVICE);
+            InputMethodManager imm = (InputMethodManager) activity.getSystemService(
+                    Context.INPUT_METHOD_SERVICE);
             imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
         }
     }

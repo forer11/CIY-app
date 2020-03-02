@@ -4,7 +4,6 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
@@ -39,8 +38,11 @@ import android.widget.Toast;
 import eightbitlab.com.blurview.BlurView;
 import eightbitlab.com.blurview.RenderScriptBlur;
 
-
-public class NewRecipeActivity extends AppCompatActivity {
+/**
+ * This class represents the add recipe activity, where the user can add his own recipes to a
+ * temporary data base until his recipe would be approved
+ */
+public class AddRecipeActivity extends AppCompatActivity {
 
     private TextInputEditText titleText;
     private TextInputEditText descriptionText;
@@ -116,6 +118,16 @@ public class NewRecipeActivity extends AppCompatActivity {
     private void initializeUi() {
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
         setTitle("Add Recipe");
+        initializeViews();
+        //Build upon an existing VmPolicy
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+    }
+
+    /**
+     * This method initializes all the views
+     */
+    private void initializeViews() {
         titleText = findViewById(R.id.titleText);
         descriptionText = findViewById(R.id.descriptionText);
         prepTimeLayout = findViewById(R.id.description);
@@ -130,9 +142,6 @@ public class NewRecipeActivity extends AppCompatActivity {
         instructionsLayout = findViewById(R.id.preparationInstructions);
         userPicture = findViewById(R.id.userPicture);
         uploadImageButton = findViewById(R.id.uploadPicButton);
-        //Build upon an existing VmPolicy
-        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-        StrictMode.setVmPolicy(builder.build());
     }
 
     /**
@@ -304,7 +313,7 @@ public class NewRecipeActivity extends AppCompatActivity {
         //we save it to a temporary database for approval
         tempDb.document(recipe.getId()).set(recipe, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> Toast
-                        .makeText(NewRecipeActivity.this, "recipe.getTitle()" +
+                        .makeText(AddRecipeActivity.this, "recipe.getTitle()" +
                                 " Submission is up for approval", Toast.LENGTH_SHORT).show());
         finish();
     }

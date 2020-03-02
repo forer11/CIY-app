@@ -276,7 +276,7 @@ public class BottomNavigationBar extends AppCompatActivity {
                             break;
                         case R.id.navAddRecipe:
                             startActivityForResult(new Intent(BottomNavigationBar.this,
-                                    NewRecipeActivity.class), ADD_RECIPE_REQUEST_CODE);
+                                    AddRecipeActivity.class), ADD_RECIPE_REQUEST_CODE);
                             break;
                     }
                     return true;

@@ -22,6 +22,10 @@ import com.google.firebase.firestore.Query;
 
 import java.util.Objects;
 
+/**
+ * This class represents the favorites fragment, that contains all the recipes the user has "liked"
+ * (i.e - pressed like)
+ */
 public class FavoritesFragment extends Fragment {
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -37,7 +41,8 @@ public class FavoritesFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         return inflater.inflate(R.layout.fragment_favorites, container, false);
     }
 

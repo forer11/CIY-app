@@ -17,7 +17,8 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.squareup.picasso.Picasso;
 
 /**
- * adapter for the Discover and Favorites RecyclerView, this adapter syncs directly with the fireStore data base
+ * adapter for the Discover and Favorites RecyclerView, this adapter syncs directly with the
+ * fireStore data base
  */
 public class RecipeAdapter extends FirestoreRecyclerAdapter<Recipe, RecipeAdapter.RecipeHolder> {
     private OnItemClickListener listener;

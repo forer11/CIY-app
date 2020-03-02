@@ -16,8 +16,7 @@ import java.util.HashMap;
 /**
  * Adapter for the ingredients recyclerView located in the fridge
  */
-class IngredientsAdapter
-        extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder> {
+class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder> {
 
     /* the current user's ingredients */
     private ArrayList<String> ingredients;
@@ -44,8 +43,9 @@ class IngredientsAdapter
 
     /**
      * constructor for the Ingredients Adapter
+     *
      * @param ingredients the ingredients list
-     * @param context the context of the activity we are using this adapter from
+     * @param context     the context of the activity we are using this adapter from
      */
     IngredientsAdapter(ArrayList<String> ingredients, Context context) {
 
@@ -57,8 +57,9 @@ class IngredientsAdapter
 
     /**
      * constructs a map of ingredients as keys with their photos as values.
+     *
      * @param ingredients the ingredients list
-     * @param context the context of the activity we are using this adapter from
+     * @param context     the context of the activity we are using this adapter from
      */
     private void setImagesMap(ArrayList<String> ingredients, Context context) {
         String curIngredient;
@@ -71,7 +72,8 @@ class IngredientsAdapter
             if (curIngredient.contains(" ")) {
                 curIngredient = curIngredient.replaceAll(" ", "_");
             }
-            int resID = context.getResources().getIdentifier(curIngredient, "drawable", context.getPackageName());
+            int resID = context.getResources().getIdentifier(curIngredient, "drawable",
+                    context.getPackageName());
             ingredientsImages.put(ingredient, resID);
         }
     }
