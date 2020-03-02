@@ -13,22 +13,6 @@
         android:layout_height="match_parent"
         android:background="#72B9B6B6"
          />
-
-<!--    <com.google.android.material.floatingactionbutton.FloatingActionButton-->
-<!--        android:id="@+id/addButton"-->
-<!--        android:layout_width="wrap_content"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:layout_gravity="bottom|end"-->
-<!--        android:layout_margin="16dp"-->
-<!--        android:backgroundTint="@color/mediumPurple"-->
-<!--        android:src="@drawable/ic_add" />-->
-
-    <ImageView
-        android:id="@+id/test"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@drawable/image_waiting" />
-
     <FrameLayout
         android:id="@+id/recipePlaceholder"
         android:layout_width="match_parent"
