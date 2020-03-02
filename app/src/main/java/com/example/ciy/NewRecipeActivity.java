@@ -28,12 +28,14 @@ import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageButton;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.SetOptions;
 import com.jackandphantom.blurimage.BlurImage;
 
 import java.io.File;
@@ -74,13 +76,8 @@ public class NewRecipeActivity extends AppCompatActivity {
     private TextInputLayout prepTimeLayout;
     private TextInputLayout ingredientsLayout;
 
-    private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-    private FirebaseUser user = firebaseAuth.getCurrentUser();
-
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private CollectionReference notebookRef = db.collection(SharedData.RECIPES);
-    private CollectionReference usersRef = db.collection(SharedData.USERS);
+    private CollectionReference tempDb = db.collection(SharedData.TEMP_RECIPE_DB);
 
     public static final String PRESS_TO_START_OVER_MSG = "Press again to return to the Start Page";
     /* Represents the media file type(image/video) that were gonna share using the instegram intent */
@@ -368,6 +365,12 @@ public class NewRecipeActivity extends AppCompatActivity {
                 imName);
     }
 
+    /**
+     * upload the new recipe to a temporary database, for now it will not upload it to the main
+     * recipe database as it needs approval.
+     *
+     * @throws MalformedURLException if the photo url is invalid. //todo Carmel
+     */
     private void saveNote() throws MalformedURLException {
         String title = titleText.toString();
         String description = descriptionText.getText().toString();
@@ -385,8 +388,12 @@ public class NewRecipeActivity extends AppCompatActivity {
                 Integer.parseInt(prepTime);
         Recipe recipe = new Recipe(title, description, Integer.toString(prepTimeMinutes),
                 finalInstructions, finalIngredientsList, new URL(file.toString()).toString());
+        recipe.setId(recipe.getTitle());
 
-        Toast.makeText(this, "Submission up for approval", Toast.LENGTH_SHORT).show();
+        tempDb.document(recipe.getId()).set(recipe, SetOptions.merge())
+                .addOnSuccessListener(aVoid -> Toast
+                        .makeText(NewRecipeActivity.this, "recipe.getTitle()" +
+                        " Submission is up for approval", Toast.LENGTH_SHORT).show());
         finish();
     }
 
