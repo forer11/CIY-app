@@ -7,7 +7,6 @@ import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SearchView;
 import androidx.appcompat.widget.Toolbar;
@@ -15,31 +14,31 @@ import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
-
+/**
+ * the activity from which we search recipes and filter the search results
+ */
 public class SearchRecipeActivity extends AppCompatActivity {
 
-    private RecyclerView recyclerView;
-    private RecyclerView.LayoutManager layoutManager;
-    private ArrayList<Recipe> searchRecipes;
-
     private enum Filters {
-        ALL, INGREDIENTS;
+        ALL, INGREDIENTS
     }
 
-
+    /* the search RecyclerView */
+    private RecyclerView recyclerView;
+    /* the layout manager for the RecyclerView */
+    private RecyclerView.LayoutManager layoutManager;
+    /* the list of recipes used for the search activity */
+    private ArrayList<Recipe> searchRecipes;
     /* the search recyclerView adapter */
     private SearchAdapter searchAdapter;
 
@@ -49,17 +48,17 @@ public class SearchRecipeActivity extends AppCompatActivity {
     private CollectionReference usersRef = db.collection(SharedData.USERS);
     /* Firestore authentication reference */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
+    /* the current user registered to our database */
     private FirebaseUser user;
-
+    /* the button responsible for filtering by ingredients or by alphabetical order (normal) */
     private Button filterAll, filterByIngredients;
-
-    private Button filterBycalories, filterByProtein, filterByTime, filterByDifficult;
-
+    /* buttons responsible for the categorical threshold filtering */
+    private Button filterByCalories, filterByProtein, filterByTime, filterByDifficult;
+    /* array list packaging thr filter buttons */
     private ArrayList<Button> filterButtons;
-
+    /* indicates which main filter is currently on, the categorical ones can be activated together*/
     private Filters currFilter;
-
+    /* the text the user currently search for */
     private String searchText;
 
 
@@ -76,65 +75,49 @@ public class SearchRecipeActivity extends AppCompatActivity {
 
         searchRecipes = new ArrayList<>(SharedData.searchRecipes);
 
-        // define the toolbar to be used in the activity
         Toolbar toolbar = findViewById(R.id.searchToolbar);
         setSupportActionBar(toolbar);
-
         setUpRecyclerView();
-
         setUpAdapterListeners();
 
     }
 
+    /**
+     * set all the filters actions.
+     */
     private void setupFilterListener() {
         handelAllFilter();
-
         handelByIngredientsFilter();
 
-        filterBycalories.setOnClickListener(v -> {
-            if (!SharedData.filterClickRecord[SharedData.LOW_CALORIES]) {
-                v.setBackgroundResource(R.drawable.filter_button_pressed2);
-                SharedData.filterClickRecord[SharedData.LOW_CALORIES] = true;
-            } else {
-                v.setBackgroundResource(R.drawable.filter_button_unpressed);
-                SharedData.filterClickRecord[SharedData.LOW_CALORIES] = false;
+        setCategoricalFilter(filterByCalories, SharedData.LOW_CALORIES);
+        setCategoricalFilter(filterByProtein, SharedData.HIGH_PROTEIN);
+        setCategoricalFilter(filterByTime, SharedData.SHORT_TIME);
+        setCategoricalFilter(filterByDifficult, SharedData.EASY_TO_MAKE);
+    }
 
-            }
-            activateFilter();
-        });
+    /**
+     * sets the behavior for the categorical filters.
+     *
+     * @param categoryFilter the filter we set
+     * @param filterIndex    the index of the filter on the filterRecord
+     */
+    private void setCategoricalFilter(Button categoryFilter, int filterIndex) {
+        categoryFilter.setOnClickListener(v -> {
+            if (!SharedData.filterClickRecord[filterIndex]) {
+                v.setBackgroundResource(R.drawable.filter_button_pressed2);
+                SharedData.filterClickRecord[filterIndex] = true;
+            } else {
+                v.setBackgroundResource(R.drawable.filter_button_unpressed);
+                SharedData.filterClickRecord[filterIndex] = false;
 
-        filterByProtein.setOnClickListener(v -> {
-            if (!SharedData.filterClickRecord[SharedData.HIGH_PROTEIN]) {
-                v.setBackgroundResource(R.drawable.filter_button_pressed2);
-                SharedData.filterClickRecord[SharedData.HIGH_PROTEIN] = true;
-            } else {
-                v.setBackgroundResource(R.drawable.filter_button_unpressed);
-                SharedData.filterClickRecord[SharedData.HIGH_PROTEIN] = false;
-            }
-            activateFilter();
-        });
-        filterByTime.setOnClickListener(v -> {
-            if (!SharedData.filterClickRecord[SharedData.SHORT_TIME]) {
-                v.setBackgroundResource(R.drawable.filter_button_pressed2);
-                SharedData.filterClickRecord[SharedData.SHORT_TIME] = true;
-            } else {
-                v.setBackgroundResource(R.drawable.filter_button_unpressed);
-                SharedData.filterClickRecord[SharedData.SHORT_TIME] = false;
-            }
-            activateFilter();
-        });
-        filterByDifficult.setOnClickListener(v -> {
-            if (!SharedData.filterClickRecord[SharedData.EASY_TO_MAKE]) {
-                v.setBackgroundResource(R.drawable.filter_button_pressed2);
-                SharedData.filterClickRecord[SharedData.EASY_TO_MAKE] = true;
-            } else {
-                v.setBackgroundResource(R.drawable.filter_button_unpressed);
-                SharedData.filterClickRecord[SharedData.EASY_TO_MAKE] = false;
             }
             activateFilter();
         });
     }
 
+    /**
+     * activates the main filter, i.e by ingredients or by alphabetical order
+     */
     private void activateFilter() {
         if (currFilter == Filters.INGREDIENTS) {
             searchAdapter = new SearchAdapter(searchRecipes, SharedData.INGREDIENTS_FILTER);
@@ -145,6 +128,9 @@ public class SearchRecipeActivity extends AppCompatActivity {
         refreshAdapters();
     }
 
+    /**
+     * define the action happening when pressing the by ingredients filter
+     */
     private void handelByIngredientsFilter() {
         filterByIngredients.setOnClickListener(v -> {
             if (currFilter != Filters.INGREDIENTS) {
@@ -156,12 +142,9 @@ public class SearchRecipeActivity extends AppCompatActivity {
         });
     }
 
-    private void refreshAdapters() {
-        setUpAdapterListeners();
-        recyclerView.setLayoutManager(layoutManager);
-        recyclerView.setAdapter(searchAdapter);
-    }
-
+    /**
+     * define the action happening when pressing the by all filter
+     */
     private void handelAllFilter() {
         filterAll.setOnClickListener(v -> {
             if (currFilter != Filters.ALL) {
@@ -173,6 +156,20 @@ public class SearchRecipeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * refresh the adapter and recyclerView when we switch filters
+     */
+    private void refreshAdapters() {
+        setUpAdapterListeners();
+        recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setAdapter(searchAdapter);
+    }
+
+    /**
+     * removes the color from the other filter not currently pressed
+     *
+     * @param currentFilterPressed the filter currently active
+     */
     private void setFilterPressed(Button currentFilterPressed) {
         for (Button filter : filterButtons) {
             if (filter != currentFilterPressed)
@@ -180,10 +177,13 @@ public class SearchRecipeActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * configures the filter button objects
+     */
     private void configureFilterButtons() {
         filterAll = findViewById(R.id.filterByAll);
         filterByIngredients = findViewById(R.id.filterByIngredients);
-        filterBycalories = findViewById(R.id.filterLowCalories);
+        filterByCalories = findViewById(R.id.filterLowCalories);
         filterByProtein = findViewById(R.id.filterHighProtein);
         filterByTime = findViewById(R.id.filterByTime);
         filterByDifficult = findViewById(R.id.filterByDifficult);
@@ -198,18 +198,21 @@ public class SearchRecipeActivity extends AppCompatActivity {
 
         MenuItem searchItem = menu.findItem(R.id.actionSearchNavigation);
         SearchView searchView = (SearchView) searchItem.getActionView();
-        // will not enable search click, only realtime search //TODO Lior
         searchView.setImeOptions(EditorInfo.IME_ACTION_DONE);
         searchView.setIconified(false);
         searchItem.expandActionView();
         searchView.requestFocus();
         searchView.setIconifiedByDefault(false);
-
-
         setUpSearchViewListeners(searchItem, searchView);
         return true;
     }
 
+    /**
+     * sets the search view actions, where we type the search in hope for results
+     *
+     * @param searchItem the search item in the toolbar menu
+     * @param searchView the search view object
+     */
     private void setUpSearchViewListeners(MenuItem searchItem, SearchView searchView) {
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
@@ -238,12 +241,13 @@ public class SearchRecipeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * sets the listeners for the recycleView
+     */
     private void setUpAdapterListeners() {
         searchAdapter.setOnItemClickListener(new SearchAdapter.OnItemClickListener() {
             @Override
             public void OnItemClick(int position) {
-//                searchRecipes.get(position).setId("wichongo");
-//                searchAdapter.notifyItemChanged(position);
                 setUpRecipeFragment(searchRecipes.get(position));
             }
 
@@ -255,28 +259,35 @@ public class SearchRecipeActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * sets the data needed to open the recipe page
+     *
+     * @param recipe the clicked recipe
+     */
     private void setUpRecipeFragment(final Recipe recipe) {
+        // reference to the firestore favorites collection
         CollectionReference favoritesRef = usersRef.
                 document(user.getUid()).collection(SharedData.Favorites);
+        // search for the recipe in the user favorites, if exists set the like parameter
+        // to be true, other wise false, then send the data to the recipe page.
         final DocumentReference favoriteRecipeRef = favoritesRef.document(recipe.getId());
-        favoriteRecipeRef.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
-            @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                boolean userPressedLike = false;
-                if (!(documentSnapshot == null || !documentSnapshot.exists())) {
-                    userPressedLike = true;
-                }
-                updatesRecipeFragment(recipe, userPressedLike);
+        favoriteRecipeRef.get().addOnSuccessListener(documentSnapshot -> {
+            boolean userPressedLike = false;
+            if (!(documentSnapshot == null || !documentSnapshot.exists())) {
+                userPressedLike = true;
             }
-        }).addOnFailureListener(new OnFailureListener() {
-            @Override
-            public void onFailure(@NonNull Exception e) {
-                Toast.makeText(SearchRecipeActivity.this, "Failed to load data", Toast.LENGTH_SHORT).show();
-            }
-        });
+            showRecipeFragment(recipe, userPressedLike);
+        }).addOnFailureListener(e -> Toast.makeText(SearchRecipeActivity.this,
+                "Failed to load data", Toast.LENGTH_SHORT).show());
     }
 
-    private void updatesRecipeFragment(Recipe recipe, boolean userPressedLike) {
+    /**
+     * shows the recipe page of the recipe the user clicked on
+     *
+     * @param recipe          the clicked recipe
+     * @param userPressedLike true if in the user's favorites, false otherwise
+     */
+    private void showRecipeFragment(Recipe recipe, boolean userPressedLike) {
         RecipeFragment recipeFragment = RecipeFragment.newInstance(recipe, userPressedLike
                 , SharedData.SEARCH_RECIPE);
         FragmentManager fragmentManager = Objects.requireNonNull(SearchRecipeActivity.this)
@@ -284,6 +295,9 @@ public class SearchRecipeActivity extends AppCompatActivity {
         recipeFragment.show(fragmentManager, "RecipeFromSearchRecipe");
     }
 
+    /**
+     * set the recyclerView object and the adapter
+     */
     private void setUpRecyclerView() {
         recyclerView = findViewById(R.id.searchRecyclerView);
         recyclerView.setHasFixedSize(true);
