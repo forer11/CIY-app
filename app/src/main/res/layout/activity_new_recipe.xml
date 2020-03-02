@@ -181,6 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
+                android:gravity="center"
                 app:layout_constraintTop_toBottomOf="@+id/preparationInstructions">
 
                 <ImageButton
@@ -196,14 +197,12 @@
 
                 <ImageButton
                     android:id="@+id/uploadSign"
-                    android:layout_width="30dp"
+                    android:layout_width="32dp"
                     android:layout_height="wrap_content"
                     android:layout_alignTop="@+id/uploadPicButton"
                     android:layout_alignEnd="@+id/uploadPicButton"
-                    android:layout_alignBottom="@+id/takePicButton"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="15dp"
                     android:background="@color/transperent"
                     android:scaleType="fitCenter"
                     android:src="@drawable/upload" />
@@ -223,51 +222,6 @@
                     android:textAlignment="center"
                     android:textSize="12sp"
                     android:textStyle="bold" />
-
-                <ImageButton
-                    android:id="@+id/takePicButton"
-                    android:layout_width="150dp"
-                    android:layout_height="70dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_marginTop="20dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="15dp"
-                    android:background="@drawable/ripple_rounded_corners"
-                    android:baselineAlignBottom="true"
-                    android:scaleType="centerInside"
-                    app:layout_constraintVertical_bias="0.0" />
-
-
-                <ImageButton
-                    android:id="@+id/cameraSign"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignTop="@+id/takePicButton"
-                    android:layout_alignEnd="@+id/takePicButton"
-                    android:layout_alignBottom="@+id/takePicButton"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginEnd="10dp"
-                    android:layout_marginBottom="10dp"
-                    android:background="@color/transperent"
-                    android:baselineAlignBottom="true"
-                    android:scaleType="fitCenter"
-                    android:src="@drawable/camera" />
-
-                <TextView
-                    android:id="@+id/takePicText"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignStart="@+id/takePicButton"
-                    android:layout_alignTop="@+id/takePicButton"
-                    android:layout_alignBottom="@+id/takePicButton"
-                    android:layout_marginStart="15dp"
-                    android:layout_marginTop="10dp"
-                    android:fontFamily="@font/andika"
-                    android:text="Take a Picture\n of your dish"
-                    android:textAlignment="center"
-                    android:textSize="12sp"
-                    android:textStyle="bold" />
-
 
             </RelativeLayout>
 
