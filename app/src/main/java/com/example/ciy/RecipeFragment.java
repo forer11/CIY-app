@@ -4,7 +4,6 @@ package com.example.ciy;
 import com.airbnb.lottie.LottieAnimationView;
 
 import android.graphics.Color;
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,7 +28,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.List;
 
-
+/**
+ * This Dialog Fragment represents a specific recipe and contains its ingredients, its image,
+ * its instruction and some information about it like how many views of other users it has etc.
+ */
 public class RecipeFragment extends DialogFragment {
     /* the recipe we show in this page */
     private Recipe recipe;
@@ -38,20 +40,16 @@ public class RecipeFragment extends DialogFragment {
     /* indicates if the user pressed like, we get the data
     when we open this fragment from the server */
     private boolean userPressedLike;
-
     /* the firestore database instance */
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
-
     /* reference to the firestore users collection */
     private CollectionReference usersRef = db.collection(SharedData.USERS);
-
     /* reference to the individual user favorites collection */
     private CollectionReference favoritesRef;
-
     /* Firestore authentication reference */
     private FirebaseAuth firebaseAuth = FirebaseAuth.getInstance();
-
-    private int openningActivity;
+    /* indicates from which activity we opened the recipe*/
+    private int sourceActivity;
 
     //recipe details
     private TextView recipeTitle;
@@ -76,15 +74,14 @@ public class RecipeFragment extends DialogFragment {
         // Get back arguments
         recipe = (Recipe) getArguments().getSerializable("recipe");
         userPressedLike = getArguments().getBoolean("userPressedLike");
-        openningActivity = getArguments().getInt("activity");
+        sourceActivity = getArguments().getInt("activity");
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
         favoritesRef = usersRef.document(user.getUid()).collection(SharedData.Favorites);
 
     }
 
-    private void initRecipeData()
-    {
+    private void initRecipeData() {
         //recipe details
         recipeTitle = getView().findViewById(R.id.recipeTitle);
         recipeImage = getView().findViewById(R.id.recipeImage);
@@ -117,76 +114,54 @@ public class RecipeFragment extends DialogFragment {
             button_like.setProgress(1);
         }
         likeButtonListener();
-        goBackButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dismiss();
-            }
-        });
+        goBackButton.setOnClickListener(v -> dismiss());
         initRecipeData();
-        setRecipeView();
+        initializeUi();
     }
 
+    /**
+     * This method handles the case when the user presses or un presses like on the recipe
+     */
     private void likeButtonListener() {
-        button_like.setOnClickListener(new View.OnClickListener() {
-
-
-            @Override
-            public void onClick(View view) {
-                if (!userPressedLike) {
-                    button_like.setProgress(0);
-                    button_like.playAnimation();
-                    userPressedLike = true;
-//                    Map<String, Object> newFavoriteRecipe = new HashMap<>();
-//                    newFavoriteRecipe.put("id", recipe.getId());
-                    favoritesRef.document(recipe.getId()).set(recipe, SetOptions.merge());
-                    //activity.updateFavorites();
-                    // TODO- add recipe to favorites
-                } else { //user pressed unlike
-                    button_like.setProgress(0);
-                    userPressedLike = false;
-                    favoritesRef.document(recipe.getId()).delete();
-                    //activity.updateFavorites();
-                    //TODO - remove recipe from favorites
-                }
+        button_like.setOnClickListener(view -> {
+            if (!userPressedLike) {
+                button_like.setProgress(0);
+                button_like.playAnimation();
+                userPressedLike = true;
+                favoritesRef.document(recipe.getId()).set(recipe, SetOptions.merge());
+            } else { //user pressed unlike
+                button_like.setProgress(0);
+                userPressedLike = false;
+                favoritesRef.document(recipe.getId()).delete();
             }
         });
     }
+
 
     /**
      * set recipe layout and details: ingredients, instructions and metadata
      */
-    private void setRecipeView() {
-
-        initializeUi();
-    }
-
-
-    /**
-     * init recipe data on the ui
-     */
-    private void initializeUi()
-    {
-        String views_str = recipe.getViews()+" peoples viewed this recipe";
-        String prepration_str = "prep time:\n"+recipe.getPreparationTime();
-        String complexity_str = "complexity:\n"+recipe.getDifficulty();
-        String calories_str = "calories:\n"+recipe.getCalories();
-        String protein_str = "protein:\n"+recipe.getProtein();
+    private void initializeUi() {
+        String views_str = recipe.getViews() + " peoples viewed this recipe";
+        String preparationTime = "prep time:\n" + recipe.getPreparationTime();
+        String complexity_str = "complexity:\n" + recipe.getDifficulty();
+        String calories_str = "calories:\n" + recipe.getCalories();
+        String protein_str = "protein:\n" + recipe.getProtein();
 
         try {
             Picasso.get().load(recipe.getImageUrl()).into(recipeImage);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+        }
 
         recipeTitle.setText(recipe.getTitle());
         likes_and_views.setText(views_str);
-        prepareTime.setText(prepration_str);
+        prepareTime.setText(preparationTime);
         complexity.setText(complexity_str);
         calories.setText(calories_str);
         protein.setText(protein_str);
         titleRecipeDescription.setText("Instructions");
 
-        setIngredients(ingredientsTitle);
-
+        setIngredientsText(ingredientsTitle);
         setSteps();
     }
 
@@ -194,8 +169,7 @@ public class RecipeFragment extends DialogFragment {
      * set the steps of the recipe and show them on the screen
      * built dynamically depends on the number of steps
      */
-    private void setSteps()
-    {
+    private void setSteps() {
         //create linear layout params
         LinearLayout.LayoutParams lparams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
@@ -203,19 +177,19 @@ public class RecipeFragment extends DialogFragment {
         int stepNum = 1;
 
         // for every step/instruction, show it on screen and add 1 to the number of steps
-        for(String instruction:recipe.getInstructionsParts())
-        {
+        for (String instruction : recipe.getInstructionsParts()) {
             TextView stepTitle = new TextView(recipeDescription.getContext());
-            TextView stepDescription =new TextView(recipeDescription.getContext());
+            TextView stepDescription = new TextView(recipeDescription.getContext());
 
             stepTitle.setLayoutParams(lparams);
-            stepTitle.setText("Step "+stepNum);
-            stepTitle.setTextAppearance(getActivity(), R.style.fontForStepTitle);
+            stepTitle.setText("Step " + stepNum);
+
+            stepTitle.setTextAppearance(getActivity(), R.style.fontForStepTitle);  //TODO shani
             recipeDescription.addView(stepTitle);
 
             stepDescription.setLayoutParams(lparams);
-            stepDescription.setTextAppearance(getContext(),R.style.fontForStep);
-            stepDescription.setText(instruction+"\n");
+            stepDescription.setTextAppearance(getContext(), R.style.fontForStep); //TODO shani
+            stepDescription.setText(instruction + "\n");
             stepDescription.setBackgroundResource(R.drawable.recipe_steps_background);
             recipeDescription.addView(stepDescription);
 
@@ -223,68 +197,84 @@ public class RecipeFragment extends DialogFragment {
         }
     }
 
-
-    private void setIngredients(TextView ingredientsTitle) {//TODO carmel
-        LinearLayout layout = (LinearLayout) getView().findViewById(R.id.ingredients);
+    /**
+     * This method sets the ingredients of the recipe on screen
+     *
+     * @param ingredientsTitle the text view of the title "Ingredients" that comes before the
+     *                         ingredients description
+     */
+    private void setIngredientsText(TextView ingredientsTitle) {
+        LinearLayout layout = getView().findViewById(R.id.ingredients);
         LinearLayout.LayoutParams textViewLayoutParams = new LinearLayout.LayoutParams
                 (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
         ingredientsTitle.setText("Ingredients");
         List<String> ingredientsList = recipe.getExtendedIngredients();
-        if(ingredientsList.size()>0){
-            for(String ingredient : ingredientsList){
-                TextView ingredientTextView= new TextView(getContext());
-                ingredientTextView.setText("\u2022 "+ingredient);
+        //check if the ingredients list is in legal size(not empty)
+        if (ingredientsList.size() > 0) {
+            for (String ingredient : ingredientsList) {
+                TextView ingredientTextView = new TextView(getContext());
+                ingredientTextView.setText("\u2022 " + ingredient);
                 ingredientTextView.setLayoutParams(textViewLayoutParams);
                 layout.addView(ingredientTextView);
-                if(ingredientsList.indexOf(ingredient)<ingredientsList.size()-1)
-                {
+                //we want to put a divider after each ingredient except the last one
+                if (ingredientsList.indexOf(ingredient) < ingredientsList.size() - 1) {
                     addLineDivider(layout);
                 }
             }
         }
     }
 
-    private void addLineDivider(LinearLayout layout) {//TODO carmel
-        View v = new View(getContext());
-        v.setLayoutParams(new LinearLayout.LayoutParams(
+    /**
+     * this method adds a line divider after each ingredient
+     * @param layout the layout that contains the ingredients of the recipe
+     */
+    private void addLineDivider(LinearLayout layout) {
+        View view = new View(getContext());
+        view.setLayoutParams(new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 1
         ));
-        v.setBackgroundColor(Color.parseColor("#B3B3B3"));
-        layout.addView(v);
+        view.setBackgroundColor(Color.parseColor("#B3B3B3"));
+        layout.addView(view);
     }
 
-    // Creates a new fragment given an int and title
-    static RecipeFragment newInstance (Recipe recipe,boolean userPressedLike, int activity){//TODO carmel
-            RecipeFragment rec = new RecipeFragment();
-            Bundle args = new Bundle();
-            args.putSerializable("recipe", recipe);
-            args.putBoolean("userPressedLike", userPressedLike);
-            args.putInt("activity", activity);
-            rec.setArguments(args);
-            return rec;
-        }
 
-        @Override
-        public void onDestroy () {//TODO carmel
-            super.onDestroy();
-            if (openningActivity == SharedData.BOTTOM_NAV) {
-                // only using this fragment with BottomNavigationBar
-                BottomNavigationBar activity = (BottomNavigationBar) getActivity();
-                // after we exit the recipe fragment we will enable the Home\Favorites fragment.
-                if (activity != null) {
-                    if (activity.favoritesFragment.isAdded()) {
-                        activity.favoritesFragment.enableClickable();
-                    }
-                    if (activity.lastPushed == SharedData.DISCOVER) {
-                        activity.discoverFragment.enableClickable();
-                    }
-                } else {
-                    // if this pops out we maybe opening the recipe fragment from an unexpected activity,
-                    //TODO delete before submission
-                    Toast.makeText(getContext(), "app Failure, current activity is " + getActivity(),
-                            Toast.LENGTH_SHORT).show();
+    /**
+     * This method allows to create an instance of this fragment dialog,
+     * and put whatever parameters you want in to a bundle that will be available when creating a
+     * new instance.
+     *
+     * @param recipe          the specific recipe to represents
+     * @param userPressedLike indicates weather the user liked this this recipe
+     * @param activity        tha activity from which the recipe was called
+     * @return a new instance of the dialog fragment with the given arguments
+     */
+    static RecipeFragment newInstance(Recipe recipe, boolean userPressedLike, int activity) {
+        RecipeFragment instance = new RecipeFragment();
+        Bundle args = new Bundle();
+        args.putSerializable("recipe", recipe);
+        args.putBoolean("userPressedLike", userPressedLike);
+        args.putInt("activity", activity);
+        instance.setArguments(args);
+        return instance;
+    }
+
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        if (sourceActivity == SharedData.BOTTOM_NAV) {
+            // only using this fragment with BottomNavigationBar
+            BottomNavigationBar activity = (BottomNavigationBar) getActivity();
+            // after we exit the recipe fragment we will enable the Home\Favorites fragment.
+            if (activity != null) {
+                if (activity.favoritesFragment.isAdded()) {
+                    activity.favoritesFragment.enableClickable();
+                }
+                if (activity.lastPushed == SharedData.DISCOVER) {
+                    activity.discoverFragment.enableClickable();
                 }
             }
         }
     }
+}
