@@ -283,7 +283,7 @@ public class HomeFragment extends Fragment implements View.OnDragListener, View.
     private void openFridge() {
         FragmentManager fragmentManager = Objects.requireNonNull(getActivity())
                 .getSupportFragmentManager();
-        FridgeFragment fridgeFragment = ((BottomNavigationBar) getActivity()).fridgeFragment;
+        FridgeFragment fridgeFragment = ((BottomNavigationBarActivity) getActivity()).fridgeFragment;
         fridgeFragment.show(fragmentManager, "FridgeFromHome");
     }
 

@@ -35,10 +35,10 @@
         </activity>
         <activity
             android:name=".AddRecipeActivity"
-            android:parentActivityName=".BottomNavigationBar"
+            android:parentActivityName=".BottomNavigationBarActivity"
             android:theme="@style/NewRecipeAppTheme" />
         <activity
-            android:name=".BottomNavigationBar"
+            android:name=".BottomNavigationBarActivity"
             android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/BaseAppTheme">

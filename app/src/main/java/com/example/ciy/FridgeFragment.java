@@ -115,7 +115,7 @@ public class FridgeFragment extends DialogFragment {
     @Override
     public void onDismiss(@NonNull DialogInterface dialog) {
         super.onDismiss(dialog);
-        ((BottomNavigationBar) getActivity()).homeFragment.updateBadge();
-        ((BottomNavigationBar) getActivity()).homeFragment.updateBasicIngredients(removed);
+        ((BottomNavigationBarActivity) getActivity()).homeFragment.updateBadge();
+        ((BottomNavigationBarActivity) getActivity()).homeFragment.updateBasicIngredients(removed);
     }
 }

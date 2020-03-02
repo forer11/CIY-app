@@ -264,8 +264,8 @@ public class RecipeFragment extends DialogFragment {
     public void onDestroy() {
         super.onDestroy();
         if (sourceActivity == SharedData.BOTTOM_NAV) {
-            // only using this fragment with BottomNavigationBar
-            BottomNavigationBar activity = (BottomNavigationBar) getActivity();
+            // only using this fragment with BottomNavigationBarActivity
+            BottomNavigationBarActivity activity = (BottomNavigationBarActivity) getActivity();
             // after we exit the recipe fragment we will enable the Home\Favorites fragment.
             if (activity != null) {
                 if (activity.favoritesFragment.isAdded()) {

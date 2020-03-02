@@ -58,7 +58,7 @@ public class LoginActivity extends AppCompatActivity {
      * the user arrived from Login Activity
      */
     private void navToHome() {
-        Intent intent = new Intent(getBaseContext(), BottomNavigationBar.class);
+        Intent intent = new Intent(getBaseContext(), BottomNavigationBarActivity.class);
         intent.putExtra(LOGIN_ACTIVITY_FLAG_KEY, LOGIN_ACTIVITY_FLAG_VALUE);
         startActivity(intent);
         finish();
