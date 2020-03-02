@@ -1,4 +1,7 @@
 # CIY_app
+Busy students living by themself for the first time, want to get to know more recipes and learn to cook by themself.
+Our app Offers variety of recipes based on the ingredient the user insert into the app. This way the only challenge is to choose one recipe out of all the great ones offered to the user.
+
 
 # DBGenerator
 this component of our application project responsible for generating a json file that contains our
