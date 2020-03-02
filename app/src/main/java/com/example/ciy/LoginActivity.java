@@ -112,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
     /**
      * this function deals with the results of the user's sign in, and calls to the
      * updatesUI function to update app's UI with the new user

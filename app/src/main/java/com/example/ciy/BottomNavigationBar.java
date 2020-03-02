@@ -83,7 +83,7 @@ public class BottomNavigationBar extends AppCompatActivity {
             "basic ingredients you probably have in your kitchen";
     private static final String SHELF_EXPLANATION = "Drag your basic ingredients here and add " +
             "them to your fridge";
-    private static final String FRIDGE_EXPLANATION = "Tap to open your fridge Swipe right or " +
+    private static final String FRIDGE_EXPLANATION = "Tap to open your fridge swipe right or " +
             "left to remove ingredients";
     private static final int INTRO_TEXT_SIZE = 16;
     private static final String LOGIN_ACTIVITY_FLAG_VALUE = "LoginActivity";
