@@ -43,7 +43,7 @@ public class SplashActivity extends AppCompatActivity {
             FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
             Intent intent;
             if (currentUser != null) {
-                intent = new Intent(getBaseContext(), BottomNavigationBar.class);
+                intent = new Intent(getBaseContext(), BottomNavigationBarActivity.class);
             } else {
                 intent = new Intent(getApplicationContext(), LoginActivity.class);
             }

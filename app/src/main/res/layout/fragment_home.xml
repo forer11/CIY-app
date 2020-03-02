@@ -9,7 +9,7 @@
     android:background="#72B9B6B6"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context=".BottomNavigationBar">
+    tools:context=".BottomNavigationBarActivity">
 
     <AutoCompleteTextView
         android:id="@+id/enterIngredients"

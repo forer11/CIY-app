@@ -37,13 +37,16 @@ import java.util.Objects;
 import smartdevelop.ir.eram.showcaseviewlib.GuideView;
 
 /**
- * This activity represents the BottomNavigationBar of the app. It creates 3 fragments:
+ * This activity represents the BottomNavigationBarActivity of the app. It creates 3 fragments:
  * DiscoverFragment, FavoritesFragment, and FridgeFragment, and activate the corresponding
  * fragment the user requested- by typing at the corresponding icon in the bottom navigation bar.
  */
-public class BottomNavigationBar extends AppCompatActivity {
+public class BottomNavigationBarActivity extends AppCompatActivity {
 
-    //constants
+    /* constants */
+    private static final int ADD_RECIPE_REQUEST_CODE = 2;
+    private static final int SEARCH_RECIPE_REQUEST_CODE = 22;
+    private static final int ERROR = -1;
 
     /* the Home fragment Tag */
     private static final String HOME = "Home";
@@ -51,10 +54,8 @@ public class BottomNavigationBar extends AppCompatActivity {
     private static final String FAVORITES = "Favorites";
     /* the Discover fragment Tag */
     private static final String DISCOVER = "Discover";
-
-    private static final int ADD_RECIPE_REQUEST_CODE = 2;
-    private static final int SEARCH_RECIPE_REQUEST_CODE = 22;
-    private static final int ERROR = -1;
+    /* tags */
+    private static final String FRIDGE_TAG = "FridgeFromHome";
 
     /* the Home fragment */
     HomeFragment homeFragment;
@@ -96,7 +97,7 @@ public class BottomNavigationBar extends AppCompatActivity {
     private static final int BASIC_INGREDIENTS_INTRO_IDX = 6;
     private static final int SHELF_INTRO_IDX = 7;
     private static final int FRIDGE_INTRO_IDX = 8;
-
+    private static final int FINISHED_TUTORIAL = 9;
 
 
     /* app's Bottom navigation bar */
@@ -166,8 +167,9 @@ public class BottomNavigationBar extends AppCompatActivity {
 
     /**
      * this function responsible on introduce the app for first time users
-     * @param title - the title of the current element to display
-     * @param viewId - the current element id
+     *
+     * @param title     - the title of the current element to display
+     * @param viewId    - the current element id
      * @param elementId - indicates on the next element to display
      */
     private void displayAppTutorial(String title, int viewId, final int elementId) {
@@ -185,28 +187,36 @@ public class BottomNavigationBar extends AppCompatActivity {
                 .setGuideListener(view -> {
                     switch (elementId) {
                         case DISCOVER_INTRO_IDX:
-                            displayAppTutorial(DISCOVER_EXPLANATION, navDiscover, FAVORITES_INTRO_IDX);
+                            displayAppTutorial(DISCOVER_EXPLANATION, navDiscover,
+                                    FAVORITES_INTRO_IDX);
                             break;
                         case FAVORITES_INTRO_IDX:
-                            displayAppTutorial(FAVORITES_EXPLANATION, navFavorites, ADD_RECIPE_INTRO_IDX);
+                            displayAppTutorial(FAVORITES_EXPLANATION, navFavorites,
+                                    ADD_RECIPE_INTRO_IDX);
                             break;
                         case ADD_RECIPE_INTRO_IDX:
-                            displayAppTutorial(ADD_RECIPE_EXPLANATION, navAddRecipe, SEARCH_RECIPES_INTRO_IDX);
+                            displayAppTutorial(ADD_RECIPE_EXPLANATION, navAddRecipe,
+                                    SEARCH_RECIPES_INTRO_IDX);
                             break;
                         case SEARCH_RECIPES_INTRO_IDX:
-                            displayAppTutorial(SEARCH_RECIPES_EXPLANATION, R.id.actionSearchNavigation, SEARCH_INGREDIENTS_INTRO_IDX);
+                            displayAppTutorial(SEARCH_RECIPES_EXPLANATION,
+                                    R.id.actionSearchNavigation, SEARCH_INGREDIENTS_INTRO_IDX);
                             break;
                         case SEARCH_INGREDIENTS_INTRO_IDX:
-                            displayAppTutorial(SEARCH_INGREDIENTS_EXPLANATION, R.id.enterIngredients, BASIC_INGREDIENTS_INTRO_IDX);
+                            displayAppTutorial(SEARCH_INGREDIENTS_EXPLANATION,
+                                    R.id.enterIngredients, BASIC_INGREDIENTS_INTRO_IDX);
                             break;
                         case BASIC_INGREDIENTS_INTRO_IDX:
-                            displayAppTutorial(BASIC_INGREDIENTS_EXPLANATION, R.id.dragIngredients, SHELF_INTRO_IDX);
+                            displayAppTutorial(BASIC_INGREDIENTS_EXPLANATION,
+                                    R.id.dragIngredients, SHELF_INTRO_IDX);
                             break;
                         case SHELF_INTRO_IDX:
-                            displayAppTutorial(SHELF_EXPLANATION, R.id.basicIngredientsShelf, FRIDGE_INTRO_IDX);
+                            displayAppTutorial(SHELF_EXPLANATION, R.id.basicIngredientsShelf,
+                                    FRIDGE_INTRO_IDX);
                             break;
                         case FRIDGE_INTRO_IDX:
-                            displayAppTutorial(FRIDGE_EXPLANATION, R.id.fridge_button, 9);
+                            displayAppTutorial(FRIDGE_EXPLANATION, R.id.fridge_button,
+                                    FINISHED_TUTORIAL);
                             break;
                     }
                 })
@@ -240,7 +250,8 @@ public class BottomNavigationBar extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.tool_bar_buttons, menu);
 
         // user not sign in, so default profile picture defined
-        menu.findItem(R.id.icon_status).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
+        menu.findItem(R.id.icon_status).setIcon(ContextCompat.getDrawable(this,
+                R.drawable.profile_default));
 
         if (profileUri != null) // user got profile photo, set it as icon
         {
@@ -288,8 +299,9 @@ public class BottomNavigationBar extends AppCompatActivity {
                             lastTag = FAVORITES;
                             break;
                         case R.id.navAddRecipe:
-                            startActivityForResult(new Intent(BottomNavigationBar.this,
-                                    AddRecipeActivity.class), ADD_RECIPE_REQUEST_CODE);
+                            startActivityForResult(
+                                    new Intent(BottomNavigationBarActivity.this,
+                                            AddRecipeActivity.class), ADD_RECIPE_REQUEST_CODE);
                             break;
                     }
                     return true;
@@ -345,8 +357,9 @@ public class BottomNavigationBar extends AppCompatActivity {
 
     /**
      * set the layout of the dialog
+     *
      * @param mBuilder the builder of the dialog
-     * @param view the view of the layout to be set in the dialog
+     * @param view     the view of the layout to be set in the dialog
      */
     private void setDialogView(AlertDialog.Builder mBuilder, View view) {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
@@ -362,7 +375,8 @@ public class BottomNavigationBar extends AppCompatActivity {
             if (username != null) {
                 TextView user_info = view.findViewById(R.id.user_details);
                 if (!username.equals("")) {
-                    user_info.setText(username + "\n" + currentUser.getEmail());
+                    String userInfoText = username + "\n" + currentUser.getEmail();
+                    user_info.setText(userInfoText);
                 } else {
                     String number = currentUser.getPhoneNumber();
                     user_info.setText(number);
@@ -374,7 +388,8 @@ public class BottomNavigationBar extends AppCompatActivity {
 
     /**
      * set the actions on every user selection on the dialog
-     * @param view the view of the dialog
+     *
+     * @param view        the view of the dialog
      * @param alertDialog the dialog
      */
     private void onClickDialog(View view, AlertDialog alertDialog) {
@@ -385,13 +400,13 @@ public class BottomNavigationBar extends AppCompatActivity {
             finish();
         });
 
-        Button addingredients = view.findViewById(R.id.what_in_my_fridge);
-        addingredients.setOnClickListener(view12 -> {
+        Button addIngredients = view.findViewById(R.id.what_in_my_fridge);
+        addIngredients.setOnClickListener(view12 -> {
             alertDialog.cancel();
             FragmentManager fragmentManager = Objects.requireNonNull
-                    (BottomNavigationBar.this).getSupportFragmentManager();
-            FridgeFragment fridgeFragment = (BottomNavigationBar.this).fridgeFragment;
-            fridgeFragment.show(fragmentManager, "FridgeFromHome");
+                    (BottomNavigationBarActivity.this).getSupportFragmentManager();
+            FridgeFragment fridgeFragment = (BottomNavigationBarActivity.this).fridgeFragment;
+            fridgeFragment.show(fragmentManager, FRIDGE_TAG);
         });
     }
 
@@ -399,12 +414,14 @@ public class BottomNavigationBar extends AppCompatActivity {
      * show the sign out dialog on screen
      */
     private boolean showSignOutDialog() {
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(BottomNavigationBar.this);
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder
+                (BottomNavigationBarActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_user_status, null);
         setDialogView(mBuilder, view);
         final AlertDialog alertdialog = mBuilder.create();
         onClickDialog(view, alertdialog);
-        alertdialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        Objects.requireNonNull(alertdialog.getWindow()).setBackgroundDrawable
+                (new ColorDrawable(Color.TRANSPARENT));
         alertdialog.show();
 
         return true;
@@ -421,22 +438,21 @@ public class BottomNavigationBar extends AppCompatActivity {
         final Target mTarget = new Target() {
             @Override
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
-                Log.d("DEBUG", "onBitmapLoaded");
                 roundedFrame = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
                 roundedFrame.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()));
-                roundedFrame.setBounds(0, 0, 5, 5);
+                roundedFrame.setBounds(0, 0, 5, 5); // TODO SHANI BOUNDS CONSTANTS
                 menu.findItem(R.id.icon_status).setIcon(roundedFrame);
             }
 
             @Override
             public void onBitmapFailed(Exception e, Drawable drawable) {
-                Log.d("DEBUG", "onBitmapFailed");
+                Log.d("DEBUG", "onBitmapFailed"); //todo replace debug log
             }
 
             @Override
             public void onPrepareLoad(Drawable drawable) {
                 Log.d("DEBUG", "onPrepareLoad");
-            }
+            } //todo replace debug log
         };
         // set the image to be presented on the menu bar
         Picasso.get().load(uri).into(mTarget);
@@ -470,6 +486,7 @@ public class BottomNavigationBar extends AppCompatActivity {
             }
         }
         if (requestCode == SEARCH_RECIPE_REQUEST_CODE) {
+            // meaning we returned from the search recipe activity and we need to reset the filters
             SharedData.filterClickRecord = new boolean[]{false, false, false, false};
         }
     }
