@@ -23,9 +23,8 @@ import com.airbnb.lottie.LottieAnimationView;
 import java.util.ArrayList;
 
 /**
- * This class represents the Search fragment, which allows the user to type ingredients he has at
- * home, and get ingredient suggestions from our data base while doing so. The user can add kitchen
- * many ingredients kitchen he wishes, and can edit them afterwards (splashscreen_background.e- delete them).
+ * This class represents the Fridge fragment, which allows the user to see the ingredients he added
+ * and remove them if he wish to
  */
 public class FridgeFragment extends DialogFragment {
 
@@ -35,6 +34,7 @@ public class FridgeFragment extends DialogFragment {
     /* the ingredients recycleView adapter */
     private IngredientsAdapter ingredientsAdapter;
 
+    /* the ingredients that the user has deleted from the fridge*/
     private ArrayList<String> removed;
 
 
@@ -51,22 +51,26 @@ public class FridgeFragment extends DialogFragment {
         ingredients = SharedData.ingredients;
         // sets up the recyclerView adapter and swipe option
         setUpRecyclerView();
-        // sets up the auto fill search adapter and data
+        // sets up the opening doors animation when the fridge fragment is opened
         LottieAnimationView fridgeDoorsOpen = view.findViewById(R.id.fridgeDoorsOpen);
         fridgeDoorsOpen.setProgress(0);
         fridgeDoorsOpen.playAnimation();
-        LottieAnimationView mrCookie = view.findViewById(R.id.mr_cookie);
-        mrCookie.setProgress(0);
-        mrCookie.playAnimation();
-        mrCookie.setOnClickListener(view1 -> dismiss());
+        // sets up the cookie chef animation when the fridge fragment is opened
+        LottieAnimationView cookieChef = view.findViewById(R.id.mr_cookie);
+        cookieChef.setProgress(0);
+        cookieChef.playAnimation();
+        cookieChef.setOnClickListener(view1 -> dismiss());
         removed = new ArrayList<>();
     }
 
+    /**
+     * sets the recycler view that represents the ingredients that is in the fridge
+     */
     private void setUpRecyclerView() {
         RecyclerView recyclerView = getView().findViewById(R.id.ingredientsRecyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
-        ingredientsAdapter = new IngredientsAdapter(ingredients,getContext());
+        ingredientsAdapter = new IngredientsAdapter(ingredients, getContext());
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setAdapter(ingredientsAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(getContext(),
@@ -74,6 +78,10 @@ public class FridgeFragment extends DialogFragment {
         setItemTouchHelpers(recyclerView);
     }
 
+    /**
+     * handles the recycle view elements in cases of move or swipe
+     * @param recyclerView the recycler view to handle
+     */
     private void setItemTouchHelpers(final RecyclerView recyclerView) {
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
                 ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -102,7 +110,6 @@ public class FridgeFragment extends DialogFragment {
         int height = getResources().getDisplayMetrics().heightPixels;
         window.setLayout(width - 250, height - 400);
         window.setGravity(Gravity.CENTER);
-        //TODO:
     }
 
     @Override
