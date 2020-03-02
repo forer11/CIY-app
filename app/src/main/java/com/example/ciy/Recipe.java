@@ -2,7 +2,6 @@ package com.example.ciy;
 
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -23,10 +22,11 @@ public class Recipe implements Serializable {
     private List<String> ingredients;
     /* ingredients for user view */
     private List<String> extendedIngredients;
-    /* instructions for how to make the dish */
+    /* instructions for how to make the dish as a big string*/
     private String instructions;
-    /* the difficulty of said recipe */
+    /* instructions for how to make the dish, as parts*/
     private List<String> instructionsParts;
+    /* the difficulty of said recipe */
     private String difficulty;
     /* the preparation time */
     private String preparationTime;
@@ -62,8 +62,6 @@ public class Recipe implements Serializable {
         this.ingredients = ingredients;
         this.imageUrl = imageUrl;
     }
-
-    //TODO - for now i added another constructor -we need to delete one of them
 
     /**
      * constructor for or recipe
