@@ -30,6 +30,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 import android.widget.ImageView;
@@ -44,12 +45,27 @@ import eightbitlab.com.blurview.RenderScriptBlur;
  */
 public class AddRecipeActivity extends AppCompatActivity {
 
+    /* constants */
+    private static final float RADIUS = 20f;
+    private static final int PHOTO_REQUEST_CODE = 1;
+    private static final int RESULT_CODE = 2;
+    private static final int INTENSITY = 5;
+    private static final int BUTTON_INTENSITY1 = 25;
+    private static final String ADD_RECIPE_TITLE = "Add Recipe";
+    private static final String FILL_FIELDS_MSG = "Please fill in all the fields above";
+    private static final String LEGAL_VALUES_MSG = "Please fill legal values in all the fields above";
+    private static final String SUBMISSION_MSG = " Submission is up for approval";
+    private static final int HEIGHT = 700;
+    private static final int WIDTH = 700;
+
+    /* text views */
     private TextInputEditText titleText;
     private TextInputEditText descriptionText;
     private TextInputEditText instructionsText;
     private TextInputEditText prepTimeText;
     private TextInputEditText ingredientsText;
 
+    /* text input layouts */
     private TextInputLayout instructionsLayout;
     private TextInputLayout prepTimeLayout;
     private TextInputLayout ingredientsLayout;
@@ -77,14 +93,14 @@ public class AddRecipeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Intent intent = new Intent();
-        setResult(2, intent);
+        setResult(RESULT_CODE, intent);
         setContentView(R.layout.activity_new_recipe);
         initializeUi();
         uploadImageButton.setOnClickListener(view -> {
             // upload a picture from gallery intent
             Intent pickPhoto = new Intent(Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-            startActivityForResult(pickPhoto, 1);
+            startActivityForResult(pickPhoto, PHOTO_REQUEST_CODE);
         });
         setBlurredView();
     }
@@ -94,7 +110,6 @@ public class AddRecipeActivity extends AppCompatActivity {
      * from gallery button
      */
     private void setBlurredView() {
-        float radius = 20f;
         View decorView = getWindow().getDecorView();
         ViewGroup rootView = decorView.findViewById(android.R.id.content);
         Drawable windowBackground = decorView.getBackground();
@@ -102,13 +117,13 @@ public class AddRecipeActivity extends AppCompatActivity {
         blurView.setupWith(rootView)
                 .setFrameClearDrawable(windowBackground)
                 .setBlurAlgorithm(new RenderScriptBlur(this))
-                .setBlurRadius(radius)
+                .setBlurRadius(RADIUS)
                 .setHasFixedTransformationMatrix(false);
         ImageView background = findViewById(R.id.background);
-        BlurImage.with(getApplicationContext()).load(R.id.newNoteLayout).intensity(5).Async(true).
+        BlurImage.with(getApplicationContext()).load(R.id.newNoteLayout).intensity(INTENSITY).Async(true).
                 into(background);
         ImageButton uploadPicButton = findViewById(R.id.uploadPicButton);
-        BlurImage.with(getApplicationContext()).load(R.id.imageButton).intensity(25).
+        BlurImage.with(getApplicationContext()).load(R.id.imageButton).intensity(BUTTON_INTENSITY1).
                 Async(false).into(uploadPicButton);
     }
 
@@ -116,8 +131,8 @@ public class AddRecipeActivity extends AppCompatActivity {
      * This method initializes all UI elements of the activity
      */
     private void initializeUi() {
-        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_close);
-        setTitle("Add Recipe");
+        Objects.requireNonNull(getSupportActionBar()).setHomeAsUpIndicator(R.drawable.ic_close);
+        setTitle(ADD_RECIPE_TITLE);
         initializeViews();
         //Build upon an existing VmPolicy
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
@@ -151,7 +166,7 @@ public class AddRecipeActivity extends AppCompatActivity {
      * @return false if the user haven't filled the preparation time field, and true otherwise
      */
     private boolean convertsPrepTimeToMin() {
-        String time = prepTimeText.getText().toString();
+        String time = Objects.requireNonNull(prepTimeText.getText()).toString();
         if (time.trim().isEmpty()) {
             prepTimeLayout.setErrorEnabled(false);
             return false;
@@ -169,7 +184,7 @@ public class AddRecipeActivity extends AppCompatActivity {
      * @return true if the ingredients input is'nt empty, false otherwise
      */
     private boolean validateIngredientsInput() {
-        if (ingredientsText.getText().toString().trim().isEmpty()) {
+        if (Objects.requireNonNull(ingredientsText.getText()).toString().trim().isEmpty()) {
             ingredientsLayout.setErrorEnabled(false);
             return false;
         } else {
@@ -191,11 +206,11 @@ public class AddRecipeActivity extends AppCompatActivity {
      * @return true if the instructions input is'nt empty, false otherwise
      */
     private boolean validateInstructionsInput() {
-        if (instructionsText.getText().toString().trim().isEmpty()) {
+        if (Objects.requireNonNull(instructionsText.getText()).toString().trim().isEmpty()) {
             instructionsLayout.setErrorEnabled(false);
             return false;
         } else {
-            String[] instructions = instructionsText.getText().toString().split("\n");
+            String[] instructions = "\n".split(instructionsText.getText().toString());
             finalInstructions = "";
             for (String line : instructions) {
                 if (!TextUtils.isEmpty(line.trim())) {
@@ -274,11 +289,11 @@ public class AddRecipeActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
+        if (requestCode == PHOTO_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
                 selectedImageUri = data.getData();
-                userPicture.getLayoutParams().height = 700;
-                userPicture.getLayoutParams().width = 700;
+                userPicture.getLayoutParams().height = HEIGHT;
+                userPicture.getLayoutParams().width = WIDTH;
                 userPicture.requestLayout();
                 userPicture.setImageURI(selectedImageUri);
             }
@@ -294,8 +309,8 @@ public class AddRecipeActivity extends AppCompatActivity {
      */
     private void saveNote() throws MalformedURLException {
         String title = titleText.toString();
-        String description = descriptionText.getText().toString();
-        String prepTime = prepTimeText.getText().toString();
+        String description = Objects.requireNonNull(descriptionText.getText()).toString();
+        String prepTime = Objects.requireNonNull(prepTimeText.getText()).toString();
         if (validatesUserInput(title, description, prepTime)) {
             return;
         }
@@ -313,8 +328,8 @@ public class AddRecipeActivity extends AppCompatActivity {
         //we save it to a temporary database for approval
         tempDb.document(recipe.getId()).set(recipe, SetOptions.merge())
                 .addOnSuccessListener(aVoid -> Toast
-                        .makeText(AddRecipeActivity.this, "recipe.getTitle()" +
-                                " Submission is up for approval", Toast.LENGTH_SHORT).show());
+                        .makeText(AddRecipeActivity.this, recipe.getTitle() +
+                                SUBMISSION_MSG, Toast.LENGTH_SHORT).show());
         finish();
     }
 
@@ -328,12 +343,12 @@ public class AddRecipeActivity extends AppCompatActivity {
      */
     private boolean validatesUserInput(String title, String description, String prepTime) {
         if (!validateIngredientsInput() || !convertsPrepTimeToMin() || !validateInstructionsInput()) {
-            Toast.makeText(this, "Please fill legal values in all the fields above",
+            Toast.makeText(this, LEGAL_VALUES_MSG,
                     Toast.LENGTH_SHORT).show();
         } else if (title.trim().isEmpty() || description.trim().isEmpty() || prepTime.trim().isEmpty()
                 || finalInstructions.trim().isEmpty() || finalIngredientsList.isEmpty() ||
-                selectedImageUri.getPath().equals("")) {
-            Toast.makeText(this, "Please fill in all the fields above",
+                Objects.equals(selectedImageUri.getPath(), "")) {
+            Toast.makeText(this, FILL_FIELDS_MSG,
                     Toast.LENGTH_SHORT).show();
         }
         return true;

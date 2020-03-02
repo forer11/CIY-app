@@ -9,7 +9,7 @@
     android:orientation="vertical"
     android:fillViewport="true"
     android:padding="16dp"
-    tools:context=".NewRecipeActivity">
+    tools:context=".AddRecipeActivity">
 
     <eightbitlab.com.blurview.BlurView
         android:id="@+id/blurView"
