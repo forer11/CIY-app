@@ -18,7 +18,6 @@
         <activity
             android:name=".SearchRecipeActivity"
             android:theme="@style/SearchAppTheme" />
-        <activity android:name=".ForgotPasswordActivity" />
         <activity
             android:name=".SplashActivity"
             android:theme="@style/AppTheme.NoTitle">
@@ -28,7 +27,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SignInActivity" />
         <activity
             android:name=".LoginActivity"
             android:launchMode="singleTop"
@@ -40,7 +38,6 @@
             android:name=".NewRecipeActivity"
             android:parentActivityName=".BottomNavigationBar"
             android:theme="@style/NewRecipeAppTheme" />
-        <activity android:name=".Window2" />
         <activity
             android:name=".BottomNavigationBar"
             android:screenOrientation="portrait"

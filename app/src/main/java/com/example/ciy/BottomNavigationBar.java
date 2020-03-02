@@ -1,10 +1,8 @@
 package com.example.ciy;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -189,29 +187,30 @@ public class BottomNavigationBar extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         Drawable logo = ContextCompat.getDrawable(this, R.drawable.women_logo);
-        Bitmap bitmap = ((BitmapDrawable) logo).getBitmap();
-        // Scale it to 50 x 50
-//        Drawable d = new BitmapDrawable(getResources(), Bitmap.createScaledBitmap(bitmap, 80, 80, true));
-        // Set your new, scaled drawable "d"
         toolbar.setLogo(logo);
     }
 
     @Override
+    /**
+     * create to design of the toolbar
+     */
     public boolean onCreateOptionsMenu(final Menu menu) {
         getMenuInflater().inflate(R.menu.tool_bar_buttons, menu);
 
-        //get the image of the user
+        // user not sign in, so default profile picture defined
         menu.findItem(R.id.icon_status).setIcon(ContextCompat.getDrawable(this, R.drawable.profile_default));
 
-        if (uri != null) // user not sign in from google, so default profile picture defined
+        if (uri != null) // user got profile photo, set it as icon
         {
-
             setProfileImage(menu, uri);
         }
         return true;
     }
 
     @Override
+    /**
+     * act in response to user selection
+     */
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         switch (item.getItemId()) {
             case R.id.icon_status:
@@ -297,12 +296,10 @@ public class BottomNavigationBar extends AppCompatActivity {
     }
 
     /*
-     * show the sign out dialog on screen
+     * set the layout of the dialog
      */
-    private boolean showSignOutDialog() {
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(BottomNavigationBar.this);
-        View view = getLayoutInflater().inflate(R.layout.dialog_profile_preseed, null);
-
+    private void setDialogView(AlertDialog.Builder mBuilder,View view)
+    {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             ImageView profile = (ImageView) view.findViewById(R.id.profile_image);
@@ -313,27 +310,29 @@ public class BottomNavigationBar extends AppCompatActivity {
                 }
             }
             String username = currentUser.getDisplayName();
-            if (username != null && !username.equals("")) {
+            if (username != null ) {
                 TextView user_info = (TextView) view.findViewById(R.id.user_details);
-                user_info.setText(username + "\n" + currentUser.getEmail());
+                if(!username.equals(""))
+                {
+                    user_info.setText(username + "\n" + currentUser.getEmail());
+                }
+                else
+                {
+                    String number = currentUser.getPhoneNumber();
+                    user_info.setText(number);
+                }
             }
         }
-
         mBuilder.setView(view);
+    }
 
-        final AlertDialog alertdialog = mBuilder.create();
+    /*
+    * set the actions on every user selection on the dialog
+     */
+    private void onClickDialog(View view, AlertDialog alertDialog)
+    {
         Button signout = (Button) view.findViewById(R.id.signout_button);
         signout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(getBaseContext(), LoginActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        });
-
-        Button signin = (Button) view.findViewById(R.id.signin_button);
-        signin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), LoginActivity.class);
@@ -346,14 +345,31 @@ public class BottomNavigationBar extends AppCompatActivity {
         addingredients.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                alertdialog.cancel();
-                FragmentManager fragmentManager = Objects.requireNonNull(BottomNavigationBar.this)
-                        .getSupportFragmentManager();
-                SearchFragment searchFragment = ((BottomNavigationBar) BottomNavigationBar.this).searchFragment;
+                alertDialog.cancel();
+                FragmentManager fragmentManager = Objects.requireNonNull
+                                (BottomNavigationBar.this).getSupportFragmentManager();
+                SearchFragment searchFragment = ((BottomNavigationBar)
+                                BottomNavigationBar.this).searchFragment;
                 searchFragment.show(fragmentManager, "FridgeFromHome");
 
             }
         });
+    }
+
+    /*
+     * show the sign out dialog on screen
+     */
+    private boolean showSignOutDialog() {
+
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(BottomNavigationBar.this);
+        View view = getLayoutInflater().inflate(R.layout.dialog_user_status, null);
+
+        setDialogView(mBuilder,view);
+
+        final AlertDialog alertdialog = mBuilder.create();
+
+        onClickDialog(view,alertdialog);
+
         alertdialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
         alertdialog.show();
 

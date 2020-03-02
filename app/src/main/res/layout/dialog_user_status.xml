@@ -41,17 +41,8 @@ android:orientation="vertical">
         android:layout_marginTop="20dp"
         android:fontFamily="@font/average_sans"
         android:background="@drawable/blurred_button_shape"
-        android:text="log in with another user" />
+        android:text="SignOut" />
 
-    <Button
-        android:id="@+id/signin_button"
-        android:layout_width="327dp"
-        android:layout_height="42dp"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
-        android:fontFamily="@font/average_sans"
-        android:background="@drawable/blurred_button_shape"
-        android:text="sign out" />
 
     <Button
         android:id="@+id/what_in_my_fridge"

@@ -70,7 +70,9 @@
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textColor="#615E5E"
-                        android:textSize="18sp" />
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="Calories &#10;not specified"/>
 
                     <TextView
                         android:id="@+id/prepareTime"
@@ -83,7 +85,9 @@
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textColor="#615E5E"
-                        android:textSize="18sp" />
+                        android:textSize="12sp"
+                        android:gravity="center"
+                        android:text="Prep time &#10;not specified"/>
 
                     <TextView
                         android:id="@+id/complexity"
@@ -96,7 +100,8 @@
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textColor="#615E5E"
-                        android:textSize="18sp" />
+                        android:textSize="12sp"
+                        android:gravity="center"/>
 
                     <TextView
                         android:id="@+id/protein"
@@ -109,7 +114,8 @@
                         android:textAlignment="center"
                         android:textAllCaps="false"
                         android:textColor="#615E5E"
-                        android:textSize="18sp" />
+                        android:textSize="12sp"
+                        android:gravity="center"/>
                 </LinearLayout>
 
             </HorizontalScrollView>
@@ -222,19 +228,18 @@
                 android:textSize="25sp"
                 android:textStyle="bold"/>
 
-            <TextView
+            <LinearLayout
                 android:id="@+id/recipeDescription"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:orientation="vertical"
                 android:layout_below="@id/titleRecipeDescription"
+                android:layout_marginTop="20dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:fontFamily="@font/average_sans"
-                android:text="recipeDescription"
-                android:gravity="left"
-                android:textColor="@color/black"
-                android:textSize="15sp" />
+                android:layout_marginBottom="10dp" />
+
+
 
 
             <com.airbnb.lottie.LottieAnimationView
@@ -257,7 +262,9 @@
                 android:layout_marginTop="0dp"
                 android:layout_marginEnd="-4dp"
                 android:layout_toStartOf="@+id/button_like"
-                android:text="TextView" />
+                android:text="TextView"
+                android:textSize="12sp"
+                android:gravity="center"/>
 
             <ImageView
                 android:id="@+id/imageView4"

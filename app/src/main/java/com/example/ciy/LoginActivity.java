@@ -33,7 +33,7 @@ public class LoginActivity extends BaseSignIn {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_signin);
+        setContentView(R.layout.activity_signin);
 
         // init providers
         buildProviders();
@@ -73,7 +73,7 @@ public class LoginActivity extends BaseSignIn {
     private AuthMethodPickerLayout createCustomLayout(){
         // A custom layout to attach to the LoginActivity screen
         return new AuthMethodPickerLayout
-                                    .Builder(R.layout.activity_new_signin)
+                                    .Builder(R.layout.activity_signin)
                                     .setGoogleButtonId(R.id.google_signIn)
                                     .setEmailButtonId(R.id.email_signIn)
                                     .setAnonymousButtonId(R.id.anonymous_signIn)
