@@ -1,7 +1,6 @@
 package com.example.ciy;
 
 import android.content.DialogInterface;
-
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -14,17 +13,14 @@ import android.view.Window;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
-import java.util.Objects;
 
 /**
  * This class represents the Search fragment, which allows the user to type ingredients he has at
@@ -35,13 +31,9 @@ public class FridgeFragment extends DialogFragment {
 
     /* the user's current ingredients */
     private ArrayList<String> ingredients;
-    /* the firestore data base instance */
-    private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
     /* the ingredients recycleView adapter */
     private IngredientsAdapter ingredientsAdapter;
-
-    private RecyclerView recyclerView;
 
     private ArrayList<String> removed;
 
@@ -66,17 +58,12 @@ public class FridgeFragment extends DialogFragment {
         LottieAnimationView mrCookie = view.findViewById(R.id.mr_cookie);
         mrCookie.setProgress(0);
         mrCookie.playAnimation();
-        mrCookie.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                dismiss();
-            }
-        });
+        mrCookie.setOnClickListener(view1 -> dismiss());
         removed = new ArrayList<>();
     }
 
     private void setUpRecyclerView() {
-        recyclerView = getView().findViewById(R.id.ingredientsRecyclerView);
+        RecyclerView recyclerView = getView().findViewById(R.id.ingredientsRecyclerView);
         recyclerView.setHasFixedSize(true);
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(getContext());
         ingredientsAdapter = new IngredientsAdapter(ingredients,getContext());

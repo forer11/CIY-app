@@ -4,8 +4,6 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Filter;
-import android.widget.Filterable;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -15,33 +13,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder> {
+/**
+ * Adapter for the ingredients recyclerView located in the fridge
+ */
+class IngredientsAdapter
+        extends RecyclerView.Adapter<IngredientsAdapter.IngredientViewHolder> {
 
     /* the current user's ingredients */
     private ArrayList<String> ingredients;
-    /* useless for now */
-    private OnItemClickListener searchListener;
     /* matching an ingredient with it corresponding photo*/
     private final HashMap<String, Integer> ingredientsImages;
 
-
-    /**
-     * click interfaces
-     */
-    public interface OnItemClickListener {
-        void OnItemClick(int position);
-
-        void OnLikeClick(int position);
-    }
-
-    /**
-     * setting search listener
-     *
-     * @param searchListener the search listener
-     */
-    public void setOnItemClickListener(OnItemClickListener searchListener) {
-        this.searchListener = searchListener;
-    }
 
     /**
      * the ingredient items view holder
@@ -52,16 +34,11 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
         /* the ingredient photo */
         ImageView imageViewIngredient;
 
-        IngredientViewHolder(@NonNull View itemView, final OnItemClickListener searchListener) {
+        IngredientViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewIngredientName = itemView.findViewById(R.id.textViewIngredientName);
             imageViewIngredient = itemView.findViewById(R.id.imageViewIngredient);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                }
-            });
         }
     }
 
@@ -104,7 +81,7 @@ public class IngredientsAdapter extends RecyclerView.Adapter<IngredientsAdapter.
     public IngredientViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.ingredient_item,
                 parent, false);
-        return new IngredientViewHolder(view, searchListener);
+        return new IngredientViewHolder(view);
     }
 
     @Override
