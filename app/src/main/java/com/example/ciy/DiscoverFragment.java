@@ -111,8 +111,10 @@ public class DiscoverFragment extends Fragment {
                 String description = jsonRecipe.getString("description");
 
                 StringBuilder instructions = new StringBuilder();
+                List<String> instructionsParts = new ArrayList<>();
                 JSONArray jsonMethod = jsonRecipe.getJSONArray("method");
                 for (int j = 0; j < jsonMethod.length(); j++) {
+                    instructionsParts.add(jsonMethod.getString(j));
                     instructions.append(jsonMethod.getString(j));
                     instructions.append("\n");
                 }
@@ -130,13 +132,11 @@ public class DiscoverFragment extends Fragment {
                 String minutes = obj2.getString("mins");
                 if (!minutes.equals("null")) {
                     minutes = minutes.substring(0, minutes.indexOf(" "));
-                }
-                else
-                {
+                } else {
                     minutes = "0";
                 }
                 int m = Integer.parseInt(minutes);
-                int t = (h*60) + m;
+                int t = (h * 60) + m;
                 String time = String.valueOf(t);
 
                 obj = jsonRecipe.getJSONObject("nutrition");
@@ -167,6 +167,7 @@ public class DiscoverFragment extends Fragment {
                 recipe.setPreparationTime(time);
                 recipe.setCalories(calories);
                 recipe.setProtein(protein);
+                recipe.setInstructionsParts(instructionsParts);
                 recipesRef.document(title).set((recipe), SetOptions.merge()).addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
