@@ -3,9 +3,8 @@ package com.example.ciy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
-
 import androidx.annotation.Nullable;
-
+import androidx.appcompat.app.AppCompatActivity;
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -15,7 +14,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -24,7 +22,7 @@ import java.util.List;
  * This activity represents the LoginActivity of the app. It builds 4 sign in options and deals
  * with the result according to the user choice
  */
-public class LoginActivity extends BaseSignIn {
+public class LoginActivity extends AppCompatActivity {
 
     private static final int MY_REQUEST_CODE = 7117;
     List<AuthUI.IdpConfig> providers;   // List of all the sign in providers
@@ -114,11 +112,11 @@ public class LoginActivity extends BaseSignIn {
         });
     }
 
+
     /**
      * this function deals with the results of the user's sign in, and calls to the
      * updatesUI function to update app's UI with the new user
      */
-    //TODO - add documentation on arguments
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -126,11 +124,15 @@ public class LoginActivity extends BaseSignIn {
             IdpResponse response = IdpResponse.fromResultIntent(data);
             if (resultCode == RESULT_OK) {
                 FirebaseUser user = FirebaseAuth.getInstance().getCurrentUser();
-                updateUI(user);
+                if (user != null) {
+                    updateUI(user);
+                }
                 navToHome();
             } else {
-                Toast.makeText(this, "" + response.getError().getMessage(),
-                        Toast.LENGTH_SHORT).show();
+                if (response != null && response.getError() != null) {
+                    Toast.makeText(this, "" + response.getError().getMessage(),
+                            Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
