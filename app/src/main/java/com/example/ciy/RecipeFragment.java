@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import androidx.core.widget.TextViewCompat;
 import androidx.fragment.app.DialogFragment;
 
 
@@ -184,11 +185,11 @@ public class RecipeFragment extends DialogFragment {
             stepTitle.setLayoutParams(lparams);
             stepTitle.setText("Step " + stepNum);
 
-            stepTitle.setTextAppearance(getActivity(), R.style.fontForStepTitle);  //TODO shani
+            TextViewCompat.setTextAppearance(stepTitle, R.style.fontForStepTitle);
             recipeDescription.addView(stepTitle);
 
             stepDescription.setLayoutParams(lparams);
-            stepDescription.setTextAppearance(getContext(), R.style.fontForStep); //TODO shani
+            TextViewCompat.setTextAppearance(stepDescription, R.style.fontForStep);
             stepDescription.setText(instruction + "\n");
             stepDescription.setBackgroundResource(R.drawable.recipe_steps_background);
             recipeDescription.addView(stepDescription);
