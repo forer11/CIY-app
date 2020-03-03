@@ -11,6 +11,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
+import java.util.Objects;
+
 public class SplashActivity extends AppCompatActivity {
 
     /* the firestore database instance */
@@ -33,7 +35,6 @@ public class SplashActivity extends AppCompatActivity {
      */
     private void loadRecipeCopy() {
         recipesRef.get().addOnSuccessListener(queryDocumentSnapshots -> {
-            // sometimes having duplicates, didn't figure why, for now i will try this.
             SharedData.searchRecipes.clear();
             for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots) {
                 Recipe recipe = documentSnapshot.toObject(Recipe.class);
@@ -50,7 +51,8 @@ public class SplashActivity extends AppCompatActivity {
             ingredientsRef.get().addOnSuccessListener(queryDocumentSnapshots1 -> {
                 //we add all ingredients from our data base to 'ingredientOptions' list
                 for (QueryDocumentSnapshot documentSnapshot : queryDocumentSnapshots1) {
-                    String option = documentSnapshot.get("ingredient").toString();
+                    String option = Objects
+                            .requireNonNull(documentSnapshot.get("ingredient")).toString();
                     SharedData.allIngredients.add(option);
                 }
                 startActivity(intent);

@@ -137,7 +137,7 @@ public class SearchAdapter extends RecyclerView.Adapter<SearchAdapter.SearchView
     /**
      * returns the current filter the adapter works with
      *
-     * @return
+     * @return the chosen filter
      */
     @Override
     public Filter getFilter() {
