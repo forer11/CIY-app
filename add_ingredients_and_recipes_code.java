@@ -1,4 +1,4 @@
-   // updates the recipes with the json file TODO delete before submission
+   // updates the recipes with the json file
     public void updateAllRecipes() {
         try {
             JSONArray jsonRecipes = new JSONArray(loadJSONFromAsset());
@@ -81,7 +81,7 @@
             e.printStackTrace();
         }
     }
-    // load the json file TODO delete before submission
+    // load the json file
 
     private String loadJSONFromAsset() {
         String json = null;
@@ -99,7 +99,7 @@
         return json;
     }
 
-    // updates the ingredients vector by text file in assets TODO delete before submission
+    // updates the ingredients vector by text file in assets
     private void updateIngredientsVector() {
 
         try {

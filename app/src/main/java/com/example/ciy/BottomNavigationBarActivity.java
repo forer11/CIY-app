@@ -433,9 +433,9 @@ public class BottomNavigationBarActivity extends AppCompatActivity {
      * get menu resource and url for user profile photo, and shows the image on the menu
      *
      * @param menu the menu bar object of the app or activity
-     * @param uri  the url for the user's profile photo
+     * @param profileImageUri  the url for the user's profile photo
      */
-    private void setProfileImage(final Menu menu, Uri uri) {
+    private void setProfileImage(final Menu menu, Uri profileImageUri) {
         //create a new target to be used with picasso
         final Target mTarget = new Target() {
             @Override
@@ -458,7 +458,7 @@ public class BottomNavigationBarActivity extends AppCompatActivity {
             }
         };
         // set the image to be presented on the menu bar
-        Picasso.get().load(uri).into(mTarget);
+        Picasso.get().load(profileImageUri).into(mTarget);
     }
 
 
