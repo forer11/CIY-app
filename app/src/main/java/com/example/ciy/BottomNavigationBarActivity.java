@@ -512,4 +512,11 @@ public class BottomNavigationBarActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        // clears the ingredients when we sign out or exit the application
+        SharedData.ingredients.clear();
+    }
+
 }
