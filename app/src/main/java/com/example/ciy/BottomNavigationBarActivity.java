@@ -98,6 +98,8 @@ public class BottomNavigationBarActivity extends AppCompatActivity {
     private static final int SHELF_INTRO_IDX = 7;
     private static final int FRIDGE_INTRO_IDX = 8;
     private static final int FINISHED_TUTORIAL = 9;
+    private static final int LOWER_BOUND_SIZE = 0;
+    private static final int UPPER_BOUND_SIZE = 5;
 
 
     /* app's Bottom navigation bar */
@@ -358,17 +360,17 @@ public class BottomNavigationBarActivity extends AppCompatActivity {
     /**
      * set the layout of the dialog
      *
-     * @param mBuilder the builder of the dialog
+     * @param dialogBuilder the builder of the dialog
      * @param view     the view of the layout to be set in the dialog
      */
-    private void setDialogView(AlertDialog.Builder mBuilder, View view) {
+    private void setDialogView(AlertDialog.Builder dialogBuilder, View view) {
         FirebaseUser currentUser = firebaseAuth.getCurrentUser();
         if (currentUser != null) {
             ImageView profile = view.findViewById(R.id.profile_image);
             if (profileUri != null) {
                 try {
                     Picasso.get().load(profileUri).into(profile);
-                } catch (Exception e) {
+                } catch (Exception e) { // in this case we stay with the default profile photo
                 }
             }
             String username = currentUser.getDisplayName();
@@ -383,7 +385,7 @@ public class BottomNavigationBarActivity extends AppCompatActivity {
                 }
             }
         }
-        mBuilder.setView(view);
+        dialogBuilder.setView(view);
     }
 
     /**
@@ -414,11 +416,11 @@ public class BottomNavigationBarActivity extends AppCompatActivity {
      * show the sign out dialog on screen
      */
     private boolean showSignOutDialog() {
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder
                 (BottomNavigationBarActivity.this);
         View view = getLayoutInflater().inflate(R.layout.dialog_user_status, null);
-        setDialogView(mBuilder, view);
-        final AlertDialog alertdialog = mBuilder.create();
+        setDialogView(dialogBuilder, view);
+        final AlertDialog alertdialog = dialogBuilder.create();
         onClickDialog(view, alertdialog);
         Objects.requireNonNull(alertdialog.getWindow()).setBackgroundDrawable
                 (new ColorDrawable(Color.TRANSPARENT));
@@ -440,19 +442,20 @@ public class BottomNavigationBarActivity extends AppCompatActivity {
             public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom loadedFrom) {
                 roundedFrame = RoundedBitmapDrawableFactory.create(getResources(), bitmap);
                 roundedFrame.setCornerRadius(Math.min(bitmap.getWidth(), bitmap.getHeight()));
-                roundedFrame.setBounds(0, 0, 5, 5); // TODO SHANI BOUNDS CONSTANTS
+                roundedFrame.setBounds(LOWER_BOUND_SIZE, LOWER_BOUND_SIZE,
+                                                        UPPER_BOUND_SIZE, UPPER_BOUND_SIZE);
                 menu.findItem(R.id.icon_status).setIcon(roundedFrame);
             }
 
             @Override
             public void onBitmapFailed(Exception e, Drawable drawable) {
-                Log.d("DEBUG", "onBitmapFailed"); //todo replace debug log
+                //in this case we want the profile stay as the default
             }
 
             @Override
             public void onPrepareLoad(Drawable drawable) {
-                Log.d("DEBUG", "onPrepareLoad");
-            } //todo replace debug log
+                //in this case we want the profile stay as the default
+            }
         };
         // set the image to be presented on the menu bar
         Picasso.get().load(uri).into(mTarget);
