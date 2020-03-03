@@ -27,12 +27,19 @@ import com.google.firebase.firestore.SetOptions;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * This Dialog Fragment represents a specific recipe and contains its ingredients, its image,
  * its instruction and some information about it like how many views of other users it has etc.
  */
 public class RecipeFragment extends DialogFragment {
+    private static final String RECIPE_KEY = "recipe";
+    private static final String PRESSED_LIKE_KEY = "userPressedLike";
+    private static final String ACTIVITY_KEY = "activity";
+    private static final String INSTRUCTIONS_TITLE = "Instructions";
+    private static final String VIEWS_TITLE = " peoples viewed this recipe";
+    private static final String INGREDIENTS_TITLE = "Ingredients";
     /* the recipe we show in this page */
     private Recipe recipe;
     /* the lottie animation like button */
@@ -72,18 +79,19 @@ public class RecipeFragment extends DialogFragment {
         // sets the dialog to be full screen
         setStyle(DialogFragment.STYLE_NO_FRAME, R.style.BaseAppTheme);
         // Get back arguments
-        recipe = (Recipe) getArguments().getSerializable("recipe");
-        userPressedLike = getArguments().getBoolean("userPressedLike");
-        sourceActivity = getArguments().getInt("activity");
+        recipe = (Recipe) Objects.requireNonNull(getArguments()).getSerializable(RECIPE_KEY);
+        userPressedLike = getArguments().getBoolean(PRESSED_LIKE_KEY);
+        sourceActivity = getArguments().getInt(ACTIVITY_KEY);
 
         FirebaseUser user = firebaseAuth.getCurrentUser();
-        favoritesRef = usersRef.document(user.getUid()).collection(SharedData.Favorites);
+        favoritesRef = usersRef.document(Objects.requireNonNull(user)
+                .getUid()).collection(SharedData.Favorites);
 
     }
 
     private void initRecipeData() {
         //recipe details
-        recipeTitle = getView().findViewById(R.id.recipeTitle);
+        recipeTitle = Objects.requireNonNull(getView()).findViewById(R.id.recipeTitle);
         recipeImage = getView().findViewById(R.id.recipeImage);
         ingredientsTitle = getView().findViewById(R.id.ingredientsTitle);
         titleRecipeDescription = getView().findViewById(R.id.titleRecipeDescription);
@@ -108,7 +116,8 @@ public class RecipeFragment extends DialogFragment {
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         // Setup any handles to view objects here
-        ImageButton goBackButton = getView().findViewById(R.id.mockUpToolBarBackButton);
+        ImageButton goBackButton = Objects.requireNonNull(getView())
+                .findViewById(R.id.mockUpToolBarBackButton);
         button_like = getView().findViewById(R.id.button_like);
         if (userPressedLike) {
             button_like.setProgress(1);
@@ -142,7 +151,7 @@ public class RecipeFragment extends DialogFragment {
      * set recipe layout and details: ingredients, instructions and metadata
      */
     private void initializeUi() {
-        String views_str = recipe.getViews() + " peoples viewed this recipe";
+        String views_str = recipe.getViews() + VIEWS_TITLE;
         String preparationTime = "prep time:\n" + recipe.getPreparationTime();
         String complexity_str = "complexity:\n" + recipe.getDifficulty();
         String calories_str = "calories:\n" + recipe.getCalories();
@@ -151,6 +160,7 @@ public class RecipeFragment extends DialogFragment {
         try {
             Picasso.get().load(recipe.getImageUrl()).into(recipeImage);
         } catch (Exception e) {
+            recipeImage.setImageResource(R.drawable.icon_dog_chef);
         }
 
         recipeTitle.setText(recipe.getTitle());
@@ -159,7 +169,7 @@ public class RecipeFragment extends DialogFragment {
         complexity.setText(complexity_str);
         calories.setText(calories_str);
         protein.setText(protein_str);
-        titleRecipeDescription.setText("Instructions");
+        titleRecipeDescription.setText(INSTRUCTIONS_TITLE);
 
         setIngredientsText(ingredientsTitle);
         setSteps();
@@ -182,14 +192,16 @@ public class RecipeFragment extends DialogFragment {
             TextView stepDescription = new TextView(recipeDescription.getContext());
 
             stepTitle.setLayoutParams(lparams);
-            stepTitle.setText("Step " + stepNum);
+            String stepText = "Step " + stepNum;
+            stepTitle.setText(stepText);
 
             TextViewCompat.setTextAppearance(stepTitle, R.style.fontForStepTitle);
             recipeDescription.addView(stepTitle);
 
             stepDescription.setLayoutParams(lparams);
             TextViewCompat.setTextAppearance(stepDescription, R.style.fontForStep);
-            stepDescription.setText(instruction + "\n");
+            String stepDescriptionText = instruction + "\n";
+            stepDescription.setText(stepDescriptionText);
             stepDescription.setBackgroundResource(R.drawable.recipe_steps_background);
             recipeDescription.addView(stepDescription);
 
@@ -204,16 +216,17 @@ public class RecipeFragment extends DialogFragment {
      *                         ingredients description
      */
     private void setIngredientsText(TextView ingredientsTitle) {
-        LinearLayout layout = getView().findViewById(R.id.ingredients);
+        LinearLayout layout = Objects.requireNonNull(getView()).findViewById(R.id.ingredients);
         LinearLayout.LayoutParams textViewLayoutParams = new LinearLayout.LayoutParams
                 (LinearLayout.LayoutParams.WRAP_CONTENT, LinearLayout.LayoutParams.WRAP_CONTENT);
-        ingredientsTitle.setText("Ingredients");
+        ingredientsTitle.setText(INGREDIENTS_TITLE);
         List<String> ingredientsList = recipe.getExtendedIngredients();
         //check if the ingredients list is in legal size(not empty)
         if (ingredientsList.size() > 0) {
             for (String ingredient : ingredientsList) {
                 TextView ingredientTextView = new TextView(getContext());
-                ingredientTextView.setText("\u2022 " + ingredient);
+                String ingredientsText = "\u2022 " + ingredient;
+                ingredientTextView.setText(ingredientsText);
                 ingredientTextView.setLayoutParams(textViewLayoutParams);
                 layout.addView(ingredientTextView);
                 //we want to put a divider after each ingredient except the last one
@@ -226,6 +239,7 @@ public class RecipeFragment extends DialogFragment {
 
     /**
      * this method adds a line divider after each ingredient
+     *
      * @param layout the layout that contains the ingredients of the recipe
      */
     private void addLineDivider(LinearLayout layout) {

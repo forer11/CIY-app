@@ -3,8 +3,10 @@ package com.example.ciy;
 import android.content.Intent;
 import android.os.Bundle;
 import android.widget.Toast;
+
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+
 import com.firebase.ui.auth.AuthMethodPickerLayout;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.IdpResponse;
@@ -14,6 +16,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -27,6 +30,7 @@ public class LoginActivity extends AppCompatActivity {
     private static final String LOGIN_ACTIVITY_FLAG_VALUE = "LoginActivity";
     private static final String LOGIN_ACTIVITY_FLAG_KEY = "I_CAME_FROM";
     private static final int MY_REQUEST_CODE = 7117;    // can choose every number
+    private static final String LOAD_FAILURE = "user data load failure";
     List<AuthUI.IdpConfig> providers;   // List of all the sign in providers
 
     @Override
@@ -110,8 +114,8 @@ public class LoginActivity extends AppCompatActivity {
             if (documentSnapshot == null || !documentSnapshot.exists()) {
                 userRef.set(new HashMap<String, Object>(), SetOptions.merge());
             }
-        }).addOnFailureListener(e -> {
-        });
+        }).addOnFailureListener(e -> Toast
+                .makeText(this, LOAD_FAILURE, Toast.LENGTH_SHORT).show());
     }
 
 

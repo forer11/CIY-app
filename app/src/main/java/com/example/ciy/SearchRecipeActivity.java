@@ -29,6 +29,9 @@ import java.util.Objects;
  */
 public class SearchRecipeActivity extends AppCompatActivity {
 
+    private static final String DATA_FAILURE_MSG = "Failed to load data";
+    private static final String FROM_SEARCH_TAG = "RecipeFromSearchRecipe";
+
     private enum Filters {
         ALL, INGREDIENTS
     }
@@ -278,7 +281,7 @@ public class SearchRecipeActivity extends AppCompatActivity {
             }
             showRecipeFragment(recipe, userPressedLike);
         }).addOnFailureListener(e -> Toast.makeText(SearchRecipeActivity.this,
-                "Failed to load data", Toast.LENGTH_SHORT).show());
+                DATA_FAILURE_MSG, Toast.LENGTH_SHORT).show());
     }
 
     /**
@@ -292,7 +295,7 @@ public class SearchRecipeActivity extends AppCompatActivity {
                 , SharedData.SEARCH_RECIPE);
         FragmentManager fragmentManager = Objects.requireNonNull(SearchRecipeActivity.this)
                 .getSupportFragmentManager();
-        recipeFragment.show(fragmentManager, "RecipeFromSearchRecipe");
+        recipeFragment.show(fragmentManager, FROM_SEARCH_TAG);
     }
 
     /**
